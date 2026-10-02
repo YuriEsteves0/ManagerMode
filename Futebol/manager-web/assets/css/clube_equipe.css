@@ -1,0 +1,142 @@
+main{
+    padding: clamp(16px, 3vw, 28px) clamp(16px, 4vw, 40px) 40px;
+}
+.topo { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+.topo h1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+}
+.topo p { font-size: 13px; color: var(--roxoTextoMaisClaro); }
+.contador { font-size: 12.5px; color: var(--roxoTextoMaisClaro); }
+.contador strong { color: var(--verde); font-family: 'Inter', sans-serif; }
+
+.layout {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.box {
+    background: var(--fundoMeioTransparente);
+    border: 1px solid var(--roxo50P);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.box h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--roxoTextoMaisClaro);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.box h2 .qtd {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--roxoTexto);
+}
+
+/* CAMPO — titulares */
+.campo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: var(--verdeBrilho);
+    border: 1px solid var(--verde);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.campo::before {
+    content: "";
+    position: absolute;
+    top: 50%; left: 0;
+    width: 100%; height: 1px;
+    background: rgba(255,255,255,0.18);
+}
+.campo::after {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 15%; aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 50%;
+}
+.area-gol {
+    position: absolute;
+    top: 30%; height: 40%;
+    width: 9%;
+    border: 1px solid rgba(255,255,255,0.18);
+}
+.area-gol.esq { left: 0; border-left: none; border-radius: 0 4px 4px 0; }
+.area-gol.dir { right: 0; border-right: none; border-radius: 4px 0 0 4px; }
+
+.pos-jogador {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.pos-jogador .bolinha {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--fundoMeioTransparente);
+    border: 1.5px solid var(--amarelo);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', sans-serif; font-weight: 800; font-size: 13px;
+    color: var(--amareloBrilho);
+}
+.pos-jogador span {
+    font-size: 10px;
+    color: var(--branco);
+    background: rgba(16,19,15,0.75);
+    padding: 1px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+/* Listas — reservas / não relacionados */
+.lista-jogadores { display: flex; flex-direction: column; gap: 8px; }
+.item-jogador {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--background);
+    border: 1px solid var(--roxo50P);
+    border-radius: 8px;
+}
+.item-jogador .bolinha-mini {
+    width: 28px; height: 28px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--roxoBrilho);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 11.5px;
+    color: var(--amareloBrilho);
+}
+.item-jogador .info { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.item-jogador .info strong { font-size: 13px; font-weight: 500; color: var(--branco); }
+.item-jogador .info span { font-size: 11px; color: var(--roxoTextoMaisClaro); }
+
+.nao-relacionados .item-jogador { opacity: 0.6; }
+.nao-relacionados .item-jogador .bolinha-mini { background: var(--roxo50P); color: var(--roxoTextoMaisClaro); }
+
+.coluna-direita { display: flex; flex-direction: column; gap: 16px; }
+
+@media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+}

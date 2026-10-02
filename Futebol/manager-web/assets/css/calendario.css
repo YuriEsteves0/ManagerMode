@@ -1,0 +1,77 @@
+
+h1.titulo { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; margin-bottom: 18px; }
+
+.layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; align-items: stretch; }
+.box {
+    background: var(--fundoMeioTransparente); border: 1px solid var(--roxo50P); border-radius: 12px;
+    padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; height: 640px; overflow: hidden;
+}
+.box h2 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--roxoTextoMaisClaro); }
+
+.rolavel { overflow-y: auto; padding-right: 6px; }
+.rolavel::-webkit-scrollbar { width: 6px; }
+.rolavel::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+.rolavel::-webkit-scrollbar-thumb { background: var(--verde); border-radius: 4px; }
+.rolavel::-webkit-scrollbar-thumb:hover { background: var(--verdeBrilho); }
+.rolavel { scrollbar-width: thin; scrollbar-color: var(--verde) rgba(255,255,255,0.05); }
+
+/* CALENDÁRIO */
+.cal-topo { display: flex; align-items: center; justify-content: space-between; }
+.cal-topo .mes-ano { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.01em; text-transform: capitalize; }
+.cal-nav { display: flex; gap: 8px; }
+.cal-nav button {
+    width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+    background: var(--background); border: 1px solid var(--roxo50P); border-radius: 8px;
+    color: var(--roxoTextoMaisClaro); cursor: pointer; font-size: 16px; transition: border-color 0.15s ease, color 0.15s ease;
+}
+.cal-nav button:hover { border-color: var(--verde); color: var(--verde); }
+
+.cal-semana { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 4px; }
+.cal-semana span { text-align: center; font-size: 11px; color: var(--roxoTextoMaisClaro); text-transform: uppercase; letter-spacing: 0.03em; }
+
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; flex: 1; }
+.dia {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    border-radius: 8px; font-size: 13px; color: var(--branco);
+    background: var(--background); border: 1px solid var(--roxo50P);
+}
+.dia.vazio { background: transparent; border: none; }
+.dia.passado { color: var(--roxoTextoMaisClaro); background: transparent; border-color: var(--cinza); text-decoration: line-through; text-decoration-color: var(--roxo50P); }
+.dia.hoje { background: var(--verde); border-color: var(--verde); color: var(--branco); font-family: 'Inter', sans-serif; font-weight: 800; }
+
+.legenda-cal { display: flex; gap: 18px; margin-top: 4px; }
+.legenda-cal span { font-size: 11px; color: var(--roxoTextoMaisClaro); display: flex; align-items: center; gap: 6px; }
+.legenda-cal i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.legenda-cal .ic-hoje { background: var(--verde); }
+.legenda-cal .ic-passado { background: transparent; border: 1px solid var(--cinza); }
+
+/* PRÓXIMO JOGO — direita */
+.confronto { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.confronto .time { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; text-align: center; }
+.confronto .escudo { width: 52px; height: 58px; }
+.confronto .time strong { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 12.5px; }
+.confronto .x { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 15px; color: var(--roxoTextoMaisClaro); }
+
+.info-jogo { display: flex; flex-direction: column; gap: 8px; }
+.info-jogo .linha { display: flex; justify-content: space-between; font-size: 12.5px; }
+.info-jogo .linha span:first-child { color: var(--roxoTextoMaisClaro); }
+.info-jogo .linha span:last-child { color: var(--branco); font-weight: 500; text-align: right; }
+
+.ingressos { display: flex; flex-direction: column; gap: 6px; }
+.ingressos .barra { height: 7px; background: var(--roxo50P); border-radius: 4px; overflow: hidden; }
+.ingressos .barra i { display: block; height: 100%; background: var(--amarelo); }
+.ingressos .legenda { display: flex; justify-content: space-between; font-size: 11px; color: var(--roxoTextoMaisClaro); }
+
+.enquete { display: flex; flex-direction: column; gap: 10px; }
+.enquete-opcao { display: flex; align-items: center; gap: 10px; }
+.enquete-opcao .mini-escudo { width: 26px; height: 30px; flex-shrink: 0; }
+.enquete-opcao .rotulo { width: 84px; flex-shrink: 0; font-size: 11.5px; color: var(--roxoTextoMaisClaro); }
+.enquete-opcao .barra { flex: 1; height: 8px; background: var(--roxo50P); border-radius: 4px; overflow: hidden; }
+.enquete-opcao .barra i { display: block; height: 100%; background: var(--verde); }
+.enquete-opcao.empate .barra i { background: var(--roxoTexto); }
+.enquete-opcao .pct { width: 38px; flex-shrink: 0; text-align: right; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 12px; }
+
+@media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .box { height: auto; max-height: none; }
+}

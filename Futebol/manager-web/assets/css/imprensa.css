@@ -1,0 +1,112 @@
+.box {
+    /* Troque 'relative' por 'fixed' ou 'absolute' */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* Mantenha o resto do seu código */
+    z-index: 1;
+    background: var(--fundoMeioTransparente);
+    border: 1px solid var(--roxo50P);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 90%; /* Ajustado para não vazar a tela em celulares */
+    max-width: 460px;
+    /* pode remover o margin: auto */
+}
+.box h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--roxoTextoMaisClaro);
+}
+
+/* ---- Pergunta do repórter ---- */
+.pergunta-reporter {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--roxo50P);
+}
+.avatar-reporter {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--roxoBrilho);
+    border: 1px solid var(--roxo50P);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--amareloBrilho);
+    flex-shrink: 0;
+}
+.pergunta-reporter p {
+    font-size: 14px;
+    line-height: 1.5;
+}
+.pergunta-reporter .rotulo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--branco);
+}
+.pergunta-reporter .texto-pergunta {
+    font-style: italic;
+    color: var(--roxoTextoMaisClaro);
+}
+
+/* ---- Opções de resposta (radio escondido + label estilizada) ---- */
+.opcoes-resposta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.opcao-resposta { position: relative; }
+.opcao-resposta input { position: absolute; opacity: 0; pointer-events: none; }
+.opcao-resposta label {
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--roxoTextoMaisClaro);
+    background: var(--background);
+    border: 1px solid var(--roxo50P);
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.opcao-resposta label:hover { border-color: var(--roxoTexto); }
+.opcao-resposta input:checked + label {
+    color: var(--branco);
+    border-color: var(--verde);
+    background: var(--amarelo15p);
+}
+
+/* ---- Botão ---- */
+.btn-primario {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--branco);
+    background: var(--verde);
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    width: 100%;
+}
+.btn-primario:hover { background: var(--verdeBrilho); }
+.btn-primario:disabled { background: var(--roxo50P); color: var(--roxoTextoMaisClaro); cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+}

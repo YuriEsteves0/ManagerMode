@@ -1,0 +1,141 @@
+
+h1.titulo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.box {
+    background: var(--fundoMeioTransparente);
+    border: 1px solid var(--roxo50P);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.box h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--roxoTextoMaisClaro);
+}
+
+/* Cabeçalho do clube */
+.clube-cabecalho { display: flex; align-items: center; gap: 14px; }
+.clube-cabecalho .escudo { width: 54px; height: 54px; flex-shrink: 0; }
+.clube-cabecalho strong { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 19px; }
+.clube-cabecalho span { font-size: 12.5px; color: var(--roxoTextoMaisClaro); }
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+.stat-item {
+    background: var(--background);
+    border: 1px solid var(--roxo50P);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.stat-item span { font-size: 11px; color: var(--roxoTextoMaisClaro); }
+.stat-item strong { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 15px; color: var(--branco); }
+
+table.historico { width: 100%; border-collapse: collapse; font-size: 12px; }
+table.historico th { text-align: center; color: var(--roxoTextoMaisClaro); font-weight: 500; padding: 5px 4px; border-bottom: 1px solid var(--roxo50P); }
+table.historico th:first-child, table.historico td:first-child { text-align: left; }
+table.historico td { text-align: center; padding: 7px 4px; color: var(--roxoTextoMaisClaro); border-bottom: 1px solid var(--cinza); }
+table.historico tr:first-child td { color: var(--branco); }
+table.historico td.ano { font-family: 'Inter', sans-serif; font-weight: 700; }
+
+/* Upgrades */
+.upgrades { display: flex; flex-direction: column; gap: 10px; }
+.upgrade {
+    background: var(--background);
+    border: 1px solid var(--roxo50P);
+    border-radius: 10px;
+    padding: 13px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.upgrade-topo { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.upgrade-topo strong { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 14px; }
+
+.nivel { display: flex; align-items: center; gap: 6px; }
+.nivel span { font-size: 10.5px; color: var(--roxoTextoMaisClaro); white-space: nowrap; }
+.nivel .pontos { display: flex; gap: 3px; }
+.nivel .ponto { width: 12px; height: 5px; border-radius: 3px; background: var(--roxo50P); }
+.nivel .ponto.on { background: var(--verde); }
+
+.upgrade p.efeito { font-size: 12.5px; color: var(--roxoTextoMaisClaro); }
+.upgrade p.efeito strong { color: var(--branco); font-weight: 500; }
+.upgrade p.proximo { font-size: 12px; color: var(--amareloBrilho); }
+
+.upgrade-rodape { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
+.upgrade-rodape .preco { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px; color: var(--branco); }
+.btn-melhorar {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 12.5px;
+    color: var(--branco);
+    background: var(--verde);
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.btn-melhorar:hover { background: var(--verdeBrilho); }
+.btn-melhorar:disabled { background: var(--roxo50P); color: var(--roxoTextoMaisClaro); cursor: not-allowed; }
+
+@media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.upgrades {
+    max-height: 480px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 6px;
+}
+
+.upgrades::-webkit-scrollbar {
+    width: 6px;
+}
+
+.upgrades::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.upgrades::-webkit-scrollbar-thumb {
+    background: var(--verde);
+    border-radius: 4px;
+}
+
+.upgrades::-webkit-scrollbar-thumb:hover {
+    background: var(--verdeBrilho);
+}
+
+.upgrades {
+    scrollbar-width: thin;
+    scrollbar-color: var(--verde) rgba(255, 255, 255, 0.05);
+}

@@ -1,0 +1,138 @@
+
+h1.titulo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.box {
+    background: var(--fundoMeioTransparente);
+    border: 1px solid var(--roxo50P);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.box h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--roxoTextoMaisClaro);
+}
+
+/* logo placeholder */
+.logo-patrocinio {
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    color: var(--amareloBrilho);
+    background: var(--roxoBrilho);
+    border: 1px solid var(--roxo50P);
+    flex-shrink: 0;
+}
+
+/* DETALHE — esquerda */
+.detalhe-topo { display: flex; align-items: center; gap: 14px; }
+.detalhe-topo .logo-patrocinio { width: 62px; height: 62px; font-size: 20px; }
+.detalhe-topo strong { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 19px; }
+.detalhe-topo span { font-size: 12.5px; color: var(--roxoTextoMaisClaro); }
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+.stat-item {
+    background: var(--background);
+    border: 1px solid var(--roxo50P);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.stat-item span { font-size: 11px; color: var(--roxoTextoMaisClaro); }
+.stat-item strong { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 14.5px; color: var(--branco); }
+
+p.descricao { font-size: 13px; line-height: 1.55; color: var(--roxoTextoMaisClaro); }
+
+ul.exigencias { display: flex; flex-direction: column; gap: 8px; }
+ul.exigencias li {
+    list-style: none;
+    font-size: 12.5px;
+    color: var(--roxoTextoMaisClaro);
+    border-left: 2px solid var(--amarelo);
+    padding-left: 10px;
+}
+ul.exigencias li strong { color: var(--branco); font-weight: 500; }
+
+.btn-assinar {
+    margin-top: 4px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--branco);
+    background: var(--verde);
+    border: none;
+    border-radius: 8px;
+    padding: 13px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.btn-assinar:hover { background: var(--verdeBrilho); }
+
+/* LISTA — direita, com scroll */
+.lista-patrocinadores {
+    max-height: 480px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 6px;
+}
+.lista-patrocinadores::-webkit-scrollbar { width: 6px; }
+.lista-patrocinadores::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+.lista-patrocinadores::-webkit-scrollbar-thumb { background: var(--verde); border-radius: 4px; }
+.lista-patrocinadores::-webkit-scrollbar-thumb:hover { background: var(--verdeBrilho); }
+.lista-patrocinadores { scrollbar-width: thin; scrollbar-color: var(--verde) rgba(255,255,255,0.05); }
+
+.patrocinador-item {
+    background: var(--background);
+    border: 1px solid var(--roxo50P);
+    border-radius: 10px;
+    padding: 13px 14px;
+    display: flex;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+.patrocinador-item:hover { border-color: var(--roxoTexto); }
+.patrocinador-item.selecionado { border-color: var(--verde); background: var(--amarelo15p); }
+.patrocinador-item .logo-patrocinio { width: 46px; height: 46px; font-size: 14px; }
+
+.patrocinador-info { display: flex; flex-direction: column; gap: 5px; min-width: 0; flex: 1; }
+.patrocinador-info .linha-topo { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.patrocinador-info strong { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 14px; }
+.patrocinador-info .valor { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 12.5px; color: var(--amareloBrilho); white-space: nowrap; }
+.patrocinador-info .tempo { font-size: 11px; color: var(--roxoTextoMaisClaro); }
+.patrocinador-info .resumo { font-size: 11.5px; color: var(--roxoTextoMaisClaro); line-height: 1.4; }
+
+@media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+}
