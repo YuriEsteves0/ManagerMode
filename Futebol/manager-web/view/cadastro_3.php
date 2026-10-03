@@ -66,7 +66,7 @@ if (!empty($clubes)) {
             </div>
         </div>
 
-        <input type="hidden" name="clube_id" value="<?= htmlspecialchars($clubeSelecionado['id'] ?? '') ?>">
+        <input type="hidden" name="clube_id" value="<?= htmlspecialchars($clubeSelecionado['idClube'] ?? '') ?>">
         <input type="hidden" name="clube_nome" value="<?= htmlspecialchars($clubeSelecionado['nomeClube'] ?? '') ?>">
         <input type="hidden" name="clube_foto" value="<?= htmlspecialchars($clubeSelecionado['foto'] ?? '') ?>">
     <?php endif; ?>

@@ -17,31 +17,17 @@ import com.manager.api.service.ClubeService;
 
 @RestController
 public class ClubeController {
-    private final ClubeCompeticaoRepository clubeCompeticaoRepository;
 
     private final ClubeService clubeService;
-    private final ClubeCompeticaoService clubeCompeticaoService;
 
-    public ClubeController(ClubeCompeticaoRepository clubeCompeticaoRepository, ClubeCompeticaoService clubeCompeticaoService, ClubeService clubeService) {
-        this.clubeCompeticaoRepository = clubeCompeticaoRepository;
-        this.clubeCompeticaoService = clubeCompeticaoService; 
+    public ClubeController(ClubeService clubeService) {
         this.clubeService = clubeService; 
     }
 
-    @GetMapping("/competicoes/{id}/clubes")
-    public List<ClubeCompeticaoResponse.ClubeResponse.ClubeFotoNomeResponse> listarClubesDaCompeticao(@PathVariable Integer id) {
-//        return clubeCompeticaoRepository.findByCompeticao_Id(id)
-//                .stream()
-//                .map(ClubeCompeticao::getClube)
-//                .toList();
-    	return clubeCompeticaoService.listarClubeFotoNome(id);
-    }
-
-    @GetMapping("/competicoes/{id}/classificacao")
-    public List<ClubeCompeticaoResponse.IdClubeIdCompeticaoPontosFaseAtual> classificacao(@PathVariable Integer id){
-        return clubeCompeticaoService.listarClassificacao(id);
-    }
-
+    /**
+     * @param id Parâmetro recebido e usado como variavel para realizar os métodos do {@link ClubeService}
+     * @return O mesmo retorno de {@link ClubeCompeticaoService#listarClubeFotoNome(Integer)} 
+     */
     @GetMapping("/clubes/{id}")
     public ClubeResponse buscarClubePorId(@PathVariable Integer id) {
         return clubeService.buscarClube(id);

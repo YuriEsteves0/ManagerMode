@@ -32,6 +32,7 @@ public record ClubeCompeticaoResponse(
      */
     public record IdClubeIdCompeticaoPontosFaseAtual(
         Integer clube_idClube,
+        String nomeClube,
         Integer competicao_idCompeticao,
         Integer pontos,
         FaseAtual faseAtual

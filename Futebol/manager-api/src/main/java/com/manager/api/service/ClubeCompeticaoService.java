@@ -52,6 +52,7 @@ public class ClubeCompeticaoService {
      * Dados retornados:
      * <ul>
      *   <li>ID do clube</li>
+     *   <li>Nome do clube</li>
      *   <li>ID da competição</li>
      *   <li>Quantidade de pontos acumulados</li>
      *   <li>Fase atual na competição</li>
@@ -65,6 +66,7 @@ public class ClubeCompeticaoService {
             .stream()
             .map(cc -> new ClubeCompeticaoResponse.IdClubeIdCompeticaoPontosFaseAtual(
                 cc.getClube().getId(),
+                cc.getClube().getNomeClube(),
                 cc.getCompeticao().getId(),
                 cc.getPontos(),
                 cc.getFaseAtual()

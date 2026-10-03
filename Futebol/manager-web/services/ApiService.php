@@ -39,7 +39,38 @@ class ApiService{
 
     }
 
-}
+    public function getClassificacaoProxima(int $idLiga, int $idClubeJogador, int $limite = 5): array{
+        // 1. Busca os dados completos da API
+        $classificacao = $this->get("/competicoes/{$idLiga}/classificacao") ?? [];
 
+        if (empty($classificacao)) {
+            return [];
+        }
+
+        // 2. Encontra a posição do jogador
+        $indexJogador = -1;
+        foreach ($classificacao as $index => $item) {
+            if (($item['clube_idClube'] ?? null) == $idClubeJogador) {
+                $indexJogador = $index;
+                break;
+            }
+        }
+
+        if ($indexJogador === -1) {
+            return array_slice($classificacao, 0, $limite);
+        }
+
+        // 3. Aplica o recorte (janela móvel)
+        $total = count($classificacao);
+        $inicio = max(0, $indexJogador - 2);
+
+        if ($inicio + $limite > $total) {
+            $inicio = max(0, $total - $limite);
+        }
+
+        return array_slice($classificacao, $inicio, $limite);
+    }
+
+}
 
 ?>

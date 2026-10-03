@@ -1,4 +1,27 @@
-<link rel="stylesheet" href="assets/css/inicio.css"> 
+<link rel="stylesheet" href="assets/css/inicio.css">
+
+<?php
+$idLiga = $_SESSION['carreira']['liga'] ?? "";
+$apiService = new ApiService();
+
+$idClubeJogador = $_SESSION['carreira']['clube']['id'] ?? "";
+$classificacao = $apiService->getClassificacaoProxima($idLiga, $idClubeJogador);
+
+$indiceJogador = 0;
+foreach ($classificacao as $i => $c) {
+    if ($c['clube_idClube'] == $idClubeJogador) {
+        $indiceJogador = $i;
+        break;
+    }
+}
+
+$tamanhoJanela = 5;
+$inicio = max(0, min($indiceJogador - 2, count($classificacao) - $tamanhoJanela));
+$tabelaReduzida = array_slice($classificacao, $inicio, $tamanhoJanela, true);
+
+$jogadores = $apiService->get("/jogadores/clube/{$idClubeJogador}");
+
+?>
 
 <main>
     <div class="grid">
@@ -6,17 +29,12 @@
         <section class="box" id="box-elenco">
             <h2>Elenco</h2>
             <div class="jogadores">
-                <div class="jogador"><div class="bolinha">1</div><span>Weverton</span></div>
-                <div class="jogador"><div class="bolinha">3</div><span>Léo Ortiz</span></div>
-                <div class="jogador"><div class="bolinha">4</div><span>Bastos</span></div>
-                <div class="jogador"><div class="bolinha">6</div><span>Filipe Luís</span></div>
-                <div class="jogador"><div class="bolinha">5</div><span>Palacios</span></div>
-                <div class="jogador"><div class="bolinha">8</div><span>Gerson</span></div>
-                <div class="jogador"><div class="bolinha">10</div><span>Rayan</span></div>
-                <div class="jogador"><div class="bolinha">7</div><span>Everton Ribeiro</span></div>
-                <div class="jogador"><div class="bolinha">11</div><span>Luiz Araújo</span></div>
-                <div class="jogador"><div class="bolinha">9</div><span>Pedro</span></div>
-                <div class="jogador"><div class="bolinha">19</div><span>Estevão</span></div>
+                <?php foreach ($jogadores as $j): ?>
+                    <div class="jogador">
+                        <div class="bolinha"><?= (int)$j['numeroCamisa'] ?></div>
+                        <span><?= htmlspecialchars($j['nomeJogador']) ?></span>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </section>
 
@@ -45,14 +63,28 @@
             <h2>Tabela</h2>
             <table>
                 <thead>
-                    <tr><th>Pos</th><th>Time</th><th class="num">P</th><th class="num">J</th><th class="num">V</th><th class="num">SG</th></tr>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Time</th>
+                        <th class="num">P</th>
+                        <th class="num">J</th>
+                        <th class="num">V</th>
+                        <th class="num">SG</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td class="pos">1º</td><td>Palmeiras</td><td class="num">31</td><td class="num">14</td><td class="num">9</td><td class="num">+14</td></tr>
-                    <tr class="destaque"><td class="pos">2º</td><td>Seu Clube</td><td class="num">28</td><td class="num">14</td><td class="num">8</td><td class="num">+11</td></tr>
-                    <tr><td class="pos">3º</td><td>Flamengo</td><td class="num">27</td><td class="num">14</td><td class="num">8</td><td class="num">+9</td></tr>
-                    <tr><td class="pos">4º</td><td>Fluminense</td><td class="num">24</td><td class="num">14</td><td class="num">7</td><td class="num">+5</td></tr>
-                    <tr><td class="pos">5º</td><td>São Paulo</td><td class="num">22</td><td class="num">14</td><td class="num">6</td><td class="num">+2</td></tr>
+                    <?php foreach ($tabelaReduzida as $i => $clube):
+                        $ehJogador = $clube['clube_idClube'] == $idClubeJogador;
+                    ?>
+                        <tr class="<?= $ehJogador ? 'destaque' : '' ?>">
+                            <td class="pos"><?= $i + 1 ?>º</td>
+                            <td><?= htmlspecialchars($clube['nomeClube'] ?? 'Clube ' . $clube['clube_idClube']) ?></td>
+                            <td class="num"><?= $clube['pontos'] ?></td>
+                            <td class="num">0</td>
+                            <td class="num">0</td>
+                            <td class="num">0</td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </section>
