@@ -1,5 +1,7 @@
 package com.manager.api.responses;
 
+import java.time.LocalDateTime;
+
 import com.manager.api.enums.noticia.Categoria;
 
 /**
@@ -13,6 +15,6 @@ public record NoticiaResponse(
 	    Integer idNoticia,
 	    String titulo,
 	    Categoria categoria,
-	    Integer dataPublicacao,
+	    LocalDateTime dataPublicacao,
 	    Integer clubeIdClube
 	) {}

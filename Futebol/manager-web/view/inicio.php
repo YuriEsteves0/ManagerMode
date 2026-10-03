@@ -1,26 +1,46 @@
 <link rel="stylesheet" href="assets/css/inicio.css">
 
 <?php
-$idLiga = $_SESSION['carreira']['liga'] ?? "";
-$apiService = new ApiService();
+$estado = $_SESSION['estado_jogo'] ?? null;
 
-$idClubeJogador = $_SESSION['carreira']['clube']['id'] ?? "";
-$classificacao = $apiService->getClassificacaoProxima($idLiga, $idClubeJogador);
+$idLiga         = (int)($estado->liga ?? 0);
+$idClubeJogador = (int)($estado->clube->id ?? 0);
 
-$indiceJogador = 0;
-foreach ($classificacao as $i => $c) {
-    if ($c['clube_idClube'] == $idClubeJogador) {
-        $indiceJogador = $i;
-        break;
-    }
+$apiService     = new ApiService();
+$classificacao  = [];
+$jogadores      = [];
+$imprensas      = [];
+$transferencias = [];
+
+if ($idLiga > 0 && $idClubeJogador > 0) {
+    $classificacao = $apiService->getClassificacaoProxima($idLiga, $idClubeJogador, 5);
+
+    $jogadores      = $apiService->get("/jogadores/clube/{$idClubeJogador}") ?? [];
+    $imprensas      = $apiService->get("/noticias", ["categoria" => "IMPRENSA", "idClube" => $idClubeJogador]) ?? [];
+    $transferencias = $apiService->get("/noticias", ["categoria" => "MERCADO"]) ?? [];
 }
 
-$tamanhoJanela = 5;
-$inicio = max(0, min($indiceJogador - 2, count($classificacao) - $tamanhoJanela));
-$tabelaReduzida = array_slice($classificacao, $inicio, $tamanhoJanela, true);
+function formatarTitulo(string $titulo, int $qtdDestaque, int $limite = 10): array
+{
+    $palavras = explode(' ', trim($titulo));
+    $cortado  = count($palavras) > $limite;
 
-$jogadores = $apiService->get("/jogadores/clube/{$idClubeJogador}");
+    if ($cortado) {
+        $palavras = array_slice($palavras, 0, $limite);
+    }
 
+    $destaque = array_splice($palavras, 0, $qtdDestaque);
+    $resto    = $palavras ? ' ' . implode(' ', $palavras) : '';
+
+    if ($cortado) {
+        $resto .= '...';
+    }
+
+    return [
+        htmlspecialchars(implode(' ', $destaque)),
+        htmlspecialchars($resto),
+    ];
+}
 ?>
 
 <main>
@@ -73,13 +93,13 @@ $jogadores = $apiService->get("/jogadores/clube/{$idClubeJogador}");
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($tabelaReduzida as $i => $clube):
-                        $ehJogador = $clube['clube_idClube'] == $idClubeJogador;
+                    <?php foreach ($classificacao as $i => $clube):
+                        $ehJogador = (int)$clube['clube_idClube'] === $idClubeJogador;
                     ?>
                         <tr class="<?= $ehJogador ? 'destaque' : '' ?>">
                             <td class="pos"><?= $i + 1 ?>º</td>
                             <td><?= htmlspecialchars($clube['nomeClube'] ?? 'Clube ' . $clube['clube_idClube']) ?></td>
-                            <td class="num"><?= $clube['pontos'] ?></td>
+                            <td class="num"><?= (int)$clube['pontos'] ?></td>
                             <td class="num">0</td>
                             <td class="num">0</td>
                             <td class="num">0</td>
@@ -92,22 +112,22 @@ $jogadores = $apiService->get("/jogadores/clube/{$idClubeJogador}");
         <section class="box" id="box-transf">
             <h2>Transferências <span class="tag-janela aberta">Janela aberta</span></h2>
             <ul class="noticias">
-                <li><strong>BOMBA!</strong> Chelsea demonstra interesse em Rayan (Seu Clube)</li>
-                <li><strong>OFICIAL!</strong> Vasco da Gama contrata lateral Léo Ortiz</li>
-                <li><strong>SONDAGEM!</strong> Al-Hilal pergunta valores por Pedro (Seu Clube)</li>
-                <li><strong>NEGOCIAÇÃO!</strong> Fluminense reforça proposta por Gerson</li>
-                <li><strong>NOVIDADE!</strong> Corinthians observa Estevão para 2027</li>
+                <?php foreach ($transferencias as $n):
+                    [$destaque, $resto] = formatarTitulo($n['titulo'] ?? '', 1);
+                ?>
+                    <li><strong><?= $destaque ?></strong><?= $resto ?></li>
+                <?php endforeach; ?>
             </ul>
         </section>
 
         <section class="box" id="box-imprensa">
             <h2>Imprensa</h2>
             <ul class="noticias imprensa-lista">
-                <li><strong>Diretoria aprova</strong> orçamento extra para a base de treinamento</li>
-                <li><strong>Torcida elogia</strong> atuação do time na última rodada</li>
-                <li><strong>Técnico é elogiado</strong> pela imprensa após sequência invicta</li>
-                <li><strong>Clube anuncia</strong> nova parceria de patrocínio master</li>
-                <li><strong>Ídolo do clube</strong> comenta sobre o momento da equipe</li>
+                <?php foreach ($imprensas as $n):
+                    [$destaque, $resto] = formatarTitulo($n['titulo'] ?? '', 2);
+                ?>
+                    <li><strong><?= $destaque ?></strong><?= $resto ?></li>
+                <?php endforeach; ?>
             </ul>
         </section>
 

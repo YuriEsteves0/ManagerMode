@@ -1,169 +1,188 @@
 <style>
-/* NAV */
-header {
-    position: sticky;
-    top: 0;
-    padding-top: env(safe-area-inset-top, 0px);
-    background: var(--background);
-    border-bottom: 1px solid var(--roxo50P);
-    z-index: 20;
-}
-.nav-wrap {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    padding: 14px clamp(16px, 4vw, 40px);
-}
+    /* NAV */
+    header {
+        position: sticky;
+        top: 0;
+        padding-top: env(safe-area-inset-top, 0px);
+        background: var(--background);
+        border-bottom: 1px solid var(--roxo50P);
+        z-index: 20;
+    }
 
-nav { 
-    display: flex; 
-    gap: 4px; 
-    flex: 1; 
-}
+    .nav-wrap {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        padding: 14px clamp(16px, 4vw, 40px);
+    }
 
-.marca {
-    font-family: 'Inter', sans-serif;
-    font-weight: 800;
-    font-size: 16px;
-    letter-spacing: -0.02em;
-    white-space: nowrap;
-    text-decoration: none;
-    color: var(--branco);
-}
-.marca span { color: var(--verde); }
+    nav {
+        display: flex;
+        gap: 4px;
+        flex: 1;
+    }
 
-.nav-item { position: relative; }
-.nav-item:hover { z-index: 30; }
+    .marca {
+        font-family: 'Inter', sans-serif;
+        font-weight: 800;
+        font-size: 16px;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        text-decoration: none;
+        color: var(--branco);
+    }
 
-/* Estilizando tanto <button> quanto <a> do menu principal */
-.nav-item > button,
-.nav-item > a {
-    display: inline-block;
-    text-decoration: none;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    font-size: 12.5px;
-    letter-spacing: 0.03em;
-    color: var(--roxoTextoMaisClaro);
-    background: transparent;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: color 0.15s ease, background 0.15s ease;
-}
+    .marca span {
+        color: var(--verde);
+    }
 
-.nav-item > button:hover,
-.nav-item > a:hover,
-.nav-item:focus-within > button,
-.nav-item:focus-within > a { 
-    color: var(--branco); 
-    background: var(--fundoMeioTransparente); 
-}
+    .nav-item {
+        position: relative;
+    }
 
-.nav-item.ativo > button,
-.nav-item.ativo > a { color: var(--branco); }
+    .nav-item:hover {
+        z-index: 30;
+    }
 
-.nav-item.ativo > button::after,
-.nav-item.ativo > a::after {
-    content: "";
-    display: block;
-    height: 2px;
-    background: var(--verde);
-    margin-top: 6px;
-    border-radius: 2px;
-}
+    /* Estilizando tanto <button> quanto <a> do menu principal */
+    .nav-item>button,
+    .nav-item>a {
+        display: inline-block;
+        text-decoration: none;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+        font-size: 12.5px;
+        letter-spacing: 0.03em;
+        color: var(--roxoTextoMaisClaro);
+        background: transparent;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: color 0.15s ease, background 0.15s ease;
+    }
 
-.dropdown {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    min-width: 200px;
-    background: var(--fundoMeioTransparente);
-    border: 1px solid var(--roxo50P);
-    border-radius: 8px;
-    padding: 6px;
-    display: none;
-    flex-direction: column;
-    gap: 2px;
-    z-index: 100;
-}
-.nav-item:hover .dropdown,
-.nav-item:focus-within .dropdown { display: flex; }
-.dropdown a {
-    font-size: 13px;
-    color: var(--roxoTextoMaisClaro);
-    text-decoration: none;
-    padding: 9px 12px;
-    border-radius: 6px;
-}
-.dropdown a:hover { color: var(--branco); background: var(--roxoBrilho); }
+    .nav-item>button:hover,
+    .nav-item>a:hover,
+    .nav-item:focus-within>button,
+    .nav-item:focus-within>a {
+        color: var(--branco);
+        background: var(--fundoMeioTransparente);
+    }
 
-/* ÁREA DIREITA DO HEADER (CLUBE + BOTÃO JOGAR) */
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-left: auto;
-}
+    .nav-item.ativo>button,
+    .nav-item.ativo>a {
+        color: var(--branco);
+    }
 
-.clube-atual {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 12px;
-    background: var(--fundoMeioTransparente);
-    border: 1px solid var(--roxo50P);
-    border-radius: 8px;
-    text-decoration: none;
-}
+    .nav-item.ativo>button::after,
+    .nav-item.ativo>a::after {
+        content: "";
+        display: block;
+        height: 2px;
+        background: var(--verde);
+        margin-top: 6px;
+        border-radius: 2px;
+    }
 
-.clube-atual .escudo-nav {
-    width: 24px;
-    height: 27px;
-    flex-shrink: 0;
-}
+    .dropdown {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        min-width: 200px;
+        background: var(--fundoMeioTransparente);
+        border: 1px solid var(--roxo50P);
+        border-radius: 8px;
+        padding: 6px;
+        display: none;
+        flex-direction: column;
+        gap: 2px;
+        z-index: 100;
+    }
 
-.clube-atual .info-clube {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-}
+    .nav-item:hover .dropdown,
+    .nav-item:focus-within .dropdown {
+        display: flex;
+    }
 
-.clube-atual .nome-clube {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--branco);
-    line-height: 1.2;
-}
+    .dropdown a {
+        font-size: 13px;
+        color: var(--roxoTextoMaisClaro);
+        text-decoration: none;
+        padding: 9px 12px;
+        border-radius: 6px;
+    }
 
-.clube-atual .liga-clube {
-    font-family: 'Roboto', sans-serif;
-    font-size: 11px;
-    color: var(--roxoTextoMaisClaro);
-}
+    .dropdown a:hover {
+        color: var(--branco);
+        background: var(--roxoBrilho);
+    }
 
-.btn-jogar-header {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.04em;
-    color: var(--branco);
-    background: var(--verde);
-    border: none;
-    border-radius: 6px;
-    padding: 9px 18px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.15s ease;
-    white-space: nowrap;
-}
+    /* ÁREA DIREITA DO HEADER (CLUBE + BOTÃO JOGAR) */
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-left: auto;
+    }
 
-.btn-jogar-header:hover {
-    background: var(--verdeBrilho);
-}
+    .clube-atual {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 12px;
+        background: var(--fundoMeioTransparente);
+        border: 1px solid var(--roxo50P);
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+    .clube-atual .escudo-nav {
+        width: 24px;
+        height: 27px;
+        flex-shrink: 0;
+    }
+
+    .clube-atual .info-clube {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .clube-atual .nome-clube {
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--branco);
+        line-height: 1.2;
+    }
+
+    .clube-atual .liga-clube {
+        font-family: 'Roboto', sans-serif;
+        font-size: 11px;
+        color: var(--roxoTextoMaisClaro);
+    }
+
+    .btn-jogar-header {
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        color: var(--branco);
+        background: var(--verde);
+        border: none;
+        border-radius: 6px;
+        padding: 9px 18px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.15s ease;
+        white-space: nowrap;
+    }
+
+    .btn-jogar-header:hover {
+        background: var(--verdeBrilho);
+    }
 </style>
 <?php
 $pagina_atual = isset($_GET['pag']) ? $_GET['pag'] : 'inicio';
@@ -171,13 +190,13 @@ $pagina_atual = isset($_GET['pag']) ? $_GET['pag'] : 'inicio';
 $paginas_clube = ['equipe', 'estatisticas', 'patrocinios', 'central-elenco'];
 $paginas_negociacao = ['mercado', 'meus-atletas', 'propostas-enviadas', 'propostas-recebidas'];
 
-
+$clube = $_SESSION['estado_jogo']->clube ?? null;
 ?>
 
 <header>
     <div class="nav-wrap">
         <a href="index.php?pag=inicio" class="marca">MANAGER<span>MODE</span>.COM</a>
-        
+
         <nav>
             <div class="nav-item <?= ($pagina_atual == 'inicio') ? 'ativo' : '' ?>">
                 <a href="index.php?pag=inicio">INÍCIO</a>
@@ -218,12 +237,13 @@ $paginas_negociacao = ['mercado', 'meus-atletas', 'propostas-enviadas', 'propost
                 <a href="index.php?pag=carreira">CARREIRA</a>
             </div>
         </nav>
-        
+
         <div class="header-actions">
+
             <a href="index.php?pag=diretoria" class="clube-atual">
-                <img src="assets/<?= htmlspecialchars($_SESSION['carreira']['clube']['foto']) ?>" alt="" style="width: 24px; height: 24px; object-fit: contain;">
+                <img src="assets/<?= htmlspecialchars($clube->foto ?? '') ?>" alt="" style="width: 24px; height: 24px; object-fit: contain;">
                 <div class="info-clube">
-                    <span class="nome-clube"><?= htmlspecialchars($_SESSION['carreira']['clube']['nomeClube'] ?? 'Sem Clube') ?></span>
+                    <span class="nome-clube"><?= htmlspecialchars($clube->nomeClube ?? 'Sem Clube') ?></span>
                 </div>
             </a>
 

@@ -1,5 +1,7 @@
 package com.manager.api.model;
 
+import java.time.LocalDateTime;
+
 import com.manager.api.enums.noticia.Categoria;
 
 import jakarta.persistence.Column;
@@ -29,7 +31,7 @@ public class Noticia{
     private Categoria categoria;
     
     @Column(name="dataPublicacao")
-    private Integer dataPublicacao;
+    private LocalDateTime dataPublicacao;
     
     @Column(name = "clube_idClube")
     private Integer clubeIdClube;

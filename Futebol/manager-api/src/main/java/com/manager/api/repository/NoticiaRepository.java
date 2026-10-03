@@ -17,7 +17,7 @@ public interface NoticiaRepository extends JpaRepository<Noticia, Integer>{
      * @param categoria a categoria das notícias a serem pesquisadas
      * @return uma lista de objetos {@link NoticiaResponse} pertencentes à categoria informada
      */
-    public List<NoticiaResponse> findByCategoria(Categoria categoria);
+    public List<NoticiaResponse> findTop5ByCategoriaOrderByDataPublicacaoDesc(Categoria categoria);
 
     /**
      * Busca uma lista de notícias filtradas por categoria e pelo ID do clube associado.
@@ -28,6 +28,6 @@ public interface NoticiaRepository extends JpaRepository<Noticia, Integer>{
      * @param clube_IdClube o identificador único do clube associado às notícias
      * @return uma lista de objetos {@link NoticiaResponse} que correspondem à categoria e ao clube especificados
      */
-    public List<NoticiaResponse> findByCategoriaAndClubeIdClube(Categoria categoria, Integer clubeIdClube);
+    public List<NoticiaResponse> findTop5ByCategoriaAndClubeIdClubeOrderByDataPublicacaoDesc(Categoria categoria, Integer clubeIdClube);
 
 }

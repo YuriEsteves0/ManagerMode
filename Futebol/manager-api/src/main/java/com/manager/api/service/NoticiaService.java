@@ -17,7 +17,11 @@ public class NoticiaService{
 	}
 	
 	public List<NoticiaResponse> listarNoticiasDeMercado(){
-		return noticiaRepository.findByCategoria(Categoria.MERCADO);
+		return noticiaRepository.findTop5ByCategoriaOrderByDataPublicacaoDesc(Categoria.MERCADO);
+	}
+	
+	public List<NoticiaResponse> listarNoticiasDeImprensa(Integer idClube){
+		return noticiaRepository.findTop5ByCategoriaAndClubeIdClubeOrderByDataPublicacaoDesc(Categoria.IMPRENSA, idClube);
 	}
 	
 }

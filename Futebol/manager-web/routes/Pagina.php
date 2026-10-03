@@ -33,6 +33,7 @@ enum Pagina: string{
             self::PROPOSTAS_RECEBIDAS => 'view/negociacao_propostas_recebidas.php',
             self::PROPOSTAS_ENVIADAS => 'view/negociacao_propostas_enviadas.php',
             self::CALENDARIO => 'view/calendario.php',
+            self::TREINO => 'view/treino.php',
             self::DIRETORIA => 'view/diretoria.php',
             self::CARREIRA => 'view/carreira.php',
             self::PARTIDA => 'view/partida.php',

@@ -1,5 +1,10 @@
 <?php
-require_once("routes/Pagina.php");
+require_once __DIR__ . '/models/EstadoJogo.php';
+require_once __DIR__ . '/routes/Pagina.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
 // 1. Resolve a rota/página no início da execução
 $parametro = $_REQUEST['pag'] ?? "cadastro_1";
@@ -19,9 +24,7 @@ $pagina = Pagina::tryFrom($parametro);
 
 <body>
     <?php
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    
     require_once "includes/headerHelper.php";
     headerHelper();
     ?>
