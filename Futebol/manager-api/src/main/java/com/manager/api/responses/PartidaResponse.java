@@ -18,13 +18,15 @@ public record PartidaResponse(
 		String local,
 		Integer competicaoIdCompeticao
 ) {
-	public record RodadaIdMandanteIdVisitanteLocalDataHorario(
-			Integer idPartida,
-			Integer rodada,
-			Integer mandanteIdClube,
-			Integer visitanteIdClube,
-			String local,
-			LocalDate dataPartida,
-			LocalTime horario
-	) {}
+	public record RodadaIdMandanteIdVisitanteLocalEstadioDataHorario(
+	        Integer idPartida,
+	        Integer rodada,
+	        Integer mandanteIdClube,
+	        String nomeMandante,
+	        Integer visitanteIdClube,
+	        String nomeVisitante,
+	        String local,
+	        String nomeEstadio,
+	        LocalDate dataPartida,
+	        LocalTime horario) {}
 }

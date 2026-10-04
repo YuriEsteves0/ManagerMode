@@ -20,8 +20,8 @@ public class Competicao {
     @Column(name="idCompeticao") 
     private Integer id;
 
-    @Column(name="nomeCompeticao")
-    private String nome;
+    @Column(name = "nomeCompeticao")
+    private String nomeCompeticao;
 
     @Column(name="valorPremio")
     private Float valorPremio;

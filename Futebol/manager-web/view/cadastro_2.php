@@ -31,7 +31,7 @@ $competicoes = $apiService->get('/competicoes', ['tipo' => 'PONTOS_CORRIDOS']) ?
         ?>
                 <div class="liga-opcao">
                     <input type="radio" name="liga" id="<?= $idInput ?>" value="<?= htmlspecialchars($competicao['id']) ?>" <?= $checked ?>>
-                    <label for="<?= $idInput ?>"><?= $competicao['nome'] ?><span class="pais"><?= htmlspecialchars($competicao['nivelCompeticao']) ?></span></label>
+                    <label for="<?= $idInput ?>"><?= $competicao['nomeCompeticao'] ?><span class="pais"><?= htmlspecialchars($competicao['nivelCompeticao']) ?></span></label>
                 </div>
 
         <?php

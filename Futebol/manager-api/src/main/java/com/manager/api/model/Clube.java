@@ -54,5 +54,8 @@ public class Clube {
 
     @Column(name="foto")
     private String foto;
+    
+    @Column(name="nomeEstadio")
+    private String nomeEstadio;
 
 }

@@ -13,14 +13,20 @@ import com.manager.api.responses.PartidaResponse;
 public interface PartidaRepository extends JpaRepository<Partida, Integer>{
 
 	@Query("""
-			SELECT new com.manager.api.responses.PartidaResponse$RodadaIdMandanteIdVisitanteLocalDataHorario(
-				p.idPartida, p.rodada, p.mandanteIdClube, p.visitanteIdClube, p.local, p.dataPartida, p.horario)
-			FROM Partida p
-			WHERE (p.mandanteIdClube = :idClube OR p.visitanteIdClube = :idClube)
-			  AND p.dataPartida > :dataPartida
-			ORDER BY p.dataPartida ASC, p.horario ASC
-			""")
-		List<PartidaResponse.RodadaIdMandanteIdVisitanteLocalDataHorario> buscarProximasPartidas(
-			@Param("idClube") Integer idClube,
-			@Param("dataPartida") LocalDate dataPartida);
+	        SELECT new com.manager.api.responses.PartidaResponse$RodadaIdMandanteIdVisitanteLocalEstadioDataHorario(
+	            p.idPartida, p.rodada,
+p.mandanteIdClube, m.nomeClube,
+p.visitanteIdClube, v.nomeClube,  
+p.local, m.nomeEstadio,
+p.dataPartida, p.horario)
+	        FROM Partida p
+	        JOIN Clube m ON m.id = p.mandanteIdClube
+	        JOIN Clube v ON v.id = p.visitanteIdClube
+	        WHERE (p.mandanteIdClube = :idClube OR p.visitanteIdClube = :idClube)
+	          AND p.dataPartida > :dataPartida
+	        ORDER BY p.dataPartida ASC, p.horario ASC
+	        """)
+	List<PartidaResponse.RodadaIdMandanteIdVisitanteLocalEstadioDataHorario> buscarProximasPartidas(
+	        @Param("idClube") Integer idClube,
+	        @Param("dataPartida") LocalDate dataPartida);
 }

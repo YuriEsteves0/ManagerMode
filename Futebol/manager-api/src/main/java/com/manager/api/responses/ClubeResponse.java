@@ -16,7 +16,8 @@ public record ClubeResponse(
     StatusConfianca statusConfianca,
     String eventoAtual,
     Integer capacidadeEstadio,
-    String foto
+    String foto,
+    String nomeEstadio
 ) {
     
 }

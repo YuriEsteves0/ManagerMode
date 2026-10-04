@@ -3,21 +3,28 @@
 <?php
 $estado = $_SESSION['estado_jogo'] ?? null;
 
-$idLiga         = (int)($estado->liga ?? 0);
-$idClubeJogador = (int)($estado->clube->id ?? 0);
+$idLiga          = (int)($estado->liga ?? 0);
+$idClubeJogador  = (int)($estado->clube->id ?? 0);
 
-$apiService     = new ApiService();
-$classificacao  = [];
-$jogadores      = [];
-$imprensas      = [];
-$transferencias = [];
+$apiService      = new ApiService();
+$classificacao   = [];
+$jogadores       = [];
+$imprensas       = [];
+$transferencias  = [];
+$partidasFuturas = [];
+
 
 if ($idLiga > 0 && $idClubeJogador > 0) {
     $classificacao = $apiService->getClassificacaoProxima($idLiga, $idClubeJogador, 5);
 
-    $jogadores      = $apiService->get("/jogadores/clube/{$idClubeJogador}") ?? [];
-    $imprensas      = $apiService->get("/noticias", ["categoria" => "IMPRENSA", "idClube" => $idClubeJogador]) ?? [];
-    $transferencias = $apiService->get("/noticias", ["categoria" => "MERCADO"]) ?? [];
+    $jogadores                = $apiService->get("/jogadores/clube/{$idClubeJogador}") ?? [];
+    $imprensas                = $apiService->get("/noticias", ["categoria" => "IMPRENSA", "idClube" => $idClubeJogador]) ?? [];
+    $transferencias           = $apiService->get("/noticias", ["categoria" => "MERCADO"]) ?? [];
+    $dataPartidaFormatada = $estado->dataInicio ? $estado->dataInicio->format('Y-m-d') : null;
+
+    $partidasFuturas = $apiService->get("/partidas/clube/{$idClubeJogador}/proximosJogos", ["dataPartida" => $dataPartidaFormatada]) ?? [];
+
+    $estatistica = $apiService->get("/jogador/competicao/{$idLiga}/estatistica");
 }
 
 function formatarTitulo(string $titulo, int $qtdDestaque, int $limite = 10): array
@@ -61,21 +68,33 @@ function formatarTitulo(string $titulo, int $qtdDestaque, int $limite = 10): arr
         <section class="box" id="box-jogos">
             <h2>Próximos Jogos</h2>
             <div class="jogos-lista">
-                <div class="jogo-item"><strong>Rodada 14 — vs Palmeiras</strong><span>Fora • 12/10, 16h</span></div>
-                <div class="jogo-item"><strong>Rodada 15 — vs Fluminense</strong><span>Casa • 19/10, 20h</span></div>
-                <div class="jogo-item"><strong>Copa do Brasil — vs Grêmio</strong><span>Casa • 23/10, 21h30</span></div>
-                <div class="jogo-item"><strong>Rodada 16 — vs São Paulo</strong><span>Fora • 26/10, 18h30</span></div>
+                <?php foreach ($partidasFuturas as $jogo):
+                    $ehMandante = (int)$jogo['mandanteIdClube'] === $idClubeJogador;
+                    $adversario = $ehMandante ? $jogo['nomeVisitante'] : $jogo['nomeMandante'];
+                    $mando      = $ehMandante ? 'Casa' : 'Fora';
+                    $data       = (new DateTime($jogo['dataPartida']))->format('d/m');
+                    $hora       = substr($jogo['horario'], 0, 2) . 'h';
+                ?>
+                    <div class="jogo-item">
+                        <strong>Rodada <?= (int)$jogo['rodada'] ?> — vs <?= htmlspecialchars($adversario) ?></strong>
+                        <span><?= $mando ?> • <?= $data ?>, <?= $hora ?></span>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </section>
 
         <section class="box" id="box-artilharia">
             <h2>Artilharia</h2>
             <ul class="lista-num">
-                <li><span class="nome">Pedro</span><span class="valor">14 gols</span></li>
-                <li><span class="nome">Rayan</span><span class="valor">10 gols</span></li>
-                <li><span class="nome">Luiz Araújo</span><span class="valor">8 gols</span></li>
-                <li><span class="nome">Estevão</span><span class="valor">6 gols</span></li>
-                <li><span class="nome">Gerson</span><span class="valor">5 gols</span></li>
+                <?php
+
+                foreach ($estatistica as $jogadorEstatistica) {
+                ?>
+                    <li><span class="nome"><?= $jogadorEstatistica['nomeJogador'] ?></span><span class="valor"><?= $jogadorEstatistica['gols'] ?> gols</span></li>
+                <?php
+                }
+
+                ?>
             </ul>
         </section>
 

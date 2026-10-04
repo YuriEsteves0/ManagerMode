@@ -31,7 +31,8 @@ public class ClubeService {
             clube.getStatusConfianca(),
             clube.getEventoAtual(),
             clube.getCapacidadeEstadio(),
-            clube.getFoto()
+            clube.getFoto(),
+            clube.getNomeEstadio()
         );
     }
 }

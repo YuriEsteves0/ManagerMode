@@ -16,7 +16,10 @@ public class PartidaService{
 		this.partidaRepository = partidaRepository;
 	}
 	
-	public List<PartidaResponse.RodadaIdMandanteIdVisitanteLocalDataHorario> listarProximasPartidas(Integer idClube, LocalDate dataPartida){
-		return partidaRepository.buscarProximasPartidas(idClube, dataPartida);
+	public List<PartidaResponse.RodadaIdMandanteIdVisitanteLocalEstadioDataHorario> listarProximasPartidas(Integer idClube, LocalDate dataPartida){
+	    return partidaRepository.buscarProximasPartidas(idClube, dataPartida)
+	            .stream()
+	            .limit(4)
+	            .toList();
 	}
 }

@@ -8,6 +8,7 @@ class EstadoJogo {
     public string $modo;
     public string $liga;
     public Clube $clube;
+    public DateTime $dataInicio; 
 
     public function __construct(array $dados = []) {
         $this->nome = $dados['nome'] ?? '';
@@ -15,7 +16,12 @@ class EstadoJogo {
         $this->modo = $dados['modo'] ?? '';
         $this->liga = $dados['liga'] ?? '';
 
-        // Monta o objeto Clube mapeando tanto o seu array antigo quanto um array aninhado
+        if (isset($dados['data_inicio'])) {
+            $this->dataInicio = new DateTime($dados['data_inicio']);
+        } else {
+            $this->dataInicio = new DateTime();
+        }
+
         $dadosClube = [
             'id'        => $dados['clube_id'] ?? $dados['clube']['id'] ?? 0,
             'nomeClube' => $dados['clube_nome'] ?? $dados['clube']['nomeClube'] ?? '',
