@@ -25,22 +25,20 @@ $competicoes = $apiService->get('/competicoes', ['tipo' => 'PONTOS_CORRIDOS']) ?
 
         if (!empty($competicoes)) {
             foreach ($competicoes as $index => $competicao) {
-                $idInput = "liga-" . $competicao['id'];
+                $idInput = "liga-" . $competicao['idCompeticao'];
                 $checked = ($index === 0) ? 'checked' : '';
-
         ?>
                 <div class="liga-opcao">
-                    <input type="radio" name="liga" id="<?= $idInput ?>" value="<?= htmlspecialchars($competicao['id']) ?>" <?= $checked ?>>
-                    <label for="<?= $idInput ?>"><?= $competicao['nomeCompeticao'] ?><span class="pais"><?= htmlspecialchars($competicao['nivelCompeticao']) ?></span></label>
+                    <input type="radio" name="liga" id="<?= $idInput ?>" value="<?= htmlspecialchars($competicao['idCompeticao']) ?>" <?= $checked ?>>
+                    <label for="<?= $idInput ?>"><?= htmlspecialchars($competicao['nomeCompeticao']) ?><span class="pais"><?= htmlspecialchars($competicao['nivelCompeticao']) ?></span></label>
                 </div>
-
-        <?php
+            <?php
             }
-        }else{
+        } else {
             ?>
             <p style="color: #fff;">Nenhuma competição disponível no momento.</p>
 
-            <?php 
+        <?php
         }
 
         ?>

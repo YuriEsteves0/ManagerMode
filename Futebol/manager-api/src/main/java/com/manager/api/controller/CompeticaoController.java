@@ -1,6 +1,7 @@
 package com.manager.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,16 +12,20 @@ import com.manager.api.enums.competicao.TipoCompeticao;
 import com.manager.api.model.Competicao;
 import com.manager.api.repository.CompeticaoRepository;
 import com.manager.api.responses.ClubeCompeticaoResponse;
+import com.manager.api.responses.CompeticaoResponse;
 import com.manager.api.service.ClubeCompeticaoService;
+import com.manager.api.service.CompeticaoService;
 
 @RestController
 public class CompeticaoController {
 
     private final CompeticaoRepository competicaoRepository;
+    private final CompeticaoService competicaoService;
     private final ClubeCompeticaoService clubeCompeticaoService;
 
-    public CompeticaoController(CompeticaoRepository competicaoRepository, ClubeCompeticaoService clubeCompeticaoService) {
+    public CompeticaoController(CompeticaoRepository competicaoRepository, CompeticaoService competicaoService, ClubeCompeticaoService clubeCompeticaoService) {
         this.competicaoRepository = competicaoRepository;
+        this.competicaoService = competicaoService;
         this.clubeCompeticaoService = clubeCompeticaoService;
     }
 
@@ -39,6 +44,11 @@ public class CompeticaoController {
             return competicaoRepository.findByTipoCompeticao(tipo);
         }
         return competicaoRepository.findAll();
+    }
+    
+    @GetMapping("/competicoes/{id}")
+    public Optional<CompeticaoResponse> buscarCompeticao(@PathVariable Integer id){
+    	return competicaoService.buscarCompeticao(id);
     }
     
 /**

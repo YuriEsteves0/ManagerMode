@@ -26,7 +26,7 @@ public class ClubeService {
             clube.getCamisasVendidas(),
             clube.getQntTorcedores(),
             clube.getReputacao(),
-            clube.getPatrococinadorIdPatrocinador() != null ? clube.getPatrococinadorIdPatrocinador() : null,
+            clube.getPatrocinador_idPatrocinador() != null ? clube.getPatrocinador_idPatrocinador() : null,
             clube.getConfiancaDiretoria(),
             clube.getStatusConfianca(),
             clube.getEventoAtual(),

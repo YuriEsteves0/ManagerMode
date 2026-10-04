@@ -18,7 +18,7 @@ import lombok.Data;
 public class Competicao {
     @Id 
     @Column(name="idCompeticao") 
-    private Integer id;
+    private Integer idCompeticao;
 
     @Column(name = "nomeCompeticao")
     private String nomeCompeticao;

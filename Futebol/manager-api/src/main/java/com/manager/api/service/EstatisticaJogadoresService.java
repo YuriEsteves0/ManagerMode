@@ -23,6 +23,5 @@ public class EstatisticaJogadoresService {
     
     public List<EstatisticasJogadorCompeticaoResponse> estatisticasFull(Integer idCompeticao) {
         return repository.buscarTodosJogadores(idCompeticao);
-    
     }
 }

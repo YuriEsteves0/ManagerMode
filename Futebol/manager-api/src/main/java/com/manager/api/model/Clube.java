@@ -37,7 +37,7 @@ public class Clube {
     private Integer reputacao;
 
     @Column(name="patrocinador_idPatrocinador")
-    private Integer patrococinadorIdPatrocinador;
+    private Integer patrocinador_idPatrocinador;
 
     @Column(name = "confiancaDiretoria")
     private Integer confiancaDiretoria;

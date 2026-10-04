@@ -30,7 +30,7 @@ public interface EstatisticasJogadorCompeticaoRepository extends JpaRepository<E
 		    FROM EstatisticaJogador e
 		    JOIN e.jogador j
 		    JOIN e.competicao c
-		    WHERE e.id.competicaoId = :idCompeticao
+		    WHERE e.id.competicaoId = :idCompeticao ORDER BY e.gols DESC
 		    """)
 		List<EstatisticasJogadorCompeticaoResponse> buscarTodosJogadores(@Param("idCompeticao") Integer idCompeticao);
 }

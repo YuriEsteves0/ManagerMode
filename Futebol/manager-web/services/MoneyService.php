@@ -8,7 +8,6 @@ function formatarNumero(int $numero): string
 
     $sufixos = ['', 'k', 'M', 'B', 'T'];
     
-    // Convertido para (int) para eliminar o aviso do Intelephense
     $i = (int) floor(log($numero, 1000)); 
     $valorFormatado = $numero / pow(1000, $i);
 

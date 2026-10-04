@@ -1,27 +1,27 @@
 package com.manager.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.manager.api.model.Clube;
-import com.manager.api.model.ClubeCompeticao;
-import com.manager.api.repository.ClubeCompeticaoRepository;
-import com.manager.api.repository.ClubeRepository;
-import com.manager.api.responses.ClubeCompeticaoResponse;
 import com.manager.api.responses.ClubeResponse;
+import com.manager.api.responses.PatrocinadorResponse;
 import com.manager.api.service.ClubeCompeticaoService;
 import com.manager.api.service.ClubeService;
+import com.manager.api.service.PatrocinadorService;
 
 @RestController
 public class ClubeController {
 
     private final ClubeService clubeService;
+    private final PatrocinadorService patrocinadorService;
 
-    public ClubeController(ClubeService clubeService) {
+    public ClubeController(ClubeService clubeService, PatrocinadorService patrocinadorService) {
         this.clubeService = clubeService; 
+        this.patrocinadorService = patrocinadorService;
     }
 
     /**
@@ -32,4 +32,10 @@ public class ClubeController {
     public ClubeResponse buscarClubePorId(@PathVariable Integer id) {
         return clubeService.buscarClube(id);
     }
+    
+    @GetMapping("/clubes/{id}/patrocinador")
+    public Optional<PatrocinadorResponse.Nome> patrocinadorDoClubeNome(@PathVariable Integer id){
+    	return patrocinadorService.buscarPorClube(id);
+    }
+    
 }

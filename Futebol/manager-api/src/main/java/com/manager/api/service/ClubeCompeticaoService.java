@@ -37,7 +37,7 @@ public class ClubeCompeticaoService {
             .stream()
             .map(cc -> new ClubeCompeticaoResponse(
                 cc.getClube().getId(),
-                cc.getCompeticao().getId(),
+                cc.getCompeticao().getIdCompeticao(),
                 cc.getPontos(),
                 cc.getFaseAtual(),
                 cc.getEliminado()
@@ -67,7 +67,7 @@ public class ClubeCompeticaoService {
             .map(cc -> new ClubeCompeticaoResponse.IdClubeIdCompeticaoPontosFaseAtual(
                 cc.getClube().getId(),
                 cc.getClube().getNomeClube(),
-                cc.getCompeticao().getId(),
+                cc.getCompeticao().getIdCompeticao(),
                 cc.getPontos(),
                 cc.getFaseAtual()
             ))

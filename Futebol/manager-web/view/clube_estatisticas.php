@@ -1,5 +1,36 @@
 <link rel="stylesheet" href="assets/css/clube_estatisticas.css"> 
 
+<?php 
+
+$clube = $_SESSION['estado_jogo'] ?? null;
+$apiService = new ApiService();
+
+$clubeAPI = $apiService->get("/clubes/{$clube->clube->id}");
+$ligaInfo = $apiService->get("/competicoes/{$clube->liga}");
+
+// 1. Bilheteria (2.5 jogos por mês em casa, 70% de público médio, ingresso R$ 50)
+$capacidadeEstadio = $clubeAPI['capacidadeEstadio'] ?? 0;
+$bilheteriaMensal = ($capacidadeEstadio * 0.70) * 50 * 2.5;
+
+// 2. Venda de Camisas (Dividido por 12 meses, lucro líquido de R$ 40 por peça)
+$camisasVendidas = $clubeAPI['camisasVendidas'] ?? 0;
+$receitaCamisasMensal = ($camisasVendidas / 12) * 40;
+
+// 3. Sócio-Torcedor (0.5% dos torcedores como sócios pagando R$ 40/mês)
+$qntTorcedores = $clubeAPI['qntTorcedores'] ?? 0;
+$receitaSociosMensal = ($qntTorcedores * 0.005) * 40;
+
+// 4. Mídia/Patrocínio base (15% do orçamento total dividido em 12 meses)
+$orcamento = $clubeAPI['orcamento'] ?? 0;
+$receitaMidiaPatrocinio = ($orcamento * 0.15) / 12;
+
+$receitaMensalTotal = $bilheteriaMensal + $receitaCamisasMensal + $receitaSociosMensal + $receitaMidiaPatrocinio;
+
+// $patrocinador = ($clubeAPI['nomePatrocinador'] != null) ? $clubeAPI['nomePatrocinador'] : "Sem patrocínio";
+$patrocinadorAPI = $apiService->get("/clubes/{$clube->clube->id}/patrocinador");
+$patrocinador = $patrocinadorAPI['nomePatrocinador'] ?? 'Sem patrocínio';
+?>
+
 <main>
 
     <h1 class="titulo">Estatísticas do Clube</h1>
@@ -8,24 +39,23 @@
         
         <section class="box">
             <div class="clube-cabecalho">
-                <svg class="escudo" viewBox="0 0 64 72" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M32 2 L60 12 V34 C60 52 48 64 32 70 C16 64 4 52 4 34 V12 Z" fill="var(--verdeBrilho)" stroke="var(--verde)" stroke-width="2.5"/>
-                    <path d="M32 12 L52 19 V34 C52 47 43 56 32 61 C21 56 12 47 12 34 V19 Z" fill="var(--background)" stroke="var(--amarelo)" stroke-width="1.5"/>
-                    <text x="32" y="42" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="22" fill="var(--amareloBrilho)">FC</text>
-                </svg>
+                <img src="assets/<?= htmlspecialchars($clubeAPI['foto'] ?? '') ?>" alt="" style="width: 54px; height: 54px; object-fit: contain;">
+                
                 <div>
-                    <strong>Nome do Clube</strong><br>
-                    <span>Brasileirão Série A</span>
+                    <strong><?= htmlspecialchars($clubeAPI['nomeClube'] ?? '') ?></strong><br>
+                    <span><?= htmlspecialchars($ligaInfo['nomeCompeticao'] ?? '') ?></span>
                 </div>
             </div>
             
             <div class="stats-grid">
-                <div class="stat-item"><span>Valor do clube</span><strong>R$ 184M</strong></div>
-                <div class="stat-item"><span>Torcedores</span><strong>2,4M</strong></div>
-                <div class="stat-item"><span>Reputação</span><strong>78 / 100</strong></div>
-                <div class="stat-item"><span>Orçamento</span><strong>R$ 22M</strong></div>
-                <div class="stat-item"><span>Receita mensal</span><strong>R$ 6,1M</strong></div>
-                <div class="stat-item"><span>Patrocinador</span><strong>Vulcano Seguros</strong></div>
+                <div class="stat-item"><span>Valor do clube</span><strong>R$ <?= formatarNumero($clubeAPI['valorClube']) ?></strong></div>
+                <div class="stat-item"><span>Torcedores</span><strong><?= formatarNumero($clubeAPI['qntTorcedores']) ?></strong></div>
+                <div class="stat-item"><span>Reputação</span><strong><?= $clubeAPI['reputacao'] ?> / 100</strong></div>
+                <div class="stat-item"><span>Orçamento</span><strong>R$ <?= formatarNumero($clubeAPI['orcamento']) ?></strong></div>
+                
+                <div class="stat-item"><span>Receita mensal</span><strong>R$ <?= formatarNumero($receitaMensalTotal) ?></strong></div>
+                
+                <div class="stat-item"><span>Patrocinador</span><strong><?= $patrocinador ?></strong></div>
             </div>
             
             <h2>Últimas Temporadas</h2>

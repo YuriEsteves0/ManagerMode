@@ -33,12 +33,11 @@ $apiService = new ApiService();
 $competicoes = $apiService->get('/competicoes', ['tipo' => 'PONTOS_CORRIDOS']) ?? [];
 
 $clubes = [];
-$idsCompeticoes = array_column($competicoes, 'id');
+$idsCompeticoes = array_column($competicoes, 'idCompeticao');
 
-if (!empty($liga) && in_array($liga, $idsCompeticoes)) {
+if (!empty($liga) && in_array((int)$liga, $idsCompeticoes, true)) {
     $clubes = $apiService->get("/competicoes/{$liga}/clubes") ?? [];
 }
-
 $clubeSelecionado = null;
 if (!empty($clubes)) {
     $indiceAleatorio = array_rand($clubes);
