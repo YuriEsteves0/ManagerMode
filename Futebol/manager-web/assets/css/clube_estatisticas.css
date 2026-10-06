@@ -139,3 +139,6 @@ table.historico td.ano { font-family: 'Inter', sans-serif; font-weight: 700; }
     scrollbar-width: thin;
     scrollbar-color: var(--verde) rgba(255, 255, 255, 0.05);
 }
+
+.nivel .barra { width: 70px; height: 5px; border-radius: 3px; background: var(--roxo50P); overflow: hidden; }
+.nivel .barra-preenchida { height: 100%; background: var(--verde); border-radius: 3px; }

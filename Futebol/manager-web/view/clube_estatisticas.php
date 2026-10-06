@@ -1,6 +1,6 @@
-<link rel="stylesheet" href="assets/css/clube_estatisticas.css"> 
+<link rel="stylesheet" href="assets/css/clube_estatisticas.css">
 
-<?php 
+<?php
 
 $clube = $_SESSION['estado_jogo'] ?? null;
 $apiService = new ApiService();
@@ -29,115 +29,127 @@ $receitaMensalTotal = $bilheteriaMensal + $receitaCamisasMensal + $receitaSocios
 // $patrocinador = ($clubeAPI['nomePatrocinador'] != null) ? $clubeAPI['nomePatrocinador'] : "Sem patrocínio";
 $patrocinadorAPI = $apiService->get("/clubes/{$clube->clube->id}/patrocinador");
 $patrocinador = $patrocinadorAPI['nomePatrocinador'] ?? 'Sem patrocínio';
+
+$ultimasTempEstatistica = $apiService->get("/clubes/{$clube->clube->id}/estatisticasAno");
+
+$upgradesClube = $apiService->get("/clubes/{$clube->clube->id}/upgrades") ?? [];
+
 ?>
 
 <main>
 
     <h1 class="titulo">Estatísticas do Clube</h1>
-    
+
     <div class="layout">
-        
+
         <section class="box">
             <div class="clube-cabecalho">
                 <img src="assets/<?= htmlspecialchars($clubeAPI['foto'] ?? '') ?>" alt="" style="width: 54px; height: 54px; object-fit: contain;">
-                
+
                 <div>
                     <strong><?= htmlspecialchars($clubeAPI['nomeClube'] ?? '') ?></strong><br>
                     <span><?= htmlspecialchars($ligaInfo['nomeCompeticao'] ?? '') ?></span>
                 </div>
             </div>
-            
+
             <div class="stats-grid">
                 <div class="stat-item"><span>Valor do clube</span><strong>R$ <?= formatarNumero($clubeAPI['valorClube']) ?></strong></div>
                 <div class="stat-item"><span>Torcedores</span><strong><?= formatarNumero($clubeAPI['qntTorcedores']) ?></strong></div>
                 <div class="stat-item"><span>Reputação</span><strong><?= $clubeAPI['reputacao'] ?> / 100</strong></div>
                 <div class="stat-item"><span>Orçamento</span><strong>R$ <?= formatarNumero($clubeAPI['orcamento']) ?></strong></div>
-                
+
                 <div class="stat-item"><span>Receita mensal</span><strong>R$ <?= formatarNumero($receitaMensalTotal) ?></strong></div>
-                
+
                 <div class="stat-item"><span>Patrocinador</span><strong><?= $patrocinador ?></strong></div>
             </div>
-            
+
             <h2>Últimas Temporadas</h2>
             <table class="historico">
                 <thead>
-                    <tr><th>Ano</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>GC</th></tr>
+                    <tr>
+                        <th>Ano</th>
+                        <th>J</th>
+                        <th>V</th>
+                        <th>E</th>
+                        <th>D</th>
+                        <th>GF</th>
+                        <th>GS</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td class="ano">2026</td><td>14</td><td>8</td><td>4</td><td>2</td><td>26</td><td>15</td></tr>
-                    <tr><td class="ano">2025</td><td>38</td><td>19</td><td>10</td><td>9</td><td>58</td><td>41</td></tr>
-                    <tr><td class="ano">2024</td><td>38</td><td>17</td><td>12</td><td>9</td><td>52</td><td>44</td></tr>
+                    <?php
+
+                    foreach ($ultimasTempEstatistica as $temporada) {
+                    ?>
+                        <tr>
+                            <td class="ano"><?= $temporada['ano'] ?></td>
+                            <td><?= $temporada['jogos'] ?></td>
+                            <td><?= $temporada['vitorias'] ?></td>
+                            <td><?= $temporada['empates'] ?></td>
+                            <td><?= $temporada['derrotas'] ?></td>
+                            <td><?= $temporada['golsFeitos'] ?></td>
+                            <td><?= $temporada['golsSofridos'] ?></td>
+                        </tr>
+
+                    <?php
+                    }
+
+                    ?>
                 </tbody>
             </table>
         </section>
-        
+
         <section class="box">
             <h2>Melhorias do Clube</h2>
             <div class="upgrades">
-                
-                <div class="upgrade">
-                    <div class="upgrade-topo">
-                        <strong>Departamento Médico</strong>
-                        <div class="nivel"><span>Nível 2/5</span><div class="pontos">
-                            <div class="ponto on"></div><div class="ponto on"></div><div class="ponto"></div><div class="ponto"></div><div class="ponto"></div>
-                        </div></div>
-                    </div>
-                    <p class="efeito">Atual: <strong>reduz chance de lesões em 15%</strong></p>
-                    <p class="proximo">Próximo nível: redução de 30% em fadiga pós-jogo</p>
-                    <div class="upgrade-rodape"><span class="preco">R$ 3,2M</span><button class="btn-melhorar">Melhorar</button></div>
-                </div>
-                
-                <div class="upgrade">
-                    <div class="upgrade-topo">
-                        <strong>Centro de Treinamento</strong>
-                        <div class="nivel"><span>Nível 3/5</span><div class="pontos">
-                            <div class="ponto on"></div><div class="ponto on"></div><div class="ponto on"></div><div class="ponto"></div><div class="ponto"></div>
-                        </div></div>
-                    </div>
-                    <p class="efeito">Atual: <strong>evolução de jovens +10% mais rápida</strong></p>
-                    <p class="proximo">Próximo nível: +20% na evolução de jovens</p>
-                    <div class="upgrade-rodape"><span class="preco">R$ 5,8M</span><button class="btn-melhorar">Melhorar</button></div>
-                </div>
-                
-                <div class="upgrade">
-                    <div class="upgrade-topo">
-                        <strong>Rede de Scouting</strong>
-                        <div class="nivel"><span>Nível 1/5</span><div class="pontos">
-                            <div class="ponto on"></div><div class="ponto"></div><div class="ponto"></div><div class="ponto"></div><div class="ponto"></div>
-                        </div></div>
-                    </div>
-                    <p class="efeito">Atual: <strong>acesso a 2 regiões de olheiros</strong></p>
-                    <p class="proximo">Próximo nível: acesso a mais 2 regiões e relatórios detalhados</p>
-                    <div class="upgrade-rodape"><span class="preco">R$ 2,1M</span><button class="btn-melhorar">Melhorar</button></div>
-                </div>
 
-                <div class="upgrade">
-                    <div class="upgrade-topo">
-                        <strong>Estádio</strong>
-                        <div class="nivel"><span>Nível 4/5</span><div class="pontos">
-                            <div class="ponto on"></div><div class="ponto on"></div><div class="ponto on"></div><div class="ponto on"></div><div class="ponto"></div>
-                        </div></div>
+                <?php foreach ($upgradesClube as $up):
+                    $nivelAtual  = (int) $up['nivelAtual'];
+                    $nivelMaximo = (int) $up['nivelMaximo'];
+                    $noMaximo    = $nivelAtual >= $nivelMaximo;
+
+                    $bonusAtual  = round($up['modificador'] * $nivelAtual * 100);
+                    $bonusProx   = round($up['modificador'] * ($nivelAtual + 1) * 100);
+                    $custoProx   = $up['preco'] * ($nivelAtual + 1);
+                    $semDinheiro = $orcamento < $custoProx;
+                    $percentual  = $nivelMaximo > 0 ? ($nivelAtual / $nivelMaximo) * 100 : 0;
+                ?>
+                    <div class="upgrade">
+                        <div class="upgrade-topo">
+                            <strong><?= htmlspecialchars($up['nomeUpgrade']) ?></strong>
+                            <div class="nivel">
+                                <span>Nível <?= $nivelAtual ?>/<?= $nivelMaximo ?></span>
+                                <div class="barra">
+                                    <div class="barra-preenchida" style="width: <?= $percentual ?>%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="efeito"><?= htmlspecialchars($up['descricao']) ?></p>
+                        <p class="efeito">Bônus atual: <strong>+<?= $bonusAtual ?>%</strong></p>
+
+                        <?php if ($noMaximo): ?>
+                            <p class="proximo">Nível máximo atingido</p>
+                        <?php else: ?>
+                            <p class="proximo">Próximo nível: +<?= $bonusProx ?>%</p>
+                        <?php endif; ?>
+
+                        <div class="upgrade-rodape">
+                            <span class="preco">
+                                <?= $noMaximo ? '—' : 'R$ ' . formatarNumero((int) $custoProx) ?>
+                            </span>
+                            <button class="btn-melhorar"
+                                data-upgrade-id="<?= (int) $up['idUpgrade'] ?>"
+                                <?= ($noMaximo || $semDinheiro) ? 'disabled' : '' ?>>
+                                <?= $noMaximo ? 'Máximo' : 'Melhorar' ?>
+                            </button>
+                        </div>
                     </div>
-                    <p class="efeito">Atual: <strong>capacidade de 42 mil lugares</strong></p>
-                    <p class="proximo">Próximo nível: capacidade de 55 mil e +12% de receita em bilheteria</p>
-                    <div class="upgrade-rodape"><span class="preco">R$ 14,5M</span><button class="btn-melhorar">Melhorar</button></div>
-                </div>
-                
-                <div class="upgrade">
-                    <div class="upgrade-topo">
-                        <strong>Marketing &amp; Patrocínio</strong>
-                        <div class="nivel"><span>Nível 5/5</span><div class="pontos">
-                            <div class="ponto on"></div><div class="ponto on"></div><div class="ponto on"></div><div class="ponto on"></div><div class="ponto on"></div>
-                        </div></div>
-                    </div>
-                    <p class="efeito">Atual: <strong>+25% em receita de patrocínio</strong></p>
-                    <p class="proximo">Nível máximo atingido</p>
-                    <div class="upgrade-rodape"><span class="preco">—</span><button class="btn-melhorar" disabled>Máximo</button></div>
-                </div>
+                <?php endforeach; ?>
 
             </div>
         </section>
-        
+
     </div>
 
 </main>
