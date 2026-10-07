@@ -2,6 +2,26 @@
 
 Todas as mudanças relevantes do projeto ManagerMode.
 
+## [05/10/2026]
+
+### Adicionado
+- **API:** módulo de upgrades do clube (`Upgrade`, `TipoUpgrade`, `UpgradeRepository`, `UpgradeResponse`, `UpgradeService`, `UpgradeController`)
+- **API:** endpoint `GET /upgrades` para listar todos os upgrades disponíveis
+- **API:** `ClubeHasUpgrade` e `ClubeHasUpgradeId` (chave composta), com `ClubeHasUpgradeRepository`, `ClubeHasUpgradeResponse` e `ClubeHasUpgradeService`
+- **API:** endpoint `GET /clubes/{id}/upgrades` para listar os upgrades do clube com nome, preço, modificador, nível atual e nível máximo
+- **API:** módulo de estatísticas por ano do clube (`EstatisticasAnoClube`, `EstatisticasAnoClubeRepository`, `EstatisticaAnoClubeResponse`, `EstatisticasAnoClubeService`)
+- **API:** endpoint `GET /clubes/{id}/estatisticasAno` para listar o histórico de temporadas do clube
+- **Web:** barra de progresso do nível dos upgrades (`.barra` e `.barra-preenchida` em `clube_estatisticas.css`)
+- **Web:** imagem `assets/img/BD.png` (diagrama do banco de dados)
+
+### Alterado
+- **API:** `ClubeController` agora injeta `EstatisticasAnoClubeService` e `ClubeHasUpgradeService`
+- **Web:** `clube_estatisticas.php` busca "Últimas Temporadas" na API (antes eram linhas fixas no HTML)
+- **Web:** `clube_estatisticas.php` busca "Melhorias do Clube" na API (antes eram 5 blocos fixos), calculando bônus atual, bônus do próximo nível, custo (`preco * (nivelAtual + 1)`) e percentual da barra
+- **Web:** botão "Melhorar" fica desabilitado no nível máximo ou quando o orçamento não cobre o custo do próximo nível (ainda sem ação de compra; o `data-upgrade-id` já está no botão)
+- **Web:** cabeçalho da tabela de temporadas renomeado de `GP`/`GC` para `GF`/`GS`
+- **Web:** limpeza de espaços em branco em `clube_estatisticas.php`
+
 ## [03/10/2026]
 
 ### Adicionado
