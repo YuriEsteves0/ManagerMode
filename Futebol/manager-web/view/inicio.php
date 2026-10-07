@@ -17,7 +17,7 @@ $partidasFuturas = [];
 if ($idLiga > 0 && $idClubeJogador > 0) {
     $classificacao = $apiService->getClassificacaoProxima($idLiga, $idClubeJogador, 5);
 
-    $jogadores                = $apiService->get("/jogadores/clube/{$idClubeJogador}") ?? [];
+    $jogadores                = $apiService->get("/jogadores/clube/{$idClubeJogador}?todos=false") ?? [];
     $imprensas                = $apiService->get("/noticias", ["categoria" => "IMPRENSA", "idClube" => $idClubeJogador]) ?? [];
     $transferencias           = $apiService->get("/noticias", ["categoria" => "MERCADO"]) ?? [];
     $dataPartidaFormatada = $estado->dataInicio ? $estado->dataInicio->format('Y-m-d') : null;

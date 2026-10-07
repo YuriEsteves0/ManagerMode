@@ -53,6 +53,7 @@ public record JogadoresResponse(
     Boolean onfire,
     Float valor,
     Float valorRescisao,
+    Float salario,
     Integer tempoContrato,
     Integer clubeIdClube,
     Float posicaoX,

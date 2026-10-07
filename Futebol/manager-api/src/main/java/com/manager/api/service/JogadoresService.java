@@ -31,16 +31,11 @@ public class JogadoresService{
      * @param clubeId Identificador único do clube
      * @return Lista de {@link JogadoresResponse.NomeCamisaTitular} contendo os dados resumidos dos jogadores
      */
-    public List<JogadoresResponse.NomeCamisaTitular> listarPorClube(Integer clubeId) {
-        return jogadoresRepository.findByClubeIdClubeAndTitularFalse(clubeId)
-                .stream()
-                .map(jc -> new JogadoresResponse.NomeCamisaTitular(
-                        jc.getIdJogador(),
-                        jc.getNomeJogador(),
-                        jc.getNumeroCamisa(),
-                        jc.getTitular()
-                ))
-                .toList();
+    public List<JogadoresResponse> listarPorClube(Integer clubeId) {
+        return jogadoresRepository.findByClubeIdClubeAndTitularFalse(clubeId);
     }
-	
+    
+    public List<JogadoresResponse> listarPorClubeFull(Integer clubeId){
+    	return jogadoresRepository.findByClubeIdClube(clubeId);
+    }
 }

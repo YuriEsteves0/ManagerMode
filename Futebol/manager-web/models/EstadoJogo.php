@@ -9,6 +9,7 @@ class EstadoJogo {
     public string $liga;
     public Clube $clube;
     public DateTime $dataInicio; 
+    public DateTime $dataAtual;
 
     public function __construct(array $dados = []) {
         $this->nome = $dados['nome'] ?? '';

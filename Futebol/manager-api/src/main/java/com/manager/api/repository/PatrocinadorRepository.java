@@ -16,5 +16,6 @@ public interface  PatrocinadorRepository extends JpaRepository<Patrocinador, Int
 		    JOIN Patrocinador p ON p.idPatrocinador = c.patrocinador_idPatrocinador
 		    WHERE c.id = :idClube
 		    """)
-		Optional<PatrocinadorResponse.Nome> buscarPorClube(@Param("idClube") Integer idClube);
+	public Optional<PatrocinadorResponse.Nome> buscarPorClube(@Param("idClube") Integer idClube);
+	
 }

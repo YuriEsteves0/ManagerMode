@@ -11,6 +11,7 @@ class Cadastro3Controller
             'modo'          => $dados['modo'] ?? '',
             'liga'          => $dados['liga'] ?? '',
             'data_inicio'   => '2026-01-01',
+            'data_atual'    => '2026-01-01',
             'clube'         => [
                 'id'        => $dados['clube_id'] ?? '',
                 'nomeClube' => $dados['clube_nome'] ?? '',

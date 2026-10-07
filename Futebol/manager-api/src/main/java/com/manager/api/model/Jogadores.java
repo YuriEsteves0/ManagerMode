@@ -82,6 +82,9 @@ public class Jogadores {
 
     @Column(name = "valorRescisao")
     private Float valorRescisao;
+    
+    @Column(name = "salario")
+    private Float salario;
 
     @Column(name = "tempoContrato")
     private Integer tempoContrato;

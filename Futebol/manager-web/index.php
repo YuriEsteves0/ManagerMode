@@ -32,7 +32,9 @@ $pagina = Pagina::tryFrom($parametro);
         <?php
         if ($pagina !== null) {
             require_once "services/ApiService.php";
+            require_once "services/TextService.php";
             require_once "services/MoneyService.php";
+            require_once "services/YearService.php";
             require_once $pagina->getArquivo();
         } else {
             echo "Página não encontrada!";

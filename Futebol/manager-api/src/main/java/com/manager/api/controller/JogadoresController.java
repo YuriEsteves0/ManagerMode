@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.manager.api.responses.EstatisticasJogadorCompeticaoResponse;
@@ -33,9 +34,20 @@ public class JogadoresController {
         description = "Retorna uma lista resumida contendo ID, nome, número da camisa e status de titularidade dos jogadores pertencentes ao clube especificado."
     )
     @GetMapping("/jogadores/clube/{clube_idClube}")
-    public List<JogadoresResponse.NomeCamisaTitular> listarJogadoresPorClube(
+    public List<JogadoresResponse> listarJogadoresPorClube(
+            @PathVariable Integer clube_idClube, @RequestParam Boolean todos) {
+    	if (todos) {
+    		return jogadoresService.listarPorClubeFull(clube_idClube);
+    	} else {
+    		// AQUI RETORNA OS JOGADORES TITULARES
+    		return jogadoresService.listarPorClube(clube_idClube);
+    	}
+    }
+    
+    @GetMapping("/jogadores/clube/{clube_idClube}/estatisticas")
+    public List<EstatisticasJogadorCompeticaoResponse> listarEstatisticasJogadoresPorClube(
             @PathVariable Integer clube_idClube) {
-        return jogadoresService.listarPorClube(clube_idClube);
+        return estatisticaJogadoresService.estatisticasPorClube(clube_idClube);
     }
     
     @GetMapping("/jogador/{id}/estatistica")

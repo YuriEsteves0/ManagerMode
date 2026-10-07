@@ -1,5 +1,6 @@
 package com.manager.api.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -17,6 +18,21 @@ public class PatrocinadorService{
 	
 	public Optional<PatrocinadorResponse.Nome> buscarPorClube(Integer idClube){
 		return patrocinadorRepository.buscarPorClube(idClube);
+	}
+	
+	public List<PatrocinadorResponse> listarPatrocinios(){
+		return patrocinadorRepository.findAll()
+				.stream()
+				.map(pr -> new PatrocinadorResponse(
+						pr.getIdPatrocinador(),
+						pr.getNomePatrocinador(),
+						pr.getDescricao(),
+						pr.getDuracao(),
+						pr.getValorMensal(),
+						pr.getMultaRescisao(),
+						pr.getFoto()
+				))
+				.toList();
 	}
 	
 }
