@@ -2,6 +2,28 @@
 
 Todas as mudanças relevantes do projeto ManagerMode.
 
+## [06/10/2026]
+
+### Adicionado
+- **API:** `PatrocinioController` com o endpoint `GET /patrocinios` para listar todos os patrocínios disponíveis
+- **API:** `PatrocinadorService.listarPatrocinios()`
+- **API:** endpoint `GET /jogadores/clube/{idClube}/estatisticas` para listar as estatísticas dos jogadores do clube por competição e ano
+- **API:** `EstatisticaJogadoresService.estatisticasPorClube()` e `EstatisticasJogadorCompeticaoRepository.buscarPorClube()`
+- **API:** `JogadoresService.listarPorClubeFull()` e `JogadoresRepository.findByClubeIdClube()` para retornar o elenco completo
+- **API:** campo `salario` em `Jogadores` e `JogadoresResponse`
+- **Web:** `services/TextService.php` com a função `limitarTexto()`
+- **Web:** `services/YearService.php` com a função `formatarMesesParaAnos()` (ex.: `2a 6m`)
+- **Web:** `dataAtual` em `EstadoJogo`, iniciada em `2026-01-01` no `Cadastro3Controller`
+- **Web:** logos dos patrocinadores em `assets/img/patrocinadores/` (Betano, BMG, Brahma, Caixa, Havan, KTO, Multilaser, Nike, Superbet, Vivo)
+
+### Alterado
+- **API:** `GET /jogadores/clube/{idClube}` agora exige o parâmetro `todos`: `true` retorna o elenco completo e `false` retorna só os jogadores reserva (`titular = false`)
+- **API:** `JogadoresRepository` e `JogadoresService` passam a retornar `JogadoresResponse` direto, sem o mapeamento manual para `NomeCamisaTitular`
+- **Web:** `clube_central_elenco.php` busca elenco e estatísticas na API (antes eram linhas fixas no HTML). Ao clicar num jogador, a ficha mostra posição, overall, contrato, salário, multa de rescisão, status, moral, satisfação, atributos, lesões e estatísticas da temporada atual
+- **Web:** `clube_patrocinios.php` busca os patrocínios na API (antes eram blocos fixos). Ao clicar num patrocinador, o painel de detalhes mostra logo, valor mensal, multa de rescisão, duração e descrição (o botão "Assinar Contrato" já tem o `data-id`, mas ainda sem ação)
+- **Web:** `inicio.php` passa `?todos=false` na chamada de `/jogadores/clube/{id}`
+- **Web:** `index.php` carrega `TextService.php` e `YearService.php`
+
 ## [05/10/2026]
 
 ### Adicionado
