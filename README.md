@@ -4,6 +4,11 @@ Jogo de **manager de futebol pelo navegador**, ambientado no **Brasileirão Sér
 
 > 🎓 **Projeto pessoal de estudo, sem fins lucrativos.** Nasceu para eu aprender e testar **Spring Boot** e **PHP** trabalhando juntos em uma mesma aplicação.
 
+<!-- FOTO 1: imagem principal (hero) -->
+<p align="center">
+  <img src="fotosReadMe/inicio.png" alt="Tela inicial do ManagerMode" width="850">
+</p>
+
 ---
 
 ## 📑 Índice
@@ -54,6 +59,12 @@ Os principais elementos do jogo:
 | **Diretoria / Presidência** | Cobra resultados e pode pressionar o manager. |
 | **Patrocínio** | Contratos com nome, valor mensal fixo, duração e cláusula de reputação mínima. |
 | **Imprensa / Eventos** | Entrevistas e acontecimentos que mexem com torcida, diretoria e vestiário. |
+
+<!-- FOTO 2 e 3: duas telas lado a lado, ilustrando elenco e patrocínio -->
+<p align="center">
+  <img src="fotosReadMe/central-elenco.png" alt="Central do Elenco" width="49%">
+  <img src="fotosReadMe/patrocinios.png" alt="Patrocínios" width="49%">
+</p>
 
 Algumas mecânicas planejadas: reputação do manager, pressão de diretoria e torcida, leilões movidos por bots e lendas aposentadas. O detalhamento de cada uma vai ficar no [`funcionalidades.md`](docs/funcionalidades.md).
 
@@ -177,8 +188,12 @@ Entidades já mapeadas na API:
 Exemplo:
 
 ```bash
-curl http://localhost:8080/competicoes?tipo=PONTOS_CORRIDOS
+curl http://localhost:8080/jogadores/clube/12?todos=false
 ```
+
+<p align="center">
+  <img src="fotosReadMe/postman.png" alt="Exemplo de resposta da API" width="700">
+</p>
 
 Os detalhes completos (parâmetros, exemplos de resposta) vão ficar no [`docs/api.md`](docs/api.md).
 
@@ -196,6 +211,13 @@ A navegação é feita pelo parâmetro `pag` (ex.: `index.php?pag=inicio`). A p�
 | **Negociação** | `mercado`, `propostas_recebidas`, `propostas_enviadas` |
 | **Gestão** | `calendario`, `treino`, `diretoria` |
 | **Carreira e jogo** | `carreira`, `partida`, `imprensa` |
+
+<!-- FOTO 6 a 9: galeria 2x2 com as outras telas -->
+| Escolha do clube | Estatísticas do clube |
+|:---:|:---:|
+| <img src="fotosReadMe/cadastro.png" width="420"> | <img src="fotosReadMe/estatisticas.png" width="420"> |
+| **Mercado de transferências** | **Imprensa** |
+| <img src="fotosReadMe/mercado.png" width="420"> | <img src="fotosReadMe/imprensa.png" width="420"> |
 
 ---
 
