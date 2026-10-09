@@ -8,9 +8,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.manager.api.repository.JogadorHasLesaoRepository;
 import com.manager.api.responses.EstatisticasJogadorCompeticaoResponse;
 import com.manager.api.responses.JogadoresResponse;
+import com.manager.api.responses.LesaoJogadorResponse;
+import com.manager.api.responses.LesaoResponse;
 import com.manager.api.service.EstatisticaJogadoresService;
+import com.manager.api.service.JogadorLesaoService;
 import com.manager.api.service.JogadoresService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,10 +27,12 @@ public class JogadoresController {
 
     private final JogadoresService jogadoresService;
     private final EstatisticaJogadoresService estatisticaJogadoresService;
+    private final JogadorLesaoService jogadorLesaoService;
 
-    public JogadoresController(JogadoresService jogadoresService, EstatisticaJogadoresService estatisticaJogadoresService) {
-        this.jogadoresService = jogadoresService;
-        this.estatisticaJogadoresService = estatisticaJogadoresService;
+    public JogadoresController(JogadoresService jogadoresService, EstatisticaJogadoresService estatisticaJogadoresService, JogadorLesaoService jogadorLesaoService) {
+		this.jogadoresService = jogadoresService;
+		this.estatisticaJogadoresService = estatisticaJogadoresService;
+		this.jogadorLesaoService = jogadorLesaoService;
     }
 
     @Operation(
@@ -58,5 +64,15 @@ public class JogadoresController {
     @GetMapping("/jogador/competicao/{id}/estatistica")
     public List<EstatisticasJogadorCompeticaoResponse> estatisticaJogadorFull(@PathVariable Integer id) {
         return estatisticaJogadoresService.estatisticasFull(id);
+    }
+    
+    @GetMapping("/jogadores/clube/{clube_idClube}/lesoes")
+    public List<LesaoJogadorResponse> listarLesoesPorClube(@PathVariable Integer clube_idClube) {
+        return jogadorLesaoService.listarLesoesPorClube(clube_idClube);
+    }
+
+    @GetMapping("/jogador/{id}/lesoes")
+    public List<LesaoResponse> listarLesoesJogador(@PathVariable Integer id) {
+        return jogadorLesaoService.listarLesoesJogador(id);
     }
 }

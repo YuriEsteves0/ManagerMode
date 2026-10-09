@@ -5,6 +5,7 @@ $estado = $_SESSION['estado_jogo'] ?? null;
 $apiService = new ApiService();
 $jogadoresClube = $apiService->get("/jogadores/clube/{$estado->clube->id}?todos=true") ?? [];
 $estatisticasClube = $apiService->get("/jogadores/clube/{$estado->clube->id}/estatisticas") ?? [];
+$lesoesClube = $apiService->get("/jogadores/clube/{$estado->clube->id}/lesoes") ?? [];
 
 $dataReferencia = isset($estado->dataAtual) ? $estado->dataAtual : $estado->dataInicio;
 $anoAtual = (int) $dataReferencia->format('Y');
@@ -15,6 +16,11 @@ foreach ($estatisticasClube as $estatistica) {
         continue;
     }
     $estatisticasPorJogador[$estatistica['idJogador']][] = $estatistica;
+}
+
+$lesoesPorJogador = [];
+foreach ($lesoesClube as $lesao) {
+    $lesoesPorJogador[$lesao['idJogador']][] = $lesao;
 }
 ?>
 
@@ -35,6 +41,7 @@ foreach ($estatisticasClube as $estatistica) {
                     $dados['valorFormatado'] = formatarNumero($jogador['valor']);
                     $dados['contratoFormatado'] = formatarMesesParaAnos($jogador['tempoContrato']);
                     $dados['estatisticas'] = $estatisticasPorJogador[$jogador['idJogador']] ?? [];
+                    $dados['lesoes'] = $lesoesPorJogador[$jogador['idJogador']] ?? [];
                 ?>
                     <div class="jogador-linha" data-jogador="<?= htmlspecialchars(json_encode($dados, JSON_UNESCAPED_UNICODE), ENT_QUOTES) ?>">
                         <span class="fogo"><?= $onfire ?></span><span class="posicao"><?= htmlspecialchars($jogador['posicaoPrincipal']) ?></span><span class="nome"><?= htmlspecialchars($jogador['nomeJogador']) ?></span><span class="overall"><?= $jogador['overall'] ?></span><span class="valor">R$ <?= formatarNumero($jogador['valor']) ?></span><span class="contrato"><?= formatarMesesParaAnos($jogador['tempoContrato']) ?></span>
@@ -211,7 +218,11 @@ foreach ($estatisticasClube as $estatistica) {
                 el.lesoes.className = 'lesoes';
                 lesoes.forEach(function (l) {
                     var li = document.createElement('li');
-                    li.textContent = typeof l === 'string' ? l : (l.descricao || l.nome || '');
+                    if (typeof l === 'string') {
+                        li.textContent = l;
+                    } else {
+                        li.textContent = l.nomeLesao + ' • ' + l.tempoLesionado + ' dias • ' + l.gravidade;
+                    }
                     el.lesoes.appendChild(li);
                 });
             }
