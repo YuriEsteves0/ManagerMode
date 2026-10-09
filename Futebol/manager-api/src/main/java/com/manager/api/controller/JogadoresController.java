@@ -3,6 +3,7 @@ package com.manager.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,12 +51,18 @@ public class JogadoresController {
     	}
     }
     
+    @GetMapping("/jogadores/overall")
+    public List<JogadoresResponse.comClube> listarJogadoresPorOverAll(){
+    	return jogadoresService.listarPorOverall();
+    }
+    
     @GetMapping("/jogadores/clube/{clube_idClube}/estatisticas")
     public List<EstatisticasJogadorCompeticaoResponse> listarEstatisticasJogadoresPorClube(
             @PathVariable Integer clube_idClube) {
         return estatisticaJogadoresService.estatisticasPorClube(clube_idClube);
     }
     
+    @CrossOrigin(origins="http://localhost")
     @GetMapping("/jogador/{id}/estatistica")
     public List<EstatisticasJogadorCompeticaoResponse> estatisticaJogador(@PathVariable Integer id) {
         return estatisticaJogadoresService.estatisticas(id);

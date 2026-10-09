@@ -38,4 +38,8 @@ public class JogadoresService{
     public List<JogadoresResponse> listarPorClubeFull(Integer clubeId){
     	return jogadoresRepository.findByClubeIdClube(clubeId);
     }
+    
+    public List<JogadoresResponse.comClube> listarPorOverall(){
+    	return jogadoresRepository.findAllByOrderByOverallDesc();
+    }
 }

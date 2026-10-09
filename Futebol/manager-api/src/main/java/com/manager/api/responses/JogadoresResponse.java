@@ -71,4 +71,34 @@ public record JogadoresResponse(
 		    Integer numeroCamisa,
 		    Boolean titular
 	) {}
+	
+	public record comClube(
+			Integer idJogador,
+		    String nomeJogador,
+		    Integer numeroCamisa,
+		    Integer idade,
+		    PosicaoPrincipal posicaoPrincipal,
+		    Integer overall,
+		    Integer velocidade,
+		    Integer forca,
+		    Integer inteligencia,
+		    Integer finalizacao,
+		    Integer marcacao,
+		    Integer passe,
+		    Integer potencial,
+		    Boolean titular,
+		    Integer moral,
+		    String nacionalidade,
+		    Boolean dispEmprestimo,
+		    Integer satisfacao,
+		    Boolean onfire,
+		    Float valor,
+		    Float valorRescisao,
+		    Float salario,
+		    Integer tempoContrato,
+		    Integer clubeIdClube,
+		    String nomeClube,
+		    Float posicaoX,
+		    Float posicaoY
+	) {}
 }
