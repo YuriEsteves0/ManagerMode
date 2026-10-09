@@ -221,53 +221,6 @@ A navegação é feita pelo parâmetro `pag` (ex.: `index.php?pag=inicio`). A p�
 
 ---
 
-## 🚀 Como rodar
-
-### Pré-requisitos
-
-- Java 17+
-- MySQL
-- PHP com a extensão **cURL** habilitada
-- Maven (opcional, o projeto já traz o `mvnw`)
-
-### 1. Banco de dados
-
-Crie o banco e importe o molde:
-
-```sql
-CREATE DATABASE manager;
-```
-
-```bash
-mysql -u root manager < manager.sql
-```
-
-### 2. API (Spring Boot)
-
-Confira as credenciais em `manager-api/src/main/resources/application.properties` (por padrão: usuário `root`, senha vazia, banco em `localhost:3306`) e rode:
-
-```bash
-cd manager-api
-./mvnw spring-boot:run
-```
-
-No Windows, use `mvnw.cmd spring-boot:run`. A API sobe em `http://localhost:8080`.
-
-### 3. Front-end (PHP)
-
-Em outro terminal:
-
-```bash
-cd manager-web
-php -S localhost:8000
-```
-
-Depois acesse `http://localhost:8000` no navegador.
-
-> ⚠️ Suba sempre o banco e a API **antes** do front, porque as telas dependem da API para carregar os dados.
-
----
-
 ## 🚧 Status do projeto
 
 O projeto está **em desenvolvimento ativo**.
