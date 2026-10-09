@@ -2,6 +2,46 @@
 
 Todas as mudanças relevantes do projeto ManagerMode.
 
+## [09/10/2026]
+
+### Adicionado
+- **API:** endpoint `GET /jogadores/overall` para listar todos os jogadores do jogo ordenados por overall (decrescente)
+- **API:** `JogadoresService.listarPorOverall()` e `JogadoresRepository.findAllByOrderByOverallDesc()`, que junta com `Clube` para trazer o nome do clube e não retorna jogadores lesionados
+- **API:** record `JogadoresResponse.comClube`, com os dados do jogador mais `nomeClube`
+- **Web:** busca, filtros, ordenação e paginação em `negociacao_mercado.php`
+  - Filtros por posição (chips), status no mercado, contrato restante, clube, nacionalidade, faixa de idade, overall e valor de mercado
+  - Contador de filtros ativos e botão "Limpar filtros"
+  - Ordenação por overall, potencial, valor, idade, contrato ou nome, com botão para inverter a direção
+  - Paginação de 15 jogadores por página
+- **Web:** botão "Fazer proposta" na ficha do jogador, que abre um modal com valor oferecido (formatado em pt-BR), valor de mercado, multa de rescisão e clube do jogador. O modal mostra o percentual do valor de mercado e avisa quando a oferta é igual ou maior que a multa (`enviarProposta()` ainda está vazia)
+- **Web:** estilos de filtros, paginação, ordenação e modal de proposta em `negociacao_mercado.css`
+- **Docs:** imagens no `README.md` (tela inicial, central do elenco, patrocínios, resposta da API no Postman e galeria com outras telas)
+
+### Alterado
+- **API:** `GET /jogador/{id}/estatistica` agora tem `@CrossOrigin(origins="http://localhost")`, para ser chamado direto pelo navegador
+- **Web:** `negociacao_mercado.php` busca os jogadores na API (antes eram linhas fixas no HTML). A ficha mostra posição, nacionalidade, clube, valor, salário, contrato restante, overall/potencial, multa, empréstimo e atributos. As estatísticas da temporada são carregadas via `fetch` e ficam em cache por jogador
+- **Docs:** o exemplo de uso da API no `README.md` agora é `curl http://localhost:8080/jogadores/clube/12?todos=false`
+
+## [08/10/2026]
+
+### Adicionado
+- **API:** módulo de lesões (`Lesao`, `JogadorLesao`, `LesaoId` (chave composta), enum `Gravidade` (`LEVE`, `MODERADO`, `GRAVE`), `JogadorHasLesaoRepository`, `LesaoResponse`, `LesaoJogadorResponse`, `JogadorLesaoService`)
+- **API:** endpoint `GET /jogadores/clube/{idClube}/lesoes` para listar as lesões ativas dos jogadores do clube
+- **API:** endpoint `GET /jogador/{id}/lesoes` para listar as lesões de um jogador
+- **Docs:** pasta `fotosReadMe/` com os prints do README (`inicio.png`, `central-elenco.png`, `patrocinios.png`, `postman.png`)
+
+### Alterado
+- **API:** `JogadoresController` agora injeta `JogadorLesaoService`
+- **Web:** `clube_central_elenco.php` busca as lesões do clube na API e mostra na ficha do jogador no formato `nome • N dias • gravidade` (antes aceitava só texto ou `descricao`)
+- **BD:** `BD/manager.sql` atualizado (dump de 07/10) com as colunas que já existiam no código:
+  - `clube.nomeEstadio` (obrigatória)
+  - `jogador.numeroCamisa` e `jogador.salario` (padrão `0`)
+  - `noticia.dataPublicacao` agora é `datetime` (era `int`)
+  - `partida.competicao_idCompeticao`, com chave estrangeira para `competicao`
+  - `upgrade.nivel` renomeada para `nivelMaximo`, e `upgrade.descricao` ampliada de 45 para 500 caracteres
+  - `clube_has_upgrade.nivelAtual` com padrão `1`
+- **BD:** o dump agora inclui as partidas, e os inserts de `clube`, `jogador` e `upgrade` foram atualizados
+
 ## [06/10/2026]
 
 ### Adicionado
