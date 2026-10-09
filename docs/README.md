@@ -212,13 +212,6 @@ A navegação é feita pelo parâmetro `pag` (ex.: `index.php?pag=inicio`). A p�
 | **Gestão** | `calendario`, `treino`, `diretoria` |
 | **Carreira e jogo** | `carreira`, `partida`, `imprensa` |
 
-<!-- FOTO 6 a 9: galeria 2x2 com as outras telas -->
-| Escolha do clube | Estatísticas do clube |
-|:---:|:---:|
-| <img src="/fotosReadMe/cadastro.png" width="420"> | <img src="fotosReadMe/estatisticas.png" width="420"> |
-| **Mercado de transferências** | **Imprensa** |
-| <img src="/fotosReadMe/mercado.png" width="420"> | <img src="fotosReadMe/imprensa.png" width="420"> |
-
 ---
 
 ## 🚧 Status do projeto
@@ -253,8 +246,6 @@ Documentos que complementam este README. Alguns ainda vão ser escritos (🚧).
 | [`docs/banco-de-dados.md`](docs/banco-de-dados.md) | Modelo de dados, tabelas, relacionamentos e diagrama ER | 🚧 |
 | [`docs/arquitetura.md`](docs/arquitetura.md) | Como API, front e banco se comunicam e as decisões de design | 🚧 |
 | [`docs/instalacao.md`](docs/instalacao.md) | Guia de instalação passo a passo, com solução de problemas comuns | 🚧 |
-| [`docs/roadmap.md`](docs/roadmap.md) | O que já foi feito, o que está em andamento e o que vem depois | 🚧 |
-| [`docs/base-de-jogadores.md`](docs/base-de-jogadores.md) | Como os atributos dos 676 jogadores foram gerados e como funcionam as posições | 🚧 |
 | [`CHANGELOG.md`](CHANGELOG.md) | Histórico de mudanças por versão | 🚧 |
 
 ---
