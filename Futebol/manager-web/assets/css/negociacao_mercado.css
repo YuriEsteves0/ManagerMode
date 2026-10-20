@@ -785,6 +785,8 @@ table.stats-jogos td.num {
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
+    
+    background-color: #ffffff00;
 }
 
 .proposta-topo h2 {
@@ -887,8 +889,4 @@ table.stats-jogos td.num {
 
 .btn-secundario:hover {
     border-color: var(--roxoBrilho);
-}
-
-header{
-    background-color: #ffffff00;
 }

@@ -5,7 +5,9 @@ class Cadastro3Controller
 {
     public function salvar(array $dados)
     {
+        $idManager = 17;
         $dadosRecebidos = [
+            'idManager'     => $idManager,
             'nome'          => $dados['nome'] ?? '',
             'nacionalidade' => $dados['nacionalidade'] ?? '',
             'modo'          => $dados['modo'] ?? '',
@@ -21,7 +23,6 @@ class Cadastro3Controller
 
         $_SESSION['estado_jogo'] = new EstadoJogo($dadosRecebidos);
 
-        // Sintaxe válida de JS unindo o JSON com texto
         $json = json_encode($_SESSION['carreira'] ?? $_SESSION['estado_jogo']);
         echo "<script>alert('Dados da sessão: ' + JSON.stringify($json));</script>";
     }

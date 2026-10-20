@@ -7,6 +7,7 @@ class EstadoJogo {
     public string $nacionalidade;
     public string $modo;
     public string $liga;
+    public int $idManager;
     public Clube $clube;
     public DateTime $dataInicio; 
     public DateTime $dataAtual;
@@ -16,6 +17,7 @@ class EstadoJogo {
         $this->nacionalidade = $dados['nacionalidade'] ?? '';
         $this->modo = $dados['modo'] ?? '';
         $this->liga = $dados['liga'] ?? '';
+        $this->idManager = $dados['idManager'] ?? '';
 
         if (isset($dados['data_inicio'])) {
             $this->dataInicio = new DateTime($dados['data_inicio']);
