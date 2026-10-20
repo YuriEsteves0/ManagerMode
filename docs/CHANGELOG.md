@@ -2,6 +2,23 @@
 
 Todas as mudanças relevantes do projeto ManagerMode.
 
+## [19/10/2026]
+
+### Adicionado
+- **API:** módulo de técnico (`Manager`, enum `Reputacao` (`INICIANTE`, `PROMISSOR`, `RENOMANDO`, `LENDA`), `ManagerRepository`, `ManagerResponse`, `ManagerService`, `ManagerController`)
+- **API:** endpoint `GET /manager/{id}` para buscar os dados do técnico
+- **API:** módulo de propostas de emprego (`PropostaEmprego`, enum `Status` (`PENDENTE`, `ACEITO`, `RECUSADO`), `PropostaEmpregoRepository`, `PropostaEmpregoResponse`, `PropostaEmpregoService`, `PropostaEmpregoController`)
+- **API:** endpoint `GET /propostas-emprego` para listar todas as propostas e `GET /propostas-emprego/{idManager}` para listar as propostas de um técnico, com o clube que fez a proposta e o salário oferecido
+- **Web:** `idManager` em `EstadoJogo`. O `Cadastro3Controller` define `$idManager = 17` (valor fixo por enquanto)
+- **Web:** foto do técnico em `assets/img/rostosManagers/` (`diniz.jpeg`)
+
+### Alterado
+- **Web:** `carreira.php` busca técnico, clube atual e propostas na API (antes eram dados fixos no HTML)
+  - Ficha do técnico mostra foto, nome, clube atual com escudo, nacionalidade, contrato restante (`formatarMesesParaAnos`) e reputação
+  - "Mercado de trabalho" lista as propostas com escudo, nome e reputação do clube (`/100`) e salário mensal (`formatarNumero`)
+  - Os botões "Aceitar" e "Pedir demissão do clube atual" ainda não têm ação. Títulos, histórico de clubes e desempenho por temporada continuam fixos
+- **Web:** `negociacao_mercado.css`: o `background-color: #ffffff00` que estava no seletor `header` agora está em `.proposta-topo`
+
 ## [09/10/2026]
 
 ### Adicionado
