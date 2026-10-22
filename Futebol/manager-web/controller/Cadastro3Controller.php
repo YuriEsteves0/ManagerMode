@@ -5,7 +5,9 @@ class Cadastro3Controller
 {
     public function salvar(array $dados)
     {
+        session_start();
         $idManager = 17;
+
         $dadosRecebidos = [
             'idManager'     => $idManager,
             'nome'          => $dados['nome'] ?? '',
@@ -15,9 +17,13 @@ class Cadastro3Controller
             'data_inicio'   => '2026-01-01',
             'data_atual'    => '2026-01-01',
             'clube'         => [
-                'id'        => $dados['clube_id'] ?? '',
-                'nomeClube' => $dados['clube_nome'] ?? '',
-                'foto'      => $dados['clube_foto'] ?? ''
+                'id'                  => $dados['clube_id'] ?? '',
+                'nomeClube'           => $dados['clube_nome'] ?? '',
+                'orcamento'           => $dados['orcamento'] ?? 1000000.0,
+                'valorClube'          => $dados['valorClube'] ?? 50000000,
+                'capacidadeEstadio'   => $dados['capacidadeEstadio'] ?? 30000,
+                'nomeEstadio'         => $dados['nomeEstadio'] ?? 'Estádio Municipal',
+                'foto'                => $dados['clube_foto'] ?? ''
             ]
         ];
 

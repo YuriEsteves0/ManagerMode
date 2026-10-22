@@ -10,7 +10,8 @@ $idClube = $estadoJogo->clube->id;
 $propostaClubes = $apiService->get("/propostas-emprego/{$idTecnico}");
 $manager = $apiService->get("/manager/{$idTecnico}");
 $clube = $apiService->get("/clubes/{$idClube}");
-
+$tituloConquistados = $apiService->get("/manager/{$idTecnico}/titulos");
+$historicoClubes = $apiService->get("/manager/{$idTecnico}/historico");
 ?>
 
 <main>
@@ -52,69 +53,51 @@ $clube = $apiService->get("/clubes/{$idClube}");
           <div>
             <h2>Títulos conquistados</h2>
             <div class="lista-titulos">
-              <div class="titulo-item">
-                <svg class="icone-troféu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                  <path d="M7 4h10v4a5 5 0 0 1-10 0V4Z" />
-                  <path d="M7 5H4a3 3 0 0 0 3 4" />
-                  <path d="M17 5h3a3 3 0 0 1-3 4" />
-                  <path d="M12 13v3" />
-                  <path d="M9 20h6" />
-                  <path d="M10 16h4l1 4H9l1-4Z" />
-                </svg>
-                <span class="nome-titulo">Liga Nacional</span>
-                <span class="qtd">3</span>
-              </div>
-              <div class="titulo-item">
-                <svg class="icone-troféu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                  <path d="M7 4h10v4a5 5 0 0 1-10 0V4Z" />
-                  <path d="M7 5H4a3 3 0 0 0 3 4" />
-                  <path d="M17 5h3a3 3 0 0 1-3 4" />
-                  <path d="M12 13v3" />
-                  <path d="M9 20h6" />
-                  <path d="M10 16h4l1 4H9l1-4Z" />
-                </svg>
-                <span class="nome-titulo">Copa Continental</span>
-                <span class="qtd">1</span>
-              </div>
-              <div class="titulo-item">
-                <svg class="icone-troféu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                  <path d="M7 4h10v4a5 5 0 0 1-10 0V4Z" />
-                  <path d="M7 5H4a3 3 0 0 0 3 4" />
-                  <path d="M17 5h3a3 3 0 0 1-3 4" />
-                  <path d="M12 13v3" />
-                  <path d="M9 20h6" />
-                  <path d="M10 16h4l1 4H9l1-4Z" />
-                </svg>
-                <span class="nome-titulo">Supercopa Regional</span>
-                <span class="qtd">2</span>
-              </div>
+              <?php
+
+              foreach ($tituloConquistados as $titulo) {
+              ?>
+
+                <div class="titulo-item">
+                  <svg class="icone-troféu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M7 4h10v4a5 5 0 0 1-10 0V4Z" />
+                    <path d="M7 5H4a3 3 0 0 0 3 4" />
+                    <path d="M17 5h3a3 3 0 0 1-3 4" />
+                    <path d="M12 13v3" />
+                    <path d="M9 20h6" />
+                    <path d="M10 16h4l1 4H9l1-4Z" />
+                  </svg>
+                  <span class="nome-titulo"><?= $titulo['nomeCompeticao'] ?></span>
+                  <span class="qtd"><?= $titulo['ano'] ?></span>
+                </div>
+
+              <?php
+              }
+
+              ?>
+
             </div>
           </div>
 
           <div>
-            <h2>Histórico de clubes</h2>
+            <h2>Histórico dos últimos 5 clubes</h2>
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <div class="historico-clube">
-                <svg class="escudo-mini" viewBox="0 0 48 54" fill="var(--roxo50P)" stroke="var(--roxoTexto)">
-                  <use href="#escudo-generico" />
-                </svg>
-                <span class="nome-clube-hist">Estrela do Vale FC</span>
-                <span class="periodo">2024 – atual</span>
-              </div>
-              <div class="historico-clube">
-                <svg class="escudo-mini" viewBox="0 0 48 54" fill="var(--roxo50P)" stroke="var(--roxoTexto)">
-                  <use href="#escudo-generico" />
-                </svg>
-                <span class="nome-clube-hist">Porto Alto SC</span>
-                <span class="periodo">2021 – 2024</span>
-              </div>
-              <div class="historico-clube">
-                <svg class="escudo-mini" viewBox="0 0 48 54" fill="var(--roxo50P)" stroke="var(--roxoTexto)">
-                  <use href="#escudo-generico" />
-                </svg>
-                <span class="nome-clube-hist">Atlético Serra</span>
-                <span class="periodo">2019 – 2021</span>
-              </div>
+
+              <?php
+              foreach ($historicoClubes as $clube) {
+                $clubeAtual = ($clube['nomeClube'] == $estadoJogo->clube->nomeClube) ? $clube['ano'] . " - Atual" : $clube['ano'];
+              ?>
+
+                <div class="historico-clube">
+                  <img src="assets/<?= $clube['foto'] ?>" alt="" style="width: 22px !important; height: 22px !important; object-fit: contain;">
+                  <span class="nome-clube-hist"><?= $clube['nomeClube'] ?></span>
+                  <span class="periodo"><?= $clubeAtual ?></span>
+                </div>
+
+              <?php
+              }
+
+              ?>
             </div>
           </div>
 
@@ -132,13 +115,13 @@ $clube = $apiService->get("/clubes/{$idClube}");
               </thead>
               <tbody>
                 <tr class="destaque">
-                  <td class="destaque-coluna">2026</td>
-                  <td class="num">124</td>
-                  <td class="num">72</td>
-                  <td class="num">28</td>
-                  <td class="num">24</td>
+                  <td class="destaque-coluna">a fazer</td>
+                  <td class="num">a fazer</td>
+                  <td class="num">a fazer</td>
+                  <td class="num">a fazer</td>
+                  <td class="num">a fazer</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <td>2025</td>
                   <td class="num">118</td>
                   <td class="num">65</td>
@@ -158,7 +141,7 @@ $clube = $apiService->get("/clubes/{$idClube}");
                   <td class="num">44</td>
                   <td class="num">25</td>
                   <td class="num">19</td>
-                </tr>
+                </tr> -->
               </tbody>
             </table>
           </div>
@@ -182,7 +165,7 @@ $clube = $apiService->get("/clubes/{$idClube}");
             ?>
 
               <div class="item-linha proposta">
-                <img src="assets/<?= $clube['clube']['foto']?>" alt="" style="width: 40px !important; height: 40px !important;">
+                <img src="assets/<?= $clube['clube']['foto'] ?>" alt="" style="width: 40px !important; height: 40px !important;">
                 <div class="dados-clube">
                   <span class="nome-clube"><?= $clube['clube']['nomeClube'] ?></span>
                   <span class="liga-clube">Reputação: <?= $clube['clube']['reputacao'] ?>/100</span>

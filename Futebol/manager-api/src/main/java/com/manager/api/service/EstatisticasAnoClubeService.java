@@ -8,14 +8,20 @@ import com.manager.api.repository.EstatisticasAnoClubeRepository;
 import com.manager.api.responses.EstatisticaAnoClubeResponse;
 
 @Service
-public class EstatisticasAnoClubeService{
-	public final EstatisticasAnoClubeRepository estatisticasAnoClubeRepository;
-	
-	public EstatisticasAnoClubeService(EstatisticasAnoClubeRepository estatisticasAnoClubeRepository) {
-		this.estatisticasAnoClubeRepository = estatisticasAnoClubeRepository;
-	}
-	
-	public List<EstatisticaAnoClubeResponse> listarEstatisticasAnoClube(Integer clubeId){
-		return estatisticasAnoClubeRepository.findByClubeId(clubeId);
-	}
+public class EstatisticasAnoClubeService {
+
+    private final EstatisticasAnoClubeRepository estatisticasAnoClubeRepository;
+
+    public EstatisticasAnoClubeService(EstatisticasAnoClubeRepository estatisticasAnoClubeRepository) {
+        this.estatisticasAnoClubeRepository = estatisticasAnoClubeRepository;
+    }
+
+    public List<EstatisticaAnoClubeResponse> listarEstatisticasAnoClube(Integer clubeId) {
+        return estatisticasAnoClubeRepository.findByClubeId(clubeId);
+    }
+
+    public EstatisticaAnoClubeResponse buscarEstatisticaPorClubeEAno(Integer clubeId, Integer ano) {
+        return estatisticasAnoClubeRepository.findEstatisticaPorClubeEAno(clubeId, ano)
+                .orElse(null); 
+    }
 }
