@@ -234,7 +234,7 @@ $orcamentoFmt = $orcamentoClube !== null ? moeda($orcamentoClube) : '—';
             <div class="campo">
                 <label>Clube interessado</label>
                 <div class="clube-interessado">
-                    <div class="logo-mini" id="mod-sigla"></div>
+                    <img id="mod-escudo" src="" alt="Escudo" width="36" height="36" style="object-fit:contain;">
                     <div class="info"><strong id="mod-clube"></strong></div>
                 </div>
             </div>
@@ -287,8 +287,10 @@ $orcamentoFmt = $orcamentoClube !== null ? moeda($orcamentoClube) : '—';
         set('mod-nome', j.nomeJogador);
         set('mod-valor', p.fmt.mercado);
         set('mod-salario', p.fmt.salario);
+        const escudo = document.getElementById('mod-escudo');
+        escudo.src = 'assets/' + p.clubeExterior.foto;
+        escudo.alt = 'Escudo do ' + clubeAtual;
         set('mod-clube', clubeAtual);
-        set('mod-sigla', clubeAtual.substring(0, 3).toUpperCase());
         set('mod-pedido', p.fmt.valor);
         atualizarDivisao(document.getElementById('sliderDivisao').value);
     }

@@ -26,16 +26,53 @@ public class ManagerController{
 		this.historicoService = historicoService;
 	}
 	
+	/**
+	 * Busca os dados de um manager (técnico) a partir do seu identificador.
+	 *
+	 * @param id Parâmetro usado como id do manager que será consultado
+	 * @return {@link Optional} de {@link ManagerResponse} contendo:
+	 * 	<ul>
+	 * 		<li>Nome, nacionalidade e foto</li>
+	 * 		<li>Reputação e experiência</li>
+	 * 		<li>Ano de fim do contrato e clube atual</li>
+	 * 	</ul>
+	 * 	Retorna vazio caso nenhum manager seja encontrado com o <strong>id</strong> informado
+	 */
 	@GetMapping("/manager/{id}")
 	public Optional<ManagerResponse> buscarDadosManager(@PathVariable Integer id){
 		return managerService.buscarDadosManager(id);
 	}
 	
+	/**
+	 * Lista os títulos conquistados por um manager.
+	 *
+	 * @param idManager Parâmetro usado como id do manager que será consultado
+	 * @return Lista de {@link TituloTecnicoResponse} contendo, por título:
+	 * 	<ul>
+	 * 		<li>ID e nome do manager</li>
+	 * 		<li>ID e nome da competição vencida</li>
+	 * 		<li>Ano da conquista</li>
+	 * 	</ul>
+	 */
 	@GetMapping("/manager/{idManager}/titulos")
 	public List<TituloTecnicoResponse> listarTitulosPorManager(@PathVariable Integer idManager){
 		return tituloService.listarPorManager(idManager);
 	}
 	
+	/**
+	 * Lista o histórico de clubes que um manager já comandou.
+	 * <p>
+	 * Os resultados vêm ordenados do ano mais recente para o mais antigo.
+	 * </p>
+	 *
+	 * @param idManager Parâmetro usado como id do manager que será consultado
+	 * @return Lista de {@link HistoricoManagerResponse} contendo, por passagem:
+	 * 	<ul>
+	 * 		<li>ID e nome do manager</li>
+	 * 		<li>ID, nome e foto (escudo) do clube</li>
+	 * 		<li>Ano da passagem</li>
+	 * 	</ul>
+	 */
 	@GetMapping("/manager/{idManager}/historico")
 	public List<HistoricoManagerResponse> listarHistoricoPorManager(@PathVariable Integer idManager){
 		return historicoService.listarPorManager(idManager);

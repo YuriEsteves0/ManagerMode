@@ -16,6 +16,17 @@ public class PatrocinioController{
 		this.patrocinadorService = patrocinadorService;
 	}
 	
+	/**
+	 * Lista todos os patrocínios disponíveis no jogo.
+	 *
+	 * @return Lista de {@link PatrocinadorResponse} contendo:
+	 * 	<ul>
+	 * 		<li>ID, nome, descrição e foto do patrocinador</li>
+	 * 		<li>Duração do contrato</li>
+	 * 		<li>Valor mensal pago ao clube</li>
+	 * 		<li>Multa de rescisão</li>
+	 * 	</ul>
+	 */
 	@GetMapping("/patrocinios")
 	public List<PatrocinadorResponse> listarPatrocinios(){
 		return patrocinadorService.listarPatrocinios();

@@ -30,13 +30,18 @@ public class CompeticaoController {
     }
 
     /**
-     * Endpoint para listagem de competições cadastradas.
+     * Lista as competições cadastradas, com filtro opcional por tipo.
      * <p>
-     * Permite a filtragem opcional por tipo de competição. Caso o filtro não seja
-     * informado, retorna todas as competições registradas.
-     * 
-     * @param tipo Filtro opcional do tipo {@link TipoCompeticao} para restringir a busca
-     * @return Lista de objetos {@link Competicao} correspondentes ao filtro aplicado ou a lista completa
+     * Caso o filtro não seja informado, retorna todas as competições registradas.
+     * </p>
+     *
+     * @param tipo Parâmetro <strong>opcional</strong> do tipo {@link TipoCompeticao}, pode ser:
+     * 	<ul>
+     * 		<li>PONTOS_CORRIDOS</li>
+     * 		<li>MATA_MATA</li>
+     * 		<li>MISTO</li>
+     * 	</ul>
+     * @return Lista de {@link Competicao} correspondentes ao filtro aplicado, ou a lista completa caso nenhum filtro seja informado
      */
     @GetMapping("/competicoes")
     public List<Competicao> listarCompeticoes(@RequestParam(required = false) TipoCompeticao tipo) {
@@ -46,19 +51,36 @@ public class CompeticaoController {
         return competicaoRepository.findAll();
     }
     
+    /**
+     * Busca os dados de uma competição a partir do seu identificador.
+     *
+     * @param id Parâmetro usado como id da competição que será consultada
+     * @return {@link Optional} de {@link CompeticaoResponse} contendo:
+     * 	<ul>
+     * 		<li>Nome, ano e status da competição (não iniciada, em andamento ou finalizada)</li>
+     * 		<li>Tipo (pontos corridos, mata-mata ou misto) e nível (nacional, continental ou estadual)</li>
+     * 		<li>Valor do prêmio e prêmio por vitória</li>
+     * 	</ul>
+     * 	Retorna vazio caso nenhuma competição seja encontrada com o <strong>id</strong> informado
+     */
     @GetMapping("/competicoes/{id}")
     public Optional<CompeticaoResponse> buscarCompeticao(@PathVariable Integer id){
     	return competicaoService.buscarCompeticao(id);
     }
     
-/**
-     * Retorna a lista enxuta de todos os clubes participantes de uma competição específica.
+    /**
+     * Lista os clubes participantes de uma competição, em formato resumido.
      * <p>
-     * Fornece informações básicas necessárias para exibição e seleção de clubes 
-     * (ID, nome, escudo e orçamento).
-     * 
-     * @param id Identificador único da competição
-     * @return Lista formatada conforme {@link ClubeCompeticaoService#listarClubeFotoNome(Integer)}
+     * Traz apenas o necessário para exibição e seleção de clubes.
+     * </p>
+     *
+     * @param id Parâmetro usado como id da competição que será consultada
+     * @return Lista de {@link ClubeCompeticaoResponse.ClubeResponse.ClubeFotoNomeResponse} contendo:
+     * 	<ul>
+     * 		<li>ID e nome do clube</li>
+     * 		<li>Foto (escudo) do clube</li>
+     * 		<li>Orçamento disponível</li>
+     * 	</ul>
      */
     @GetMapping("/competicoes/{id}/clubes")
     public List<ClubeCompeticaoResponse.ClubeResponse.ClubeFotoNomeResponse> listarClubesDaCompeticao(@PathVariable Integer id) {
@@ -66,12 +88,20 @@ public class CompeticaoController {
     }
 
     /**
-     * Retorna a tabela de classificação resumida de uma competição.
+     * Busca a tabela de classificação de uma competição.
      * <p>
-     * Traz os clubes ordenados de forma decrescente pela pontuação acumulada.
-     * 
-     * @param id Identificador único da competição
-     * @return Lista formatada conforme {@link ClubeCompeticaoService#listarClassificacao(Integer)}
+     * Os clubes são retornados em ordem <strong>decrescente de pontos</strong>,
+     * ou seja, o líder da competição vem primeiro.
+     * </p>
+     *
+     * @param id Parâmetro usado como id da competição que será consultada
+     * @return Lista de {@link ClubeCompeticaoResponse.IdClubeIdCompeticaoPontosFaseAtual} contendo:
+     * 	<ul>
+     * 		<li>ID e nome do clube</li>
+     * 		<li>ID da competição</li>
+     * 		<li>Pontos acumulados</li>
+     * 		<li>Fase atual do clube na competição</li>
+     * 	</ul>
      */
     @GetMapping("/competicoes/{id}/classificacao")
     public List<ClubeCompeticaoResponse.IdClubeIdCompeticaoPontosFaseAtual> classificacao(@PathVariable Integer id) {
