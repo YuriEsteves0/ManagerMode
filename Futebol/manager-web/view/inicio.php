@@ -20,7 +20,7 @@ if ($idLiga > 0 && $idClubeJogador > 0) {
     $jogadores                = $apiService->get("/jogadores/clube/{$idClubeJogador}?todos=false") ?? [];
     $imprensas                = $apiService->get("/noticias", ["categoria" => "IMPRENSA", "idClube" => $idClubeJogador]) ?? [];
     $transferencias           = $apiService->get("/noticias", ["categoria" => "MERCADO"]) ?? [];
-    $dataPartidaFormatada = $estado->dataInicio ? $estado->dataInicio->format('Y-m-d') : null;
+    $dataPartidaFormatada = $estado->dataAtual ? $estado->dataAtual->format('Y-m-d') : null;
 
     $partidasFuturas = $apiService->get("/partidas/clube/{$idClubeJogador}/proximosJogos", ["dataPartida" => $dataPartidaFormatada]) ?? [];
 

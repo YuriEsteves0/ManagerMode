@@ -22,4 +22,11 @@ public class PartidaService{
 	            .limit(4)
 	            .toList();
 	}
+	
+	public List<PartidaResponse> listarProximasPartidasCalendario(Integer idClube, LocalDate dataPartida) {
+	    return partidaRepository.buscarPartidasFuturas(idClube, dataPartida);
+	}
+	
+	
+	
 }

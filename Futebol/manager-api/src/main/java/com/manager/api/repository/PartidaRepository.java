@@ -2,6 +2,7 @@ package com.manager.api.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,4 +30,31 @@ p.dataPartida, p.horario)
 	List<PartidaResponse.RodadaIdMandanteIdVisitanteLocalEstadioDataHorario> buscarProximasPartidas(
 	        @Param("idClube") Integer idClube,
 	        @Param("dataPartida") LocalDate dataPartida);
+
+	@Query("""
+	        SELECT new com.manager.api.responses.PartidaResponse(
+	            p.idPartida,
+	            p.golsMandante,
+	            p.golsVisitante,
+	            p.rodada,
+	            p.dataPartida,
+	            p.statusPartida,
+	            p.visitanteIdClube,
+	            v,
+	            p.mandanteIdClube,
+	            m,
+	            p.horario,
+	            p.local,
+	            p.competicaoIdCompeticao)
+	        FROM Partida p
+	        JOIN Clube m ON m.id = p.mandanteIdClube
+	        JOIN Clube v ON v.id = p.visitanteIdClube
+	        WHERE (p.mandanteIdClube = :idClube OR p.visitanteIdClube = :idClube)
+	          AND p.dataPartida > :dataPartida
+	        ORDER BY p.dataPartida ASC, p.horario ASC
+	        """)
+	List<PartidaResponse> buscarPartidasFuturas(
+	        @Param("idClube") Integer idClube,
+	        @Param("dataPartida") LocalDate dataPartida);
+	
 }

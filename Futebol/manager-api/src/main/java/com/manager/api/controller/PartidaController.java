@@ -41,4 +41,9 @@ public class PartidaController{
 	public List<PartidaResponse.RodadaIdMandanteIdVisitanteLocalEstadioDataHorario> listarProximosJogos(@PathVariable Integer idClube, @RequestParam(required = true) LocalDate dataPartida){
 		return partidaService.listarProximasPartidas(idClube, dataPartida);
 	}
+	
+	@GetMapping("/partidas/clube/{idClube}/proximosJogosCalendario")
+	public List<PartidaResponse> listarProximosJogosCalendario(@PathVariable Integer idClube, @RequestParam(required = true) LocalDate dataPartida){
+		return partidaService.listarProximasPartidasCalendario(idClube, dataPartida);
+	}
 }

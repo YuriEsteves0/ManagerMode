@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import com.manager.api.enums.partida.StatusPartida;
+import com.manager.api.model.Clube;
 
 public record PartidaResponse(
 		Integer idPartida,
@@ -13,7 +14,9 @@ public record PartidaResponse(
 		LocalDate dataPartida,
 		StatusPartida statusPartida,
 		Integer visitanteIdClube,
+		Clube clubeVisitante,
 		Integer mandanteIdClube,
+		Clube clubeMandante,
 		LocalTime horario,
 		String local,
 		Integer competicaoIdCompeticao

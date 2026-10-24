@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.manager.api.model.ClubeHasUpgrade;
 import com.manager.api.responses.ClubeCompeticaoResponse;
+import com.manager.api.responses.ClubeHasTreinoResponse;
 import com.manager.api.responses.ClubeHasUpgradeResponse;
 import com.manager.api.responses.ClubeResponse;
 import com.manager.api.responses.EstatisticaAnoClubeResponse;
@@ -17,6 +18,7 @@ import com.manager.api.responses.PatrocinadorResponse;
 import com.manager.api.responses.PropostaTransferenciaResponse;
 import com.manager.api.responses.UpgradeResponse;
 import com.manager.api.service.ClubeCompeticaoService;
+import com.manager.api.service.ClubeHasTreinoService;
 import com.manager.api.service.ClubeHasUpgradeService;
 import com.manager.api.service.ClubeService;
 import com.manager.api.service.EstatisticasAnoClubeService;
@@ -31,13 +33,15 @@ public class ClubeController {
     private final EstatisticasAnoClubeService estatisticasAnoClubeService;
     private final ClubeHasUpgradeService clubeHasUpgradeService;
     private final PropostaTransferenciaService propostaTransferenciaService;
+    private final ClubeHasTreinoService clubeHasTreinoService;
 
-    public ClubeController(ClubeService clubeService, PatrocinadorService patrocinadorService, EstatisticasAnoClubeService estatisticasAnoClubeService, ClubeHasUpgradeService clubeHasUpgradeService, PropostaTransferenciaService propostaTransferenciaService) {
+    public ClubeController(ClubeService clubeService, PatrocinadorService patrocinadorService, EstatisticasAnoClubeService estatisticasAnoClubeService, ClubeHasUpgradeService clubeHasUpgradeService, PropostaTransferenciaService propostaTransferenciaService, ClubeHasTreinoService clubeHasTreinoService) {
         this.clubeService = clubeService; 
         this.patrocinadorService = patrocinadorService;
         this.estatisticasAnoClubeService = estatisticasAnoClubeService;
         this.clubeHasUpgradeService = clubeHasUpgradeService;
         this.propostaTransferenciaService= propostaTransferenciaService;
+        this.clubeHasTreinoService = clubeHasTreinoService;
     }
 
     /**
@@ -150,5 +154,10 @@ public class ClubeController {
     		@PathVariable Integer id,
     		@RequestParam String tipoTransferencia) {
     	return propostaTransferenciaService.transferencia(id, tipoTransferencia);
+    }
+    
+    @GetMapping("/clubes/{id}/treino")
+    public List<ClubeHasTreinoResponse> listarTreinos(@PathVariable Integer id){
+    	return clubeHasTreinoService.buscarPorClube(id);
     }
 }
