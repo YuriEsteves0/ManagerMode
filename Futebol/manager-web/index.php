@@ -24,6 +24,7 @@ $pagina = Pagina::tryFrom($parametro);
 </head>
 
 <body>
+    
     <?php
 
     require_once "includes/headerHelper.php";

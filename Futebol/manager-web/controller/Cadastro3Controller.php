@@ -5,20 +5,21 @@ class Cadastro3Controller
 {
     public function salvar(array $dados)
     {
+        $foto = $this->fotoAleatoria();
 
         $api = new ApiService();
 
         $manager = $api->post('/manager/criar', [
             'nomeManager'   => $dados['nome'],
             'nacionalidade' => $dados['nacionalidade'],
-            'foto'          => 'img/rostosManagers/padrao.png',
+            'foto'          => "img/rostosManagers/{$foto}",
             'reputacao'     => 'INICIANTE',
             'exp'           => 0,
             'contratoFim'   => 2027,
             'idClube'       => (int) $dados['clube_id'],
         ]);
 
-        if($manager === null){
+        if ($manager === null) {
             return false;
         }
 
@@ -29,29 +30,27 @@ class Cadastro3Controller
         ]);
 
         return true;
+    }
 
-
-
-        // $idManager = 17;
-
-        // $dadosRecebidos = [
-        //     'idManager'     => $idManager,
-        //     'nome'          => $dados['nome'] ?? '',
-        //     'nacionalidade' => $dados['nacionalidade'] ?? '',
-        //     'modo'          => $dados['modo'] ?? '',
-        //     'liga'          => $dados['liga'] ?? '',
-        //     'data_inicio'   => '2026-01-01',
-        //     'data_atual'    => '2026-01-01',
-        //     'clube'         => [
-        //         'id'                  => $dados['clube_id'] ?? '',
-        //         'nomeClube'           => $dados['clube_nome'] ?? '',
-        //         'orcamento'           => $dados['orcamento'] ?? 1000000.0,
-        //         'valorClube'          => $dados['valorClube'] ?? 50000000,
-        //         'capacidadeEstadio'   => $dados['capacidadeEstadio'] ?? 30000,
-        //         'nomeEstadio'         => $dados['nomeEstadio'] ?? 'Estádio Municipal',
-        //         'foto'                => $dados['clube_foto'] ?? ''
-        //     ]
-        // ];        
+    private function fotoAleatoria()
+    {
+        $numero = (int) rand(0, 2);
+        $foto = "";
+        
+        switch ($numero) {
+            case 0:
+                $foto = "manager-1.jpg";
+                break;
+            case 1:
+                $foto = "manager-2.jpg";
+                break;
+            case 2:
+                $foto = "manager-3.jpg";
+                break;
+            default:
+                $foto = "manager-1.jpg";
+                break;
+        }
+        return $foto;
     }
 }
-?>
