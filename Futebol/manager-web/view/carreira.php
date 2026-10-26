@@ -190,3 +190,5 @@ $historicoClubes = $apiService->get("/manager/{$idTecnico}/historico");
   </div>
 
 </main>
+
+<script src="assets/js/animations/carreira.js"></script>

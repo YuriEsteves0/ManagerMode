@@ -1,16 +1,19 @@
-<?php 
+<?php
 
-class ApiService{
+class ApiService
+{
     private string $baseURL;
 
-    public function __construct(string $baseURL = "http://localhost:8080"){
+    public function __construct(string $baseURL = "http://localhost:8080")
+    {
         $this->baseURL = $baseURL;
     }
 
-    public function get(string $endpoint, array $params = []): ?array{
+    public function get(string $endpoint, array $params = []): ?array
+    {
         $url = $this->baseURL . $endpoint;
 
-        if(!empty($params)){
+        if (!empty($params)) {
             $url .= '?' . http_build_query($params);
         }
 
@@ -23,7 +26,7 @@ class ApiService{
                 'Accept: application/json',
                 'Content-Type: application/json'
             ]
-            ]);
+        ]);
 
         $response = curl_exec($ch);
 
@@ -31,15 +34,41 @@ class ApiService{
 
         curl_close($ch);
 
-        if($httpCode === 200 && $response){
+        if ($httpCode === 200 && $response) {
             return json_decode($response, true);
         }
 
         return null;
-
     }
 
-    public function getClassificacaoProxima(int $idLiga, int $idClubeJogador, int $limite = 5): array{
+    public function post(string $endpoint, array $body = []): ?array
+    {
+        $ch = curl_init($this->baseURL . $endpoint);
+
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($body),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 5,
+            CURLOPT_HTTPHEADER => [
+                'Accept: application/json',
+                'Content-Type: application/json'
+            ]
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (($httpCode === 200 || $httpCode === 201) && $response) {
+            return json_decode($response, true);
+        }
+
+        return null;
+    }
+
+    public function getClassificacaoProxima(int $idLiga, int $idClubeJogador, int $limite = 5): array
+    {
         // 1. Busca os dados completos da API
         $classificacao = $this->get("/competicoes/{$idLiga}/classificacao") ?? [];
 
@@ -70,7 +99,4 @@ class ApiService{
 
         return array_slice($classificacao, $inicio, $limite);
     }
-
 }
-
-?>

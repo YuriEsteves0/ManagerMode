@@ -18,6 +18,7 @@ enum Pagina: string{
     case CARREIRA = 'carreira';
     case PARTIDA = 'partida';
     case IMPRENSA = 'imprensa';
+    case CONFIGURACOES = 'configuracoes';
 
     public function getArquivo(): string{
         return match($this) {
@@ -38,6 +39,7 @@ enum Pagina: string{
             self::CARREIRA => 'view/carreira.php',
             self::PARTIDA => 'view/partida.php',
             self::IMPRENSA => 'view/imprensa.php',
+            self::CONFIGURACOES => 'view/configuracoes.php',
         };
     }
 }

@@ -59,8 +59,8 @@ public class Jogadores {
     @Column(name = "potencial")
     private Integer potencial;
 
-    @Column(name = "titular", columnDefinition = "TINYINT(1)")
-    private Boolean titular;
+    @Column(name = "titular")
+    private Integer titular;
 
     @Column(name = "moral")
     private Integer moral;
@@ -68,7 +68,7 @@ public class Jogadores {
     @Column(name = "nacionalidade")
     private String nacionalidade;
 
-    @Column(name = "dispEmprestimo", columnDefinition = "TINYINT(1)")
+    @Column(name = "dispEmprestimo")
     private Boolean dispEmprestimo;
 
     @Column(name = "satisfacao")

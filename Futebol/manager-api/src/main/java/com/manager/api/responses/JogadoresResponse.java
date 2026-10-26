@@ -45,7 +45,7 @@ public record JogadoresResponse(
     Integer marcacao,
     Integer passe,
     Integer potencial,
-    Boolean titular,
+    Integer titular,
     Integer moral,
     String nacionalidade,
     Boolean dispEmprestimo,
@@ -69,7 +69,7 @@ public record JogadoresResponse(
 			Integer idJogador,
 		    String nomeJogador,
 		    Integer numeroCamisa,
-		    Boolean titular
+		    Integer titular
 	) {}
 	
 	public record comClube(
@@ -86,7 +86,7 @@ public record JogadoresResponse(
 		    Integer marcacao,
 		    Integer passe,
 		    Integer potencial,
-		    Boolean titular,
+		    Integer titular,
 		    Integer moral,
 		    String nacionalidade,
 		    Boolean dispEmprestimo,

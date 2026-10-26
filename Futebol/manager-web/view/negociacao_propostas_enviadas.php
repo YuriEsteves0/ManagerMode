@@ -359,3 +359,5 @@ unset($p);
         document.getElementById('btn-formalizar').disabled = true;
     }
 </script>
+
+<script src="assets/js/animations/negociacao_propostas_enviadas.js"></script>

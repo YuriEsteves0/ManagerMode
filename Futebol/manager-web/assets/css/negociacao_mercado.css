@@ -890,3 +890,15 @@ table.stats-jogos td.num {
 .btn-secundario:hover {
     border-color: var(--roxoBrilho);
 }
+
+.atributo-linha .barra i { transform-origin: left center; }
+
+.jogador-linha { transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease; }
+.jogador-linha:hover { transform: translateX(3px); }
+
+.mini-stats .item { transition: transform 0.15s ease, border-color 0.15s ease; }
+.mini-stats .item:hover { transform: translateY(-2px); border-color: var(--verde); }
+
+.btn-proposta { transition: transform 0.15s ease, filter 0.15s ease; }
+.btn-proposta:not(:disabled):hover { transform: translateY(-2px); }
+.btn-proposta:not(:disabled):active { transform: translateY(0); }

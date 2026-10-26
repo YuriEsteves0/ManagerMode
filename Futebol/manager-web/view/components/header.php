@@ -183,6 +183,46 @@
     .btn-jogar-header:hover {
         background: var(--verdeBrilho);
     }
+
+    .btn-config-header {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        color: var(--roxoTextoMaisClaro);
+        background: var(--fundoMeioTransparente);
+        border: 1px solid var(--roxo50P);
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-config-header svg {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.4s ease;
+    }
+
+    .btn-config-header:hover,
+    .btn-config-header:focus-visible {
+        color: var(--branco);
+        background: var(--roxoBrilho);
+        border-color: var(--verde);
+        outline: none;
+    }
+
+    .btn-config-header:hover svg,
+    .btn-config-header:focus-visible svg {
+        transform: rotate(60deg);
+    }
+
+    .btn-config-header.ativo {
+        color: var(--branco);
+        border-color: var(--verde);
+    }
 </style>
 <?php
 $pagina_atual = isset($_GET['pag']) ? $_GET['pag'] : 'inicio';
@@ -245,6 +285,13 @@ $clube = $_SESSION['estado_jogo']->clube ?? null;
                 <div class="info-clube">
                     <span class="nome-clube"><?= htmlspecialchars($clube->nomeClube ?? 'Sem Clube') ?></span>
                 </div>
+            </a>
+
+            <a href="index.php?pag=configuracoes" class="btn-config-header <?= ($pagina_atual == 'configuracoes') ? 'ativo' : '' ?>" aria-label="Configurações" title="Configurações">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
             </a>
 
             <a href="index.php?pag=partida" class="btn-jogar-header">JOGAR</a>

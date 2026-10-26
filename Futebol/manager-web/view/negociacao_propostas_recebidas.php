@@ -240,7 +240,7 @@ $orcamentoFmt = $orcamentoClube !== null ? moeda($orcamentoClube) : '—';
             </div>
 
             <div class="campo">
-                <label>Valor pedido originalmente pelo clube interessado</label>
+                <label>Valor enviado originalmente pelo clube interessado</label>
                 <div class="valor-fixo" id="mod-pedido"></div>
             </div>
 
@@ -346,3 +346,5 @@ $orcamentoFmt = $orcamentoClube !== null ? moeda($orcamentoClube) : '—';
     preencherDetalhe(0);
     atualizarTipo();
 </script>
+
+<script src="assets/js/animations/negociacao_propostas_recebidas.js"></script>

@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="assets/css/cadastro_1.css"> 
+<link rel="stylesheet" href="assets/css/cadastro_1.css">
 <main>
     <div class="conteudo">
         <div class="lado-texto">
@@ -12,41 +12,43 @@
         </div>
 
         <form class="card" action="index.php" method="get">
-    <!-- Garante que 'pag' vá na URL como ?pag=cadastro_2 -->
-    <input type="hidden" name="pag" value="cadastro_2">
+            <!-- Garante que 'pag' vá na URL como ?pag=cadastro_2 -->
+            <input type="hidden" name="pag" value="cadastro_2">
 
-    <h2>Criar técnico</h2>
+            <h2>Criar técnico</h2>
 
-    <div class="campo">
-        <label for="nome">Nome do técnico</label>
-        <input id="nome" name="nome" type="text" placeholder="Ex: Carlos Mendes" required>
-    </div>
-
-    <div class="campo">
-        <label for="nacionalidade">Nacionalidade</label>
-        <select id="nacionalidade" name="nacionalidade" required>
-            <option value="" disabled selected>Selecione</option>
-            <option value="brasileiro">Brasileiro</option>
-            <option value="portugues">Português</option>
-            <option value="espanhol">Espanhol</option>
-        </select>
-    </div>
-
-    <div class="modos">
-        <label>Modo de jogo</label>
-        <div class="modos-opcoes">
-            <div class="modo-opcao">
-                <input type="radio" name="modo" id="modo-normal" value="normal" checked>
-                <label for="modo-normal">Normal<small>Para conhecer o jogo</small></label>
+            <div class="campo">
+                <label for="nome">Nome do técnico</label>
+                <input id="nome" name="nome" type="text" placeholder="Ex: Carlos Mendes" required>
             </div>
-            <div class="modo-opcao">
-                <input type="radio" name="modo" id="modo-pro" value="pro">
-                <label for="modo-pro">Pro<small>Sem ajuda da IA</small></label>
-            </div>
-        </div>
-    </div>
 
-    <button class="btn-iniciar" type="submit">Iniciar carreira</button>
-</form>
+            <div class="campo">
+                <label for="nacionalidade">Nacionalidade</label>
+                <select id="nacionalidade" name="nacionalidade" required>
+                    <option value="" disabled selected>Selecione</option>
+                    <option value="brasileiro">Brasileiro</option>
+                    <option value="portugues">Português</option>
+                    <option value="espanhol">Espanhol</option>
+                </select>
+            </div>
+
+            <div class="modos">
+                <label>Modo de jogo</label>
+                <div class="modos-opcoes">
+                    <div class="modo-opcao">
+                        <input type="radio" name="modo" id="modo-normal" value="normal" checked>
+                        <label for="modo-normal">Normal<small>Para conhecer o jogo</small></label>
+                    </div>
+                    <div class="modo-opcao">
+                        <input type="radio" name="modo" id="modo-pro" value="pro">
+                        <label for="modo-pro">Pro<small>Sem ajuda da IA</small></label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-iniciar" type="submit">Iniciar carreira</button>
+        </form>
     </div>
 </main>
+
+<script src="assets/js/animations/cadastro_1.js"></script>

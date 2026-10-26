@@ -79,3 +79,5 @@
 
 </section>
 </main>
+
+<script src="assets/js/animations/partida.js"></script>

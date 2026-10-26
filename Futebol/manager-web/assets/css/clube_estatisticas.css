@@ -142,3 +142,18 @@ table.historico td.ano { font-family: 'Inter', sans-serif; font-weight: 700; }
 
 .nivel .barra { width: 70px; height: 5px; border-radius: 3px; background: var(--roxo50P); overflow: hidden; }
 .nivel .barra-preenchida { height: 100%; background: var(--verde); border-radius: 3px; }
+
+.nivel .barra-preenchida { transform-origin: left center; }
+
+.stat-item { transition: transform 0.15s ease, border-color 0.15s ease; }
+.stat-item:hover { transform: translateY(-2px); border-color: var(--verde); }
+
+.upgrade { transition: transform 0.15s ease, border-color 0.15s ease; }
+.upgrade:hover { transform: translateX(-3px); border-color: var(--verde); }
+
+.btn-melhorar { transition: transform 0.15s ease, background 0.15s ease; }
+.btn-melhorar:not(:disabled):hover { transform: translateY(-1px); }
+.btn-melhorar:not(:disabled):active { transform: translateY(0); }
+
+table.historico tbody tr { transition: background 0.15s ease; }
+table.historico tbody tr:hover td { background: var(--roxoBrilho); }

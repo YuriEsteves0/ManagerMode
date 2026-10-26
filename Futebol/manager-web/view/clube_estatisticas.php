@@ -153,3 +153,5 @@ $upgradesClube = $apiService->get("/clubes/{$clube->clube->id}/upgrades") ?? [];
     </div>
 
 </main>
+
+<script src="assets/js/animations/clube_estatisticas.js"></script>

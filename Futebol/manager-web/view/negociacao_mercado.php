@@ -811,3 +811,5 @@ sort($nacionalidadesFiltro);
         aplicar();
     });
 </script>
+
+<script src="assets/js/animations/negociacao_mercado.js"></script>

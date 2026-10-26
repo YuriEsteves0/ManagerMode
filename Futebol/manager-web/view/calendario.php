@@ -5,8 +5,6 @@ $estadoJogo = $_SESSION['estado_jogo'];
 $apiService = new ApiService();
 $idClube    = (int)$estadoJogo->clube->id;
 $hoje       = $estadoJogo->dataAtual->format('Y-m-d');
-
-/* Pasta onde ficam as imagens (a API devolve "img/escudosClubes/...") */
 $BASE_IMG = 'assets/';
 
 /* ---------- 1. Busca e organiza os jogos ---------- */
@@ -290,3 +288,5 @@ function renderizar() {
 }
 renderizar();
 </script>
+
+<script src="assets/js/animations/calendario.js"></script>

@@ -1,15 +1,36 @@
-<link rel="stylesheet" href="assets/css/treino.css"> 
+<link rel="stylesheet" href="assets/css/treino.css">
 
+<?php
+$estadoJogo = $_SESSION['estado_jogo'];
+$apiService = new ApiService();
+$idClube = $estadoJogo->clube->id;
+
+$treinosEscolhidosJogador = $apiService->get("/clubes/{$idClube}/treino");
+$todosTreinos = $apiService->get("/treinos");
+
+// Garante que seja array, caso o ApiService retorne string JSON ou objetos
+if (is_string($todosTreinos)) {
+    $todosTreinos = json_decode($todosTreinos, true);
+} else {
+    $todosTreinos = json_decode(json_encode($todosTreinos), true);
+}
+$todosTreinos = $todosTreinos ?: [];
+
+// Ids já escolhidos (ajuste se o formato do endpoint for outro)
+$escolhidos = json_decode(json_encode($treinosEscolhidosJogador), true) ?: [];
+$idsEscolhidos = array_map(function ($t) {
+    return is_array($t) ? ($t['idTreino'] ?? null) : $t;
+}, $escolhidos);
+$idsEscolhidos = array_values(array_filter($idsEscolhidos, fn($v) => $v !== null));
+?>
 <main>
-    
+
 <div class="topo">
     <h1>Treino</h1>
     <div class="contador" id="contador">Selecionados: <span id="qtd">0</span>/4</div>
 </div>
 
-<div class="grid-treinos" id="gradeTreinos">
-    <!-- cards gerados via JS a partir da lista TREINOS -->
-</div>
+<div class="grid-treinos" id="gradeTreinos"></div>
 
 <div class="barra-inferior">
     <span id="dicaRodape">Selecione até 4 treinos para a semana.</span>
@@ -18,56 +39,53 @@
 
 </main>
 
-
 <script>
-var TREINOS = [
-    { nome: 'Resistência Física', efeito: 'Aumenta o fôlego e reduz a fadiga em jogos longos.' },
-    { nome: 'Velocidade', efeito: 'Melhora a aceleração e o sprint dos jogadores.' },
-    { nome: 'Força', efeito: 'Aumenta a força física nos duelos corporais.' },
-    { nome: 'Finalização', efeito: 'Melhora a precisão e a potência dos chutes a gol.' },
-    { nome: 'Passe', efeito: 'Aumenta a precisão dos passes curtos e longos.' },
-    { nome: 'Marcação', efeito: 'Melhora a capacidade defensiva individual.' },
-    { nome: 'Cabeceio', efeito: 'Melhora o desempenho em bolas aéreas.' },
-    { nome: 'Cruzamento', efeito: 'Melhora a precisão dos cruzamentos pelas laterais.' },
-    { nome: 'Drible', efeito: 'Aumenta a habilidade de finta e condução de bola.' },
-    { nome: 'Bola Parada', efeito: 'Melhora cobranças de falta, escanteio e pênalti.' },
-    { nome: 'Reflexos (Goleiros)', efeito: 'Melhora o tempo de reação dos goleiros.' },
-    { nome: 'Saída de Bola', efeito: 'Melhora a construção de jogo desde a defesa.' },
-    { nome: 'Tática Ofensiva', efeito: 'Aumenta a sincronia do time nas jogadas de ataque.' },
-    { nome: 'Tática Defensiva', efeito: 'Melhora a organização defensiva coletiva.' },
-    { nome: 'Recuperação Física', efeito: 'Reduz o tempo de recuperação de lesões e fadiga.' }
-];
+var TREINOS = <?= json_encode($todosTreinos, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>;
+var JA_ESCOLHIDOS = <?= json_encode($idsEscolhidos) ?>;
 
 var LIMITE = 4;
-var selecionados = new Set();
+var selecionados = new Set(); // guarda idTreino
+
+function escapar(txt) {
+    var d = document.createElement('div');
+    d.textContent = txt == null ? '' : txt;
+    return d.innerHTML;
+}
 
 function abreviacao(nome) {
-    return nome.split(' ').map(function(p){ return p[0]; }).join('').substring(0,3).toUpperCase();
+    return nome.split(' ').map(function (p) { return p[0]; }).join('').substring(0, 3).toUpperCase();
 }
 
 function montarGrade() {
     var grade = document.getElementById('gradeTreinos');
-    TREINOS.forEach(function(t, i){
+    TREINOS.forEach(function (t) {
         var card = document.createElement('div');
         card.className = 'treino';
-        card.dataset.index = i;
-        card.onclick = function(){ alternar(i, card); };
-        card.innerHTML =
+        card.dataset.id = t.idTreino;
+        card.onclick = function () { alternar(t.idTreino, card); };
+                card.innerHTML =
             '<div class="marcador">✓</div>' +
-            '<div class="icone">' + abreviacao(t.nome) + '</div>' +
-            '<h3>' + t.nome + '</h3>' +
-            '<p>' + t.efeito + '</p>';
+            '<div class="icone">' + escapar(abreviacao(t.nomeTreino)) + '</div>' +
+            '<h3>' + escapar(t.nomeTreino) + '</h3>' +
+            '<p>' + escapar(t.descTreino) + '</p>';
         grade.appendChild(card);
+
+        // pré-seleciona o que já estava escolhido (respeitando o limite)
+        if (JA_ESCOLHIDOS.indexOf(t.idTreino) !== -1 && selecionados.size < LIMITE) {
+            selecionados.add(t.idTreino);
+            card.classList.add('selecionado');
+        }
     });
+    atualizarContador();
 }
 
-function alternar(i, card) {
-    if (selecionados.has(i)) {
-        selecionados.delete(i);
+function alternar(id, card) {
+    if (selecionados.has(id)) {
+        selecionados.delete(id);
         card.classList.remove('selecionado');
     } else {
         if (selecionados.size >= LIMITE) return;
-        selecionados.add(i);
+        selecionados.add(id);
         card.classList.add('selecionado');
     }
     atualizarContador();
@@ -89,8 +107,13 @@ function atualizarContador() {
 }
 
 function confirmar() {
-    alert('Treino da semana confirmado com ' + selecionados.size + ' atividade(s).');
+    // Ainda não salva nada: só mostra os ids escolhidos
+    var ids = Array.from(selecionados);
+    console.log('Treinos selecionados:', ids);
+    alert('Treino da semana confirmado com ' + ids.length + ' atividade(s).');
 }
 
 montarGrade();
 </script>
+
+<script src="assets/js/animations/treino.js"></script>

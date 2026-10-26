@@ -1,12 +1,11 @@
 <?php
+ob_start();
 require_once __DIR__ . '/models/EstadoJogo.php';
 require_once __DIR__ . '/routes/Pagina.php';
 
 if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-
-// 1. Resolve a rota/página no início da execução
+    session_start();
+}
 $parametro = $_REQUEST['pag'] ?? "cadastro_1";
 $pagina = Pagina::tryFrom($parametro);
 
@@ -20,11 +19,13 @@ $pagina = Pagina::tryFrom($parametro);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ManagerMode.com</title>
     <link rel="stylesheet" href="assets/css/geral.css">
+    <link rel="shortcut icon" href="assets/img/managerModeFavicon.png" type="image/x-icon">
+    <script src="assets/js/animations/geral.js"></script>
 </head>
 
 <body>
     <?php
-    
+
     require_once "includes/headerHelper.php";
     headerHelper();
     ?>

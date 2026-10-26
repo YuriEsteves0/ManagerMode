@@ -4,26 +4,29 @@
 require_once "controller/Cadastro3Controller.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome = $_POST['nome'] ?? '';
-    $nacionalidade = $_POST['nacionalidade'] ?? '';
-    $modo = $_POST['modo'] ?? '';
-    $liga = $_POST['liga'] ?? '';
-    $clubeId = $_POST['clube_id'] ?? '';
-    $clubeNome = $_POST['clube_nome'] ?? '';
-    $clubeFoto = $_POST['clube_foto'] ?? '';
+    $dados = [
+        'nome'          => $_POST['nome'] ?? '',
+        'nacionalidade' => $_POST['nacionalidade'] ?? '',
+        'modo'          => $_POST['modo'] ?? '',
+        'liga'          => $_POST['liga'] ?? '',
+        'clube_id'      => $_POST['clube_id'] ?? '',
+        'clube_nome'    => $_POST['clube_nome'] ?? '',
+        'clube_foto'    => $_POST['clube_foto'] ?? '',
+    ];
 
     $cadastroController = new Cadastro3Controller();
-    $cadastroController->salvar([
-        'nome'          => $nome,
-        'nacionalidade' => $nacionalidade,
-        'modo'          => $modo,
-        'liga'          => $liga,
-        'clube_id'      => $clubeId,
-        'clube_nome'    => $clubeNome,
-        'clube_foto'    => $clubeFoto,
-    ]);
 
-    header('Location: index.php?pag=' . Pagina::INICIO->value);
+    if ($cadastroController->salvar($dados)) {
+        header('Location: index.php?pag=' . Pagina::INICIO->value);
+        exit;
+    }
+
+    header('Location: index.php?pag=cadastro_3&erro=1&' . http_build_query([
+        'nome'          => $dados['nome'],
+        'nacionalidade' => $dados['nacionalidade'],
+        'modo'          => $dados['modo'],
+        'liga'          => $dados['liga'],
+    ]));
     exit;
 }
 
@@ -69,6 +72,7 @@ if (!empty($clubes)) {
         <input type="hidden" name="clube_nome" value="<?= htmlspecialchars($clubeSelecionado['nomeClube'] ?? '') ?>">
         <input type="hidden" name="clube_foto" value="<?= htmlspecialchars($clubeSelecionado['foto'] ?? '') ?>">
     <?php endif; ?>
-
     <button class="btn-jogar" type="submit">Jogar</button>
 </form>
+
+<script src="assets/js/animations/cadastro_3.js"></script>

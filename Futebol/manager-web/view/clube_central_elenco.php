@@ -259,3 +259,5 @@ foreach ($lesoesClube as $lesao) {
         }
     });
 </script>
+
+<script src="assets/js/animations/clube_central_elenco.js"></script>

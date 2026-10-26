@@ -169,3 +169,10 @@ header {
         transition: none !important; 
     }
 }
+
+.liga-opcao label { transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
+.liga-opcao label:hover { transform: translateY(-2px); border-color: var(--verde); }
+
+.btn-jogar { transition: transform 0.15s ease, background 0.15s ease, filter 0.15s ease; }
+.btn-jogar:hover { transform: translateY(-2px); filter: brightness(1.1); }
+.btn-jogar:active { transform: translateY(0); }

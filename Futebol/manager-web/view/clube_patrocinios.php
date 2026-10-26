@@ -122,3 +122,5 @@ $patrocinadores = $apiService->get("/patrocinios");
         }
     });
 </script>
+
+<script src="assets/js/animations/clube_patrocinios.js"></script>

@@ -3,16 +3,22 @@ package com.manager.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.manager.api.requests.ManagerRequest;
 import com.manager.api.responses.HistoricoManagerResponse;
 import com.manager.api.responses.ManagerResponse;
 import com.manager.api.responses.TituloTecnicoResponse;
 import com.manager.api.service.HistoricoManagerService;
 import com.manager.api.service.ManagerService;
 import com.manager.api.service.TituloTecnicoService;
+
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class ManagerController{
@@ -76,5 +82,11 @@ public class ManagerController{
 	@GetMapping("/manager/{idManager}/historico")
 	public List<HistoricoManagerResponse> listarHistoricoPorManager(@PathVariable Integer idManager){
 		return historicoService.listarPorManager(idManager);
+	}
+	
+	@PostMapping("/manager/criar")
+	public ResponseEntity<ManagerResponse> criarManager(@RequestBody ManagerRequest request){
+		ManagerResponse criado = managerService.criarManager(request);
+		return ResponseEntity.status(HttpStatus.CREATED).body(criado);
 	}
 }

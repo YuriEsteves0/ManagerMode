@@ -1,0 +1,254 @@
+h1.titulo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+}
+
+.cfg-layout {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.cfg-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cfg-box {
+    background: var(--fundoMeioTransparente);
+    border: 1px solid var(--roxo50P);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cfg-box h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--roxoTextoMaisClaro);
+    margin-bottom: 8px;
+}
+
+/* linha de configuração */
+.cfg-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid var(--roxo50P);
+}
+
+.cfg-box h2+.cfg-linha {
+    border-top: none;
+    padding-top: 4px;
+}
+
+.cfg-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.cfg-texto strong {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+}
+
+.cfg-texto span {
+    font-size: 12px;
+    color: var(--roxoTextoMaisClaro);
+    line-height: 1.4;
+}
+
+/* toggle */
+.switch {
+    position: relative;
+    width: 42px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.switch i {
+    position: absolute;
+    inset: 0;
+    background: var(--roxo50P);
+    border-radius: 20px;
+    transition: background 0.15s ease;
+}
+
+.switch i::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    background: var(--roxoTextoMaisClaro);
+    border-radius: 50%;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.switch input:checked+i {
+    background: var(--verdeBrilho);
+}
+
+.switch input:checked+i::after {
+    transform: translateX(18px);
+    background: var(--verde);
+}
+
+.switch input:focus-visible+i {
+    outline: 2px solid var(--verde);
+    outline-offset: 2px;
+}
+
+/* resumo do jogo */
+.jogo-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+}
+
+.jogo-cabecalho img {
+    width: 40px;
+    height: 46px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.jogo-cabecalho strong {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    display: block;
+}
+
+.jogo-cabecalho span {
+    font-size: 11.5px;
+    color: var(--roxoTextoMaisClaro);
+}
+
+.info-linha {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12.5px;
+    padding: 9px 0;
+    border-top: 1px solid var(--roxo50P);
+}
+
+.info-linha span:first-child {
+    color: var(--roxoTextoMaisClaro);
+}
+
+.info-linha span:last-child {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    text-align: right;
+}
+
+/* botões */
+.btn-cfg {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--branco);
+    background: var(--verde);
+    border: none;
+    border-radius: 6px;
+    padding: 9px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-cfg:hover {
+    background: var(--verdeBrilho);
+}
+
+.btn-cfg.secundario {
+    background: transparent;
+    border: 1px solid var(--roxo50P);
+    color: var(--roxoTextoMaisClaro);
+}
+
+.btn-cfg.secundario:hover {
+    background: var(--roxoBrilho);
+    border-color: var(--verde);
+    color: var(--branco);
+}
+
+.btn-cfg.perigo {
+    background: transparent;
+    border: 1px solid var(--vermelho);
+    color: var(--vermelho);
+}
+
+.btn-cfg.perigo:hover {
+    background: var(--vermelho);
+    color: var(--branco);
+}
+
+.box-perigo {
+    border-color: #4a2a2e;
+}
+
+.box-perigo h2 {
+    color: var(--vermelho);
+}
+
+.cfg-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.cfg-aviso {
+    font-size: 12px;
+    color: var(--verde);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.cfg-aviso.visivel {
+    opacity: 1;
+}
+
+@media (max-width: 860px) {
+    .cfg-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .cfg-linha {
+        flex-wrap: wrap;
+    }
+}

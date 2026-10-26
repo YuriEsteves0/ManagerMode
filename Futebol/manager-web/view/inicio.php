@@ -15,7 +15,7 @@ $partidasFuturas = [];
 
 
 if ($idLiga > 0 && $idClubeJogador > 0) {
-    $classificacao = $apiService->getClassificacaoProxima($idLiga, $idClubeJogador, 5);
+    $classificacao = $apiService->get("/competicoes/{$idLiga}/classificacao") ?? [];
 
     $jogadores                = $apiService->get("/jogadores/clube/{$idClubeJogador}?todos=false") ?? [];
     $imprensas                = $apiService->get("/noticias", ["categoria" => "IMPRENSA", "idClube" => $idClubeJogador]) ?? [];
@@ -100,32 +100,36 @@ function formatarTitulo(string $titulo, int $qtdDestaque, int $limite = 10): arr
 
         <section class="box" id="box-tabela">
             <h2>Tabela</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Pos</th>
-                        <th>Time</th>
-                        <th class="num">P</th>
-                        <th class="num">J</th>
-                        <th class="num">V</th>
-                        <th class="num">SG</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($classificacao as $i => $clube):
-                        $ehJogador = (int)$clube['clube_idClube'] === $idClubeJogador;
-                    ?>
-                        <tr class="<?= $ehJogador ? 'destaque' : '' ?>">
-                            <td class="pos"><?= $i + 1 ?>º</td>
-                            <td><?= htmlspecialchars($clube['nomeClube'] ?? 'Clube ' . $clube['clube_idClube']) ?></td>
-                            <td class="num"><?= (int)$clube['pontos'] ?></td>
-                            <td class="num">0</td>
-                            <td class="num">0</td>
-                            <td class="num">0</td>
+            <div class="tabela-scroll">
+
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Time</th>
+                            <th class="num">P</th>
+                            <th class="num">J</th>
+                            <th class="num">V</th>
+                            <th class="num">SG</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($classificacao as $i => $clube):
+                            $ehJogador = (int)$clube['clube_idClube'] === $idClubeJogador;
+                        ?>
+                            <tr class="<?= $ehJogador ? 'destaque' : '' ?>">
+                                <td class="pos"><?= $i + 1 ?>º</td>
+                                <td><?= htmlspecialchars($clube['nomeClube'] ?? 'Clube ' . $clube['clube_idClube']) ?></td>
+                                <td class="num"><?= (int)$clube['pontos'] ?></td>
+                                <td class="num">0</td>
+                                <td class="num">0</td>
+                                <td class="num">0</td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <section class="box" id="box-transf">
@@ -152,3 +156,5 @@ function formatarTitulo(string $titulo, int $qtdDestaque, int $limite = 10): arr
 
     </div>
 </main>
+
+<script src="assets/js/animations/inicio.js"></script>

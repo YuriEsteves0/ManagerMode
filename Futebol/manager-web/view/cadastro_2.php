@@ -45,3 +45,5 @@ $competicoes = $apiService->get('/competicoes', ['tipo' => 'PONTOS_CORRIDOS']) ?
     </div>
     <button class="btn-jogar" type="submit">Jogar</button>
 </form>
+
+<script src="assets/js/animations/cadastro_2.js"></script>

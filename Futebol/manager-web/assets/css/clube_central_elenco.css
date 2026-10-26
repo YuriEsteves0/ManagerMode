@@ -100,3 +100,11 @@ table.stats-jogos th.num, table.stats-jogos td.num { text-align: center; }
     .layout { grid-template-columns: 1fr; }
     .box { height: auto; max-height: none; }
 }
+
+.jogador-linha { transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease; }
+.jogador-linha:hover { transform: translateX(3px); }
+
+.mini-stats .item { transition: transform 0.15s ease, border-color 0.15s ease; }
+.mini-stats .item:hover { transform: translateY(-2px); border-color: var(--verde); }
+
+.atributo-linha .barra i { transform-origin: left center; }

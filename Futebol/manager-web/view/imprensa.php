@@ -29,3 +29,4 @@
     </a>
 
 </section>
+<script src="assets/js/animations/imprensa.js"></script>
