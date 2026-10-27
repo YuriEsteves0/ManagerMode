@@ -241,11 +241,11 @@ Documentos que complementam este README. Alguns ainda vão ser escritos (🚧).
 
 | Documento | O que vai conter | Status |
 |---|---|---|
-| [`docs/funcionalidades.md`](docs/funcionalidades.md) | Todas as funcionalidades e mecânicas do jogo, explicando o que cada uma faz | 🚧 |
-| [`docs/api.md`](docs/api.md) | Referência completa dos endpoints, parâmetros e exemplos de resposta | 🚧 |
-| [`docs/banco-de-dados.md`](docs/banco-de-dados.md) | Modelo de dados, tabelas, relacionamentos e diagrama ER | 🚧 |
-| [`docs/arquitetura.md`](docs/arquitetura.md) | Como API, front e banco se comunicam e as decisões de design | 🚧 |
-| [`docs/instalacao.md`](docs/instalacao.md) | Guia de instalação passo a passo, com solução de problemas comuns | 🚧 |
+| [`docs/funcionalidades.md`](FUNCIONALIDADES.md) | Todas as funcionalidades e mecânicas do jogo, explicando o que cada uma faz | 🚧 |
+| [`docs/api.md`](api.md) | Referência completa dos endpoints, parâmetros e exemplos de resposta | 🚧 |
+| [`docs/banco-de-dados.md`](banco-de-dados.md) | Modelo de dados, tabelas, relacionamentos e diagrama ER | 🚧 |
+| [`docs/arquitetura.md`](arquitetura.md) | Como API, front e banco se comunicam e as decisões de design | 🚧 |
+| [`docs/instalacao.md`](INSTALACAO.md) | Guia de instalação passo a passo, com solução de problemas comuns | 🚧 |
 | [`CHANGELOG.md`](CHANGELOG.md) | Histórico de mudanças por versão | 🚧 |
 
 ---
