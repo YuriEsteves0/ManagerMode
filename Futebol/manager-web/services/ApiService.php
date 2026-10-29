@@ -41,6 +41,32 @@ class ApiService
         return null;
     }
 
+    public function put(string $endpoint, array $body = []): ?array
+    {
+        $ch = curl_init($this->baseURL . $endpoint);
+
+        curl_setopt_array($ch, [
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_POSTFIELDS => json_encode($body),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 5,
+            CURLOPT_HTTPHEADER => [
+                'Accept: application/json',
+                'Content-Type: application/json'
+            ]
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode === 200 && $response) {
+            return json_decode($response, true);
+        }
+
+        return null;
+    }
+
     public function post(string $endpoint, array $body = []): ?array
     {
         $ch = curl_init($this->baseURL . $endpoint);

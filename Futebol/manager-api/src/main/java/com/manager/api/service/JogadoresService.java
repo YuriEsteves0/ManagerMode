@@ -3,9 +3,13 @@ package com.manager.api.service;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.manager.api.model.Jogadores;
 import com.manager.api.repository.JogadoresRepository;
+import com.manager.api.requests.JogadoresRequest;
 import com.manager.api.responses.JogadoresResponse;
 
 @Service
@@ -42,4 +46,42 @@ public class JogadoresService{
     public List<JogadoresResponse.comClube> listarPorOverall(){
     	return jogadoresRepository.findAllByOrderByOverallDesc();
     }
+    
+    public JogadoresResponse atualizarPorId(Integer id, JogadoresRequest.titularidade request) {
+    	Jogadores jogador = jogadoresRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Jogador não encontrado!"));
+    	
+    	jogador.setTitular(request.titular());
+    	
+    	Jogadores atualizado = jogadoresRepository.save(jogador);
+    	
+    	return new JogadoresResponse(
+    			atualizado.getIdJogador(),
+    			atualizado.getNomeJogador(),
+    			atualizado.getNumeroCamisa(),
+    			atualizado.getIdade(),
+    			atualizado.getPosicaoPrincipal(),
+    			atualizado.getOverall(),
+    			atualizado.getVelocidade(),
+    			atualizado.getForca(),
+    			atualizado.getInteligencia(),
+    			atualizado.getFinalizacao(),
+    			atualizado.getMarcacao(),
+    			atualizado.getPasse(),
+    			atualizado.getPotencial(),
+    			atualizado.getTitular(),
+    			atualizado.getMoral(),
+    			atualizado.getNacionalidade(),
+    			atualizado.getDispEmprestimo(),
+    			atualizado.getSatisfacao(),
+    			atualizado.getOnfire(),
+    			atualizado.getValor(),
+    			atualizado.getValorRescisao(),
+    			atualizado.getSalario(),
+    			atualizado.getTempoContrato(),
+    			atualizado.getClubeIdClube(),
+    			atualizado.getPosicaoX(),
+    			atualizado.getPosicaoY()
+    	);
+    }
+    
 }
