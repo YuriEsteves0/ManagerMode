@@ -11,6 +11,7 @@ class EstadoJogo {
     public Clube $clube;
     public DateTime $dataInicio; 
     public DateTime $dataAtual;
+    public string $tipoMonetario;
 
     public function __construct(array $dados = []) {
         $this->nome = $dados['nome'] ?? '';
@@ -18,6 +19,7 @@ class EstadoJogo {
         $this->modo = $dados['modo'] ?? '';
         $this->liga = $dados['liga'] ?? '';
         $this->idManager = isset($dados['idManager']) ? (int)$dados['idManager'] : 0;
+        $this->tipoMonetario = "R$";
 
         if (isset($dados['data_inicio']) && !empty($dados['data_inicio'])) {
             $this->dataInicio = new DateTime($dados['data_inicio']);
@@ -31,21 +33,26 @@ class EstadoJogo {
             $this->dataAtual = new DateTime();
         }
 
+        var_dump($dados);
+
+        $apiService = new ApiService();
+        $dadosClube = $apiService->get("/clubes/{$dados['clube_id']}");
+
         $dadosClube = [
-            'id'                        => $dados['clube_id'] ?? $dados['clube']['id'] ?? 0,
-            'nomeClube'                 => $dados['clube_nome'] ?? $dados['clube']['nomeClube'] ?? '',
-            'orcamento'                 => $dados['clube']['orcamento'] ?? 0,
-            'valorClube'                => $dados['clube']['valorClube'] ?? 0,
-            'camisasVendidas'           => $dados['clube']['camisasVendidas'] ?? 0,
-            'qntTorcedores'             => $dados['clube']['qntTorcedores'] ?? 0,
-            'reputacao'                 => $dados['clube']['reputacao'] ?? 0,
-            'patrocinador_idPatrocinador' => $dados['clube']['patrocinador_idPatrocinador'] ?? null,
-            'confiancaDiretoria'        => $dados['clube']['confiancaDiretoria'] ?? 50,
-            'statusConfianca'           => $dados['clube']['statusConfianca'] ?? 'ESTAVEL',
-            'eventoAtual'               => $dados['clube']['eventoAtual'] ?? null,
-            'capacidadeEstadio'         => $dados['clube']['capacidadeEstadio'] ?? 0,
-            'foto'                      => $dados['clube_foto'] ?? $dados['clube']['foto'] ?? '',
-            'nomeEstadio'               => $dados['clube']['nomeEstadio'] ?? ''
+            'id'                        => $dadosClube['idClube'] ?? $dadosClube['clube']['id'] ?? 0,
+            'nomeClube'                 => $dadosClube['nomeClube'] ?? $dadosClube['clube']['nomeClube'] ?? '',
+            'orcamento'                 => $dadosClube['orcamento'] ?? 0,
+            'valorClube'                => $dadosClube['valorClube'] ?? 0,
+            'camisasVendidas'           => $dadosClube['camisasVendidas'] ?? 0,
+            'qntTorcedores'             => $dadosClube['qntTorcedores'] ?? 0,
+            'reputacao'                 => $dadosClube['reputacao'] ?? 0,
+            'patrocinador_idPatrocinador' => $dadosClube['patrocinador_idPatrocinador'] ?? null,
+            'confiancaDiretoria'        => $dadosClube['confiancaDiretoria'] ?? 50,
+            'statusConfianca'           => $dadosClube['statusConfianca'] ?? 'ESTAVEL',
+            'eventoAtual'               => $dadosClube['eventoAtual'] ?? null,
+            'capacidadeEstadio'         => $dadosClube['capacidadeEstadio'] ?? 0,
+            'foto'                      => $dadosClube['foto'] ?? $dadosClube['clube']['foto'] ?? '',
+            'nomeEstadio'               => $dadosClube['nomeEstadio'] ?? ''
         ];
 
         $this->clube = new Clube($dadosClube);

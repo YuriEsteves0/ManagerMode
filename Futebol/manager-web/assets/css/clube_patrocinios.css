@@ -146,3 +146,8 @@ ul.exigencias li strong { color: var(--branco); font-weight: 500; }
 .btn-assinar { transition: transform 0.15s ease, background 0.15s ease, filter 0.15s ease; }
 .btn-assinar:hover { transform: translateY(-2px); filter: brightness(1.1); }
 .btn-assinar:active { transform: translateY(0); }
+
+.btn-assinar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

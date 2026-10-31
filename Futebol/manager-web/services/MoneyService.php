@@ -1,5 +1,6 @@
 <?php 
 
+
 function formatarNumero(int $numero): string
 {
     if ($numero < 1000) {
@@ -17,5 +18,6 @@ function formatarNumero(int $numero): string
 
     return $numeroFinal . $sufixos[$i];
 }
+
 
 ?>

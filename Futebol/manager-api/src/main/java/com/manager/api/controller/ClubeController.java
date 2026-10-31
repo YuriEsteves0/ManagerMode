@@ -3,12 +3,14 @@ package com.manager.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.manager.api.model.ClubeHasUpgrade;
+import com.manager.api.requests.ClubeHasUpgradeRequest;
 import com.manager.api.responses.ClubeCompeticaoResponse;
 import com.manager.api.responses.ClubeHasAcaoDiretoriaResponse;
 import com.manager.api.responses.ClubeHasMetaTemporadaResponse;
@@ -30,6 +32,9 @@ import com.manager.api.service.EstatisticasAnoClubeService;
 import com.manager.api.service.NoticiaDiretoriaService;
 import com.manager.api.service.PatrocinadorService;
 import com.manager.api.service.PropostaTransferenciaService;
+
+import org.springframework.web.bind.annotation.RequestBody;
+import jakarta.validation.Valid;
 
 @RestController
 public class ClubeController {
@@ -146,6 +151,11 @@ public class ClubeController {
     	return clubeHasUpgradeService.listarUpgradesClubeComNome(id);
     }
     
+    @GetMapping("/clubes/{id}/upgrade/{idUpgrade}")
+    public Optional<ClubeHasUpgradeResponse> buscarUpgradePorId(@PathVariable Integer id, @PathVariable Integer idUpgrade){
+    	return clubeHasUpgradeService.listarUpgradeClubeComNome(id, idUpgrade);
+    }
+    
     /**
      * Busca todas as transferências (enviadas / recebidas) de um clube, conforme o parâmetro <strong>tipoTransferencia</strong>.
      *
@@ -186,5 +196,16 @@ public class ClubeController {
     @GetMapping("/clubes/{idClube}/acaoDiretoria")
     public List<ClubeHasAcaoDiretoriaResponse> listarAcoes(@PathVariable Integer idClube){
     	return clubeAcaoDiretoriaService.listarAcoesClube(idClube);
+    }
+    
+    @PutMapping("/clubes/{idClube}/upgrade/{idUpgrade}")
+    public ResponseEntity<ClubeHasUpgradeResponse> updateUpgradeClube(
+    		@PathVariable Integer idClube,
+    		@PathVariable Integer idUpgrade,
+    		@RequestBody @Valid ClubeHasUpgradeRequest request) {
+
+    	return clubeHasUpgradeService.updateUpgrade(idClube, idUpgrade, request)
+    			.map(ResponseEntity::ok)
+    			.orElse(ResponseEntity.notFound().build());
     }
 }

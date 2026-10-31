@@ -3,6 +3,7 @@
 <?php
 $apiService = new ApiService();
 $patrocinadores = $apiService->get("/patrocinios");
+$idPatrocinadorClube = $_SESSION['estado_jogo']->clube->patrocinadorId;
 ?>
 
 <main>
@@ -63,6 +64,8 @@ $patrocinadores = $apiService->get("/patrocinios");
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        var idPatrocinadorAtual = <?= json_encode($idPatrocinadorClube) ?>;
+
         var itens = document.querySelectorAll('.patrocinador-item[data-id]');
         var logo = document.getElementById('detalhe-logo');
         var nome = document.getElementById('detalhe-nome');
@@ -108,6 +111,10 @@ $patrocinadores = $apiService->get("/patrocinios");
             duracao.textContent = d.duracao + ' meses';
             descricao.textContent = d.descricao;
             btnAssinar.dataset.id = d.id;
+
+            var jaAssinado = String(d.id) === String(idPatrocinadorAtual);
+            btnAssinar.disabled = jaAssinado;
+            btnAssinar.textContent = jaAssinado ? 'Contrato Ativo' : 'Assinar Contrato';
         }
 
         itens.forEach(function (item) {

@@ -75,9 +75,16 @@ function nomeCurto($nome)
 $titulares = $reservas = $naoRelacionados = [];
 foreach ($jogadores as $j) {
     switch ((int)$j['titular']) {
-        case ESCALACAO_TITULAR:         $titulares[]       = $j; break;
-        case ESCALACAO_RESERVA:         $reservas[]        = $j; break;
-        case ESCALACAO_NAO_RELACIONADO: $naoRelacionados[] = $j; break;
+        case ESCALACAO_TITULAR:
+            $titulares[] = $j;
+            break;
+        case ESCALACAO_RESERVA:
+            $reservas[] = $j;
+            break;
+        default:
+            $j['titular'] = ESCALACAO_NAO_RELACIONADO;
+            $naoRelacionados[] = $j;
+            break;
     }
 }
 
@@ -96,6 +103,11 @@ $mapaLinha = [
     'VOL' => 'MEI', 'MC' => 'MEI',
     'PE'  => 'ATA', 'PD' => 'ATA', 'ATA' => 'ATA',
 ];
+$ordemPosicao = [
+    'LE' => 0, 'PE' => 0,
+    'GOL' => 1, 'ZAG' => 1, 'VOL' => 1, 'MC' => 1, 'ATA' => 1,
+    'LD' => 2, 'PD' => 2,
+];
 
 foreach ($titulares as $j) {
     $linha = $mapaLinha[$j['posicaoPrincipal']] ?? 'MEI';
@@ -112,7 +124,10 @@ $qtdTitulares = count($titulares);
 <link rel="stylesheet" href="assets/css/clube_equipe.css">
 
 <style>
-    .selecionavel { cursor: pointer; }
+    .selecionavel { cursor: pointer; user-select: none; -webkit-user-select: none; }
+    .pos-jogador.selecionavel { z-index: 2; pointer-events: auto; }
+    .pos-jogador.selecionado { z-index: 3; }
+    .item-jogador.selecionavel { pointer-events: auto; }
     .item-jogador.selecionado { outline: 2px solid #f5c542; outline-offset: 2px; }
     .pos-jogador.selecionado .bolinha { outline: 3px solid #f5c542; outline-offset: 2px; }
     .trocando { opacity: .6; pointer-events: none; }
@@ -145,7 +160,7 @@ $qtdTitulares = count($titulares);
                 <?php
                 foreach ($linhas as $linha) {
                     $grupo = $linha['jogadores'];
-                    usort($grupo, fn($a, $b) => $a['posicaoX'] <=> $b['posicaoX']);
+                    usort($grupo, fn($a, $b) => [$ordemPosicao[$a['posicaoPrincipal']] ?? 1, $a['posicaoX']] <=> [$ordemPosicao[$b['posicaoPrincipal']] ?? 1, $b['posicaoX']]);
                     $total = count($grupo);
 
                     foreach ($grupo as $i => $j) {
@@ -216,74 +231,82 @@ $qtdTitulares = count($titulares);
 </main>
 
 <script>
-    let primeiro = null;
-    let ocupado = false;
+    (function () {
+        const main = document.querySelector('main');
+        let primeiro = null;
+        let ocupado = false;
 
-    function limparSelecao() {
-        if (primeiro) {
-            primeiro.classList.remove('selecionado');
-        }
-        primeiro = null;
-    }
-
-    async function trocarJogadores(a, b) {
-        ocupado = true;
-        document.querySelector('main').classList.add('trocando');
-
-        const corpo = {
-            a: { id: parseInt(a.dataset.id), titular: parseInt(b.dataset.status) },
-            b: { id: parseInt(b.dataset.id), titular: parseInt(a.dataset.status) }
-        };
-
-        try {
-            const resposta = await fetch(window.location.href, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Troca-Escalacao': '1'
-                },
-                body: JSON.stringify(corpo)
-            });
-            const texto = await resposta.text();
-            const inicio = texto.lastIndexOf('{"ok"');
-            const dados = JSON.parse(texto.slice(inicio));
-            if (dados.ok) {
-                location.reload();
-                return;
+        function selecionar(el) {
+            if (primeiro) {
+                primeiro.classList.remove('selecionado');
             }
-        } catch (e) {}
+            primeiro = el;
+            if (primeiro) {
+                primeiro.classList.add('selecionado');
+            }
+        }
 
-        alert('Não foi possível trocar os jogadores.');
-        location.reload();
-    }
+        async function trocarJogadores(a, b) {
+            ocupado = true;
+            main.classList.add('trocando');
 
-    document.querySelectorAll('.selecionavel').forEach(function (el) {
-        el.addEventListener('click', function () {
+            const corpo = {
+                a: { id: parseInt(a.dataset.id, 10), titular: parseInt(b.dataset.status, 10) },
+                b: { id: parseInt(b.dataset.id, 10), titular: parseInt(a.dataset.status, 10) }
+            };
+
+            try {
+                const resposta = await fetch(window.location.href, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Troca-Escalacao': '1'
+                    },
+                    body: JSON.stringify(corpo)
+                });
+                const texto = await resposta.text();
+                const inicio = texto.lastIndexOf('{"ok"');
+                const dados = JSON.parse(texto.slice(inicio));
+                if (dados.ok) {
+                    location.reload();
+                    return;
+                }
+            } catch (e) {}
+
+            alert('Não foi possível trocar os jogadores.');
+            location.reload();
+        }
+
+        main.addEventListener('click', function (evento) {
             if (ocupado) {
                 return;
             }
 
+            const el = evento.target.closest('.selecionavel');
+            if (!el || !main.contains(el)) {
+                return;
+            }
+
             if (!primeiro) {
-                primeiro = el;
-                el.classList.add('selecionado');
+                selecionar(el);
                 return;
             }
 
             if (primeiro === el) {
-                limparSelecao();
+                selecionar(null);
+                return;
+            }
+
+            if (primeiro.dataset.status === el.dataset.status) {
+                selecionar(el);
                 return;
             }
 
             const a = primeiro;
-            limparSelecao();
-
-            if (a.dataset.status === el.dataset.status) {
-                return;
-            }
-
+            selecionar(null);
             trocarJogadores(a, el);
         });
-    });
+    })();
 </script>
 
 <script src="assets/js/animations/clube_equipe.js"></script>
