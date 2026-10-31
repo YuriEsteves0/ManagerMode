@@ -1,4 +1,14 @@
 <link rel="stylesheet" href="assets/css/cadastro_1.css">
+
+<?php 
+
+if (isset($_SESSION['estado_jogo'])) {
+    header('Location: index.php?pag=' . Pagina::INICIO->value);
+    exit; 
+}
+
+?>
+
 <main>
     <div class="conteudo">
         <div class="lado-texto">

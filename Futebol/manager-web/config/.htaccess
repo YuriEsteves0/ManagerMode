@@ -1,0 +1,7 @@
+# Não deixa ninguém abrir os arquivos de configuração pelo navegador (Apache/XAMPP)
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Deny from all
+</IfModule>

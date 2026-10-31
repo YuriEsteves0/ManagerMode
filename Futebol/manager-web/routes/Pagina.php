@@ -42,6 +42,14 @@ enum Pagina: string{
             self::CONFIGURACOES => 'view/configuracoes.php',
         };
     }
+    public function exigeEstadoJogo(): bool{
+        return match($this) {
+            self::CADASTRO_1,
+            self::CADASTRO_2,
+            self::CADASTRO_3 => false,
+            default => true,
+        };
+    }
 }
 
 ?>

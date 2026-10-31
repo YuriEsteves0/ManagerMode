@@ -9,6 +9,14 @@ if (session_status() === PHP_SESSION_NONE) {
 $parametro = $_REQUEST['pag'] ?? "cadastro_1";
 $pagina = Pagina::tryFrom($parametro);
 
+$temEstadoJogo = isset($_SESSION['estado_jogo']);
+$precisaEstadoJogo = ($pagina === null) || $pagina->exigeEstadoJogo();
+
+if (!$temEstadoJogo && $precisaEstadoJogo) {
+    header('Location: index.php?pag=' . Pagina::CADASTRO_1->value);
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
