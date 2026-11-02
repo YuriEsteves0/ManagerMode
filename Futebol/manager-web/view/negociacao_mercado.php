@@ -5,6 +5,10 @@
 $apiService = new ApiService();
 $jogadores = $apiService->get("/jogadores/overall") ?? [];
 
+$orcamento = $_SESSION['estado_jogo']->clube->orcamento;
+
+$idMeuClube = $_SESSION['estado_jogo']->clube->id;
+
 $nomesClubes = [];
 
 function nomeDoClube(array $jogador, array $nomesClubes): string
@@ -69,7 +73,7 @@ sort($nacionalidadesFiltro);
 
         <section class="box">
             <div class="topo-busca">
-                <div class="orcamento">Orçamento disponível: <strong>R$ 22,4M</strong></div>
+                <div class="orcamento">Orçamento disponível: <strong>R$ <?= number_format($orcamento / 1000000, 1, ',', '.') ?>M</strong></div>
 
                 <div class="busca-linha">
                     <input type="text" id="busca" placeholder="Buscar jogador ou clube...">
@@ -238,30 +242,74 @@ sort($nacionalidadesFiltro);
 <dialog class="proposta-modal" id="proposta-modal">
     <form class="proposta-form" id="proposta-form" novalidate>
         <header class="proposta-topo">
-            <div>
-                <h2>Fazer proposta</h2>
-                <span id="proposta-jogador">-</span>
+            <div class="proposta-id">
+                <span class="proposta-pos" id="proposta-pos">-</span>
+                <div>
+                    <h2 id="proposta-nome">Fazer proposta</h2>
+                    <span id="proposta-sub">-</span>
+                </div>
             </div>
-            <button type="button" class="proposta-fechar" id="proposta-fechar" aria-label="Fechar">×</button>
+            <button type="button" class="proposta-fechar" id="proposta-fechar" aria-label="Fechar">&times;</button>
         </header>
 
         <div class="proposta-ref">
             <div class="item"><span>Valor de mercado</span><strong id="proposta-ref-valor">-</strong></div>
             <div class="item"><span>Multa de rescisão</span><strong id="proposta-ref-multa">-</strong></div>
-            <div class="item"><span>Clube do jogador</span><strong id="proposta-ref-clube">-</strong></div>
+            <div class="item"><span>Salário mensal</span><strong id="proposta-ref-salario">-</strong></div>
+            <div class="item"><span>Contrato restante</span><strong id="proposta-ref-contrato">-</strong></div>
+            <div class="item"><span>Overall / Potencial</span><strong id="proposta-ref-overall">-</strong></div>
+            <div class="item"><span>Moral</span><strong id="proposta-ref-moral">-</strong></div>
         </div>
 
         <div class="proposta-campo">
             <label for="proposta-valor">Valor oferecido (R$)</label>
             <input type="text" id="proposta-valor" inputmode="numeric" autocomplete="off" placeholder="0">
+
+            <div class="proposta-rapido" id="proposta-rapido">
+                <button type="button" data-fator="0.8">80%</button>
+                <button type="button" data-fator="1">100%</button>
+                <button type="button" data-fator="1.2">120%</button>
+                <button type="button" id="proposta-rapido-multa">Multa</button>
+            </div>
+
             <small id="proposta-valor-info"></small>
         </div>
+
+        <div class="proposta-resumo">
+            <div class="info-linha"><span>Orçamento disponível</span><span id="proposta-orcamento">-</span></div>
+            <div class="info-linha"><span>Saldo após a proposta</span><span id="proposta-saldo">-</span></div>
+        </div>
+
+        <!-- NOVO: painel da contraproposta -->
+        <div class="proposta-contra" id="proposta-contra" hidden>
+    <span class="contra-selo">Contraproposta</span>
+    <p class="contra-msg" id="proposta-contra-msg"></p>
+
+    <div class="contra-valores">
+        <div class="contra-item">
+            <span>Sua oferta</span>
+            <strong id="proposta-contra-sua">-</strong>
+        </div>
+        <span class="contra-seta">→</span>
+        <div class="contra-item destaque">
+            <span>O clube pede</span>
+            <strong id="proposta-contra-valor">-</strong>
+        </div>
+    </div>
+
+    <small class="contra-aviso" id="proposta-contra-aviso" hidden></small>
+
+    <div class="proposta-contra-acoes">
+        <button type="button" class="btn-secundario" id="proposta-contra-ajustar">Ajustar oferta</button>
+        <button type="button" class="btn-proposta" id="proposta-contra-aceitar">Fechar negócio</button>
+    </div>
+</div>
 
         <p class="proposta-erro" id="proposta-erro" hidden></p>
 
         <footer class="proposta-acoes">
             <button type="button" class="btn-secundario" id="proposta-cancelar">Cancelar</button>
-            <button type="submit" class="btn-proposta">Enviar proposta</button>
+            <button type="submit" class="btn-proposta" id="proposta-enviar">Enviar proposta</button>
         </footer>
     </form>
 </dialog>
@@ -270,6 +318,58 @@ sort($nacionalidadesFiltro);
     var JOGADORES = <?= json_encode($lista, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>;
 
     var API_URL = 'http://localhost:8080';
+
+    var ORCAMENTO = <?= (float) $orcamento ?>;
+
+    // Clube interessado (quem faz a proposta) -> idClubeExterior na API
+    var ID_MEU_CLUBE = <?= (int) $idMeuClube ?>;
+
+    // NOVO: limites da análise (razão = oferta / preço pedido pelo clube)
+    var LIMITE_RECUSA = 0.70; // abaixo disso: RECUSADA
+    var LIMITE_ACEITE = 1.00; // a partir disso: ACEITA
+    var PAGINA_PROPOSTAS = '?pag=propostas_enviadas';
+
+    // NOVO: analisa a proposta e devolve { resultado, precoPedido, razao, contraproposta }
+    function avaliarProposta(j, oferta) {
+        var preco = j.valor;
+
+        // contrato curto = clube aceita menos; contrato longo = pede mais
+        if (j.contrato <= 6) preco *= 0.85;
+        else if (j.contrato > 36) preco *= 1.10;
+
+        // idade avançada desvaloriza; promessa jovem valoriza
+        if (j.idade >= 32) preco *= 0.90;
+        else if (j.idade > 0 && j.idade <= 21 && (j.pot - j.ovr) >= 8) preco *= 1.15;
+
+        // jogador em grande fase
+        if (j.fire === 1) preco *= 1.10;
+
+        // nunca pede mais que a multa de rescisão
+        if (j.multa > 0 && preco > j.multa) preco = j.multa;
+
+        preco = Math.round(preco);
+
+        // pagou a multa ou o clube não pede nada: aceita direto
+        if ((j.multa > 0 && oferta >= j.multa) || preco <= 0) {
+            return { resultado: 'ACEITA_1', precoPedido: preco, razao: 1, contraproposta: null };
+        }
+
+        var razao = oferta / preco;
+
+        if (razao >= LIMITE_ACEITE) {
+            return { resultado: 'ACEITA_1', precoPedido: preco, razao: razao, contraproposta: null };
+        }
+
+        if (razao < LIMITE_RECUSA) {
+            return { resultado: 'RECUSADA', precoPedido: preco, razao: razao, contraproposta: null };
+        }
+
+        // contraproposta: ponto médio entre a oferta e o preço pedido, arredondado para cima (10 mil)
+        var contra = Math.ceil(((oferta + preco) / 2) / 10000) * 10000;
+        if (contra > preco) contra = preco;
+
+        return { resultado: 'CONTRAPROPOSTA', precoPedido: preco, razao: razao, contraproposta: contra };
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
         var POR_PAGINA = 15;
@@ -290,6 +390,7 @@ sort($nacionalidadesFiltro);
         var selecionadoId = null;
         var cacheEstatisticas = {};
         var jogadorAtual = null;
+        var contrapropostaAtual = null; // NOVO: valor da contraproposta em aberto
 
         JOGADORES.forEach(function(j, i) {
             j._i = i;
@@ -667,14 +768,33 @@ sort($nacionalidadesFiltro);
                 });
         }
 
+        /* ===== MODAL DE PROPOSTA ===== */
+
         var pr = {
-            jogador: campo('proposta-jogador'),
+            pos: campo('proposta-pos'),
+            nome: campo('proposta-nome'),
+            sub: campo('proposta-sub'),
             refValor: campo('proposta-ref-valor'),
             refMulta: campo('proposta-ref-multa'),
-            refClube: campo('proposta-ref-clube'),
+            refSalario: campo('proposta-ref-salario'),
+            refContrato: campo('proposta-ref-contrato'),
+            refOverall: campo('proposta-ref-overall'),
+            refMoral: campo('proposta-ref-moral'),
             valor: campo('proposta-valor'),
             valorInfo: campo('proposta-valor-info'),
-            erro: campo('proposta-erro')
+            orcamento: campo('proposta-orcamento'),
+            saldo: campo('proposta-saldo'),
+            btnMulta: campo('proposta-rapido-multa'),
+            btnEnviar: campo('proposta-enviar'),
+            erro: campo('proposta-erro'),
+            // NOVO
+            contra: campo('proposta-contra'),
+contraMsg: campo('proposta-contra-msg'),
+contraSua: campo('proposta-contra-sua'),
+contraValor: campo('proposta-contra-valor'),
+contraAviso: campo('proposta-contra-aviso'),
+contraAceitar: campo('proposta-contra-aceitar'),
+contraAjustar: campo('proposta-contra-ajustar')
         };
 
         var modalProposta = campo('proposta-modal');
@@ -694,8 +814,46 @@ sort($nacionalidadesFiltro);
             pr.erro.hidden = true;
         }
 
+        // NOVO: esconde o painel de contraproposta
+        function esconderContraproposta() {
+            contrapropostaAtual = null;
+            pr.contra.hidden = true;
+            pr.contraAviso.hidden = true;
+        }
+
+        // NOVO: mostra o painel de contraproposta
+        function mostrarContraproposta(analise, oferta) {
+    contrapropostaAtual = analise.contraproposta;
+
+    var diferenca = analise.contraproposta - oferta;
+    pr.contraMsg.textContent = 'Estamos perto de um acordo. O clube fecha se você cobrir mais ' +
+        dinheiro(diferenca) + '.';
+
+    pr.contraSua.textContent = dinheiro(oferta);
+    pr.contraValor.textContent = dinheiro(analise.contraproposta);
+
+    var estoura = analise.contraproposta > ORCAMENTO;
+    pr.contraAceitar.disabled = estoura;
+    pr.contraAviso.hidden = !estoura;
+    pr.contraAviso.textContent = estoura ? 'Esse valor ultrapassa o seu orçamento disponível.' : '';
+
+    pr.contra.hidden = false;
+}
+
+        function definirValor(v) {
+            pr.valor.value = v > 0 ? Math.round(v).toLocaleString('pt-BR') : '';
+            limparErro();
+            esconderContraproposta(); // ALTERADO: mudar o valor invalida a contraproposta
+            atualizarInfoValor();
+        }
+
         function atualizarInfoValor() {
             var v = valorDigitado();
+
+            var saldo = ORCAMENTO - v;
+            pr.saldo.textContent = dinheiro(saldo);
+            pr.saldo.className = saldo < 0 ? 'negativo' : '';
+
             if (!jogadorAtual || v <= 0) {
                 pr.valorInfo.textContent = '';
                 return;
@@ -711,28 +869,111 @@ sort($nacionalidadesFiltro);
         }
 
         function abrirProposta(j) {
-            pr.jogador.textContent = j.nome + ' • ' + j.pos + ' • ' + j.clube;
+            limparErro();
+            esconderContraproposta(); // NOVO
+
+            pr.pos.textContent = texto(j.pos);
+            pr.nome.textContent = texto(j.nome);
+            pr.sub.textContent = (j.idade ? j.idade + ' anos • ' : '') + texto(j.nac) + ' • ' + texto(j.clube);
+
             pr.refValor.textContent = 'R$ ' + j.valorFmt;
             pr.refMulta.textContent = dinheiro(j.multa);
-            pr.refClube.textContent = texto(j.clube);
+            pr.refSalario.textContent = dinheiro(j.salario);
+            pr.refContrato.textContent = texto(j.contratoFmt);
+            pr.refOverall.textContent = texto(j.ovr) + ' / ' + texto(j.pot);
+            pr.refMoral.textContent = texto(j.moral);
 
-            pr.valor.value = j.valor > 0 ? Math.round(j.valor).toLocaleString('pt-BR') : '';
+            pr.orcamento.textContent = dinheiro(ORCAMENTO);
+            pr.btnMulta.hidden = !(j.multa > 0);
 
-            limparErro();
-            atualizarInfoValor();
+            definirValor(j.valor);
+
             modalProposta.showModal();
             pr.valor.focus();
             pr.valor.select();
         }
 
+        /* ===== ENVIO DA PROPOSTA PARA A API ===== */
+
+        // POST /propostaTransferencia
+        // idClubeInterior = clube dono do jogador (vendedor)
+        // idClubeExterior = clube interessado (o do usuário)
+        // ALTERADO: agora o corpo inclui "status" (ACEITA ou RECUSADA)
         function enviarProposta(proposta) {
+            return fetch(API_URL + '/propostaTransferencia', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(proposta)
+            }).then(function(r) {
+                if (r.ok) return r.json();
+
+                var mensagens = {
+                    400: 'Dados da proposta inválidos.',
+                    404: 'Jogador ou clube não encontrado.',
+                    409: 'Já existe uma proposta pendente deste clube para este jogador.'
+                };
+                throw new Error(mensagens[r.status] || 'Erro ao enviar proposta (HTTP ' + r.status + ').');
+            });
+        }
+
+        // NOVO: monta o corpo, envia com o status e trata o resultado na tela
+        function enviarComStatus(valor, status) {
+            pr.btnEnviar.disabled = true;
+            pr.btnEnviar.textContent = 'Enviando...';
+            pr.contraAceitar.disabled = true;
+
+            return enviarProposta({
+                    idJogador: jogadorAtual.id,
+                    idClubeInterior: jogadorAtual.clubeId, // dono do jogador
+                    idClubeExterior: ID_MEU_CLUBE, // clube interessado
+                    valorOferecido: valor,
+                    statusProposta: status
+                })
+                .then(function(resposta) {
+                    var nomeClube = (resposta && resposta.clubeInterior && resposta.clubeInterior.nomeClube) ||
+                        jogadorAtual.clube;
+
+                    modalProposta.close();
+
+                    if (status === 'ACEITA_1') {
+                        Toast.sucesso('Proposta aceita por ' + nomeClube + '!');
+                        setTimeout(function() {
+                            window.location.href = PAGINA_PROPOSTAS;
+                        }, 1200);
+                    } else {
+                        Toast.erro(nomeClube + ' recusou a proposta: o contrato oferecido foi muito ruim.');
+                    }
+                })
+                .catch(function(err) {
+                    // ALTERADO: o modal continua aberto e mostra o erro real
+                    var semConexao = err instanceof TypeError;
+                    mostrarErro(semConexao ? 'Não foi possível conectar à API.' : err.message);
+                })
+                .finally(function() {
+                    pr.btnEnviar.disabled = false;
+                    pr.btnEnviar.textContent = 'Enviar proposta';
+                    pr.contraAceitar.disabled = !!contrapropostaAtual && contrapropostaAtual > ORCAMENTO;
+                });
         }
 
         pr.valor.addEventListener('input', function() {
             var digitos = pr.valor.value.replace(/\D/g, '');
             pr.valor.value = digitos === '' ? '' : Number(digitos).toLocaleString('pt-BR');
             limparErro();
+            esconderContraproposta(); // NOVO
             atualizarInfoValor();
+        });
+
+        document.querySelectorAll('#proposta-rapido button[data-fator]').forEach(function(b) {
+            b.addEventListener('click', function() {
+                if (jogadorAtual) definirValor(jogadorAtual.valor * Number(b.dataset.fator));
+            });
+        });
+
+        pr.btnMulta.addEventListener('click', function() {
+            if (jogadorAtual) definirValor(jogadorAtual.multa);
         });
 
         campo('proposta-fechar').addEventListener('click', function() {
@@ -747,6 +988,27 @@ sort($nacionalidadesFiltro);
             if (e.target === modalProposta) modalProposta.close();
         });
 
+        // NOVO: "Ajustar minha oferta" -> preenche o campo com a contraproposta para o usuário editar
+        pr.contraAjustar.addEventListener('click', function() {
+            var sugestao = contrapropostaAtual;
+            esconderContraproposta();
+            if (sugestao) definirValor(sugestao);
+            pr.valor.focus();
+        });
+
+        // NOVO: "Aceitar contraproposta" -> fecha negócio pelo valor do clube (ACEITA)
+        pr.contraAceitar.addEventListener('click', function() {
+            if (!jogadorAtual || !contrapropostaAtual) return;
+
+            if (contrapropostaAtual > ORCAMENTO) {
+                mostrarErro('A contraproposta ultrapassa o orçamento disponível.');
+                return;
+            }
+
+            enviarComStatus(contrapropostaAtual, 'ACEITA_1');
+        });
+
+        // ALTERADO: o submit agora analisa a proposta antes de decidir o que fazer
         campo('proposta-form').addEventListener('submit', function(e) {
             e.preventDefault();
             if (!jogadorAtual) return;
@@ -758,13 +1020,27 @@ sort($nacionalidadesFiltro);
                 return;
             }
 
-            enviarProposta({
-                idJogador: jogadorAtual.id,
-                idClubeVendedor: jogadorAtual.clubeId,
-                valorOferecido: valor
-            });
+            if (valor > ORCAMENTO) {
+                mostrarErro('O valor oferecido ultrapassa o orçamento disponível.');
+                return;
+            }
 
-            modalProposta.close();
+            if (Number(jogadorAtual.clubeId) === ID_MEU_CLUBE) {
+                mostrarErro('Você não pode fazer proposta por um jogador do seu próprio clube.');
+                return;
+            }
+
+            var analise = avaliarProposta(jogadorAtual, valor);
+
+            if (analise.resultado === 'CONTRAPROPOSTA') {
+                // não envia nada para a API, só mostra a contraproposta
+                limparErro();
+                mostrarContraproposta(analise, valor);
+                return;
+            }
+
+            // ACEITA ou RECUSADA: envia para a API com o status
+            enviarComStatus(valor, analise.resultado);
         });
 
         el.proposta.addEventListener('click', function() {

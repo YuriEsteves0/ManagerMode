@@ -1,0 +1,138 @@
+/* ==========================================================
+   TOAST (mensagens no canto da tela) - estilo reutilizável
+   Uso: inclua este CSS + toast.js em qualquer tela.
+   Para mudar o visual do projeto inteiro, edite as variáveis abaixo.
+   ========================================================== */
+
+:root {
+    --toast-bg: rgba(255, 255, 255, 0.10);
+    --toast-borda: rgba(255, 255, 255, 0.22);
+    --toast-texto: #ffffff;
+    --toast-blur: 16px;
+    --toast-raio: 14px;
+    --toast-sombra: 0 12px 32px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.30);
+
+    --toast-sucesso: #4ade80;
+    --toast-erro: #f87171;
+    --toast-aviso: #fbbf24;
+    --toast-info: #60a5fa;
+}
+
+.toast-container {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+    pointer-events: none; /* só os toasts recebem clique */
+}
+
+.toast {
+    --toast-cor: var(--toast-info);
+
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 240px;
+    max-width: 380px;
+    padding: 14px 16px;
+    color: var(--toast-texto);
+    font-size: 14px;
+    line-height: 1.4;
+    cursor: pointer;
+
+    /* efeito vidro */
+    background: var(--toast-bg);
+    -webkit-backdrop-filter: blur(var(--toast-blur)) saturate(160%);
+    backdrop-filter: blur(var(--toast-blur)) saturate(160%);
+    border: 1px solid var(--toast-borda);
+    border-radius: var(--toast-raio);
+
+    /* sombra que projeta a mensagem + brilho da cor do tipo */
+    box-shadow:
+        var(--toast-sombra),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 0 0 1px color-mix(in srgb, var(--toast-cor) 18%, transparent);
+
+    animation: toast-entrar 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+.toast.saindo {
+    animation: toast-sair 0.25s ease-in forwards;
+}
+
+.toast-icone {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--toast-cor);
+    background: color-mix(in srgb, var(--toast-cor) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--toast-cor) 45%, transparent);
+}
+
+.toast-texto {
+    flex: 1 1 auto;
+    word-break: break-word;
+}
+
+/* barra de tempo na base */
+.toast-barra {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--toast-cor);
+    opacity: 0.7;
+    transform-origin: left;
+    animation: toast-barra linear forwards;
+    animation-duration: var(--toast-duracao, 3.5s);
+}
+
+.toast { position: relative; overflow: hidden; }
+.toast:hover .toast-barra { animation-play-state: paused; }
+
+.toast.sucesso { --toast-cor: var(--toast-sucesso); }
+.toast.erro    { --toast-cor: var(--toast-erro); }
+.toast.aviso   { --toast-cor: var(--toast-aviso); }
+.toast.info    { --toast-cor: var(--toast-info); }
+
+@keyframes toast-entrar {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes toast-sair {
+    to { opacity: 0; transform: translateX(24px) scale(0.96); }
+}
+
+@keyframes toast-barra {
+    from { transform: scaleX(1); }
+    to   { transform: scaleX(0); }
+}
+
+/* celular: ocupa a largura toda */
+@media (max-width: 520px) {
+    .toast-container {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        align-items: stretch;
+    }
+    .toast { max-width: none; }
+}
+
+/* respeita quem desativa animações no sistema */
+@media (prefers-reduced-motion: reduce) {
+    .toast, .toast.saindo, .toast-barra { animation-duration: 0.01ms; }
+}

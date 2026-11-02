@@ -186,9 +186,9 @@ $orcamentoFmt = $orcamentoClube !== null ? moeda($orcamentoClube) : '—';
 
             <!-- SOMENTE DEFINITIVA -->
             <div class="campo so-definitiva">
-                <label>Valor de transferência oferecido</label>
-                <input type="number" placeholder="Ex: 220000000">
-            </div>
+    <label>Valor de transferência oferecido</label>
+    <input type="number" id="mod-valor-oferecido" disabled value="">
+</div>
 
             <!-- SOMENTE EMPRÉSTIMO -->
             <div class="campo so-emprestimo" id="linhaDuracao">
@@ -272,15 +272,17 @@ $orcamentoFmt = $orcamentoClube !== null ? moeda($orcamentoClube) : '—';
         set('det-posicao', j.posicaoPrincipal);
         set('det-idade', j.idade + ' anos');
         set('det-rescisao', p.fmt.rescisao);
-
+        set('mod-pedido', p.fmt.valor);
+        
         const status = document.getElementById('det-status');
         status.textContent = j.onfire ? 'On fire' : 'Normal';
         status.classList.toggle('on-fire', !!j.onfire);
-
+        
         // observações (regra de exemplo: ajuste ao seu jogo)
         let texto = 'proposta dentro da faixa de mercado.';
         if (p.valorOferecido < j.valor) texto = 'valor abaixo do mercado do jogador.';
         else if (j.satisfacao != null && j.satisfacao < 50) texto = 'o jogador está insatisfeito e aceitaria sair.';
+        document.getElementById('mod-valor-oferecido').value = p.valorOferecido;
         document.getElementById('det-obs').innerHTML = '<strong>Observações:</strong> ' + texto;
 
         // modal

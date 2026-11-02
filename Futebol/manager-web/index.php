@@ -27,8 +27,10 @@ if (!$temEstadoJogo && $precisaEstadoJogo) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ManagerMode.com</title>
     <link rel="stylesheet" href="assets/css/geral.css">
+    <link rel="stylesheet" href="assets/css/toast.css">
     <link rel="shortcut icon" href="assets/img/managerModeFavicon.png" type="image/x-icon">
     <script src="assets/js/animations/geral.js"></script>
+    <script src="assets/js/animations/toast.js"></script>
 </head>
 
 <body>
