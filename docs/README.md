@@ -5,7 +5,7 @@
 ManagerMode é um jogo de **manager de futebol pelo navegador**, ambientado no **Brasileirão Série A**, inspirado em sites como o 7a0 e o 38a0. Aqui o jogo acontece fora das quatro linhas: elenco, mercado, diretoria, patrocínios, imprensa e a reputação de quem está no banco.
 
 <p align="center">
-  <img src="/fotosReadMe/inicio.png" alt="Tela inicial do ManagerMode" width="850">
+  <img src="/fotosReadMe/inicio.gif" alt="Tela inicial do ManagerMode" width="850">
 </p>
 
 > 🎓 Projeto pessoal de estudo, sem fins lucrativos. Nasceu para eu aprender **Spring Boot** e **PHP** trabalhando juntos numa aplicação de verdade, com regra de negócio de verdade.
