@@ -6,7 +6,7 @@ Jogo de **manager de futebol pelo navegador**, ambientado no **Brasileirão Sér
 
 <!-- FOTO 1: imagem principal (hero) -->
 <p align="center">
-  <img src="/fotosReadMe/inicio.png" alt="Tela inicial do ManagerMode" width="850">
+  <img src="/fotosReadMe/inicio.gif" alt="Tela inicial do ManagerMode" width="850">
 </p>
 
 ---
