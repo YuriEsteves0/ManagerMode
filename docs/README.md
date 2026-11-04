@@ -90,7 +90,7 @@ Ainda é esqueleto ou está em construção:
 O histórico detalhado, dia a dia, está no [`CHANGELOG.md`](CHANGELOG.md).
 
 <p align="center">
-  <img src="/fotosReadMe/postman.png" alt="Exemplo de resposta da API no Postman" width="700">
+  <img src="/fotosReadMe/postman.gif" alt="Exemplo de resposta da API no Postman" width="700">
 </p>
 
 ---
