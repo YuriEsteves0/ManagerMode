@@ -1,257 +1,113 @@
 # ⚽ ManagerMode
 
-Jogo de **manager de futebol pelo navegador**, ambientado no **Brasileirão Série A**, inspirado em sites como o 7a0 e o 38a0. Você assume o comando de um clube e cuida de tudo fora das quatro linhas: elenco, mercado de transferências, diretoria, patrocínios, imprensa e a sua própria reputação como treinador.
+> Você não joga a partida. Você decide **quem joga, quanto custa e quem vai te demitir**.
 
-> 🎓 **Projeto pessoal de estudo, sem fins lucrativos.** Nasceu para eu aprender e testar **Spring Boot** e **PHP** trabalhando juntos em uma mesma aplicação.
+ManagerMode é um jogo de **manager de futebol pelo navegador**, ambientado no **Brasileirão Série A**, inspirado em sites como o 7a0 e o 38a0. Aqui o jogo acontece fora das quatro linhas: elenco, mercado, diretoria, patrocínios, imprensa e a reputação de quem está no banco.
 
-<!-- FOTO 1: imagem principal (hero) -->
 <p align="center">
   <img src="/fotosReadMe/inicio.png" alt="Tela inicial do ManagerMode" width="850">
 </p>
 
----
-
-## 📑 Índice
-
-- [Sobre o projeto](#-sobre-o-projeto)
-- [Ideia do jogo](#-ideia-do-jogo)
-- [Arquitetura](#-arquitetura)
-- [Tecnologias](#-tecnologias)
-- [Estrutura de pastas](#-estrutura-de-pastas)
-- [Banco de dados](#-banco-de-dados)
-- [Endpoints da API](#-endpoints-da-api)
-- [Telas do front-end](#-telas-do-front-end)
-- [Como rodar](#-como-rodar)
-- [Status do projeto](#-status-do-projeto)
-- [Documentação](#-documentação)
-- [Aviso legal](#-aviso-legal)
+> 🎓 Projeto pessoal de estudo, sem fins lucrativos. Nasceu para eu aprender **Spring Boot** e **PHP** trabalhando juntos numa aplicação de verdade, com regra de negócio de verdade.
 
 ---
 
-## 📖 Sobre o projeto
+## 🎯 Por que esse projeto existe
 
-O ManagerMode é dividido em duas aplicações que conversam entre si:
+Tutorial de CRUD ensina a sintaxe, mas não ensina o que acontece quando o projeto cresce. Escolhi um jogo de gestão porque ele obriga a lidar com o que um sistema real tem: muitas entidades se relacionando, regras que dependem umas das outras e estado que muda o tempo todo.
 
-- **`manager-api`**: back-end em **Java + Spring Boot**. Expõe os dados do jogo em JSON por uma API REST.
-- **`manager-web`**: front-end em **PHP**. Renderiza as telas e consome a API.
+Cada decisão do jogo vira uma pergunta de engenharia:
 
-Os dados ficam em um banco **MySQL** que já vem com o schema e os dados prontos. A API **não cria tabelas**, ela só lê e grava no que já existe.
-
-O objetivo principal é aprender na prática como um back-end Spring Boot e um front-end PHP se integram, enquanto desenvolvo um jogo com bastante regra de negócio.
-
----
-
-## 🎮 Ideia do jogo
-
-Você escolhe um clube da Série A e passa a ser o manager dele. O jogo gira em torno de decisões de gestão, não de controlar jogadores em campo.
-
-Os principais elementos do jogo:
-
-| Entidade | Resumo |
+| No jogo | No código |
 |---|---|
-| **Manager** | O jogador. Tem uma reputação que evolui conforme os resultados e decisões. |
-| **Clube** | O time que você comanda, com elenco, diretoria, torcida e finanças. |
-| **Jogador** | Atletas com atributos, posição, idade e características próprias. |
-| **Temporada** | O ciclo de competições do ano. |
-| **Partida** | Os jogos disputados nas competições. |
-| **Mercado de transferências** | Compra, venda e propostas, incluindo leilões com participação de bots. |
-| **Seleção Nacional** | Convocações e a relação com a seleção. |
-| **Diretoria / Presidência** | Cobra resultados e pode pressionar o manager. |
-| **Patrocínio** | Contratos com nome, valor mensal fixo, duração e cláusula de reputação mínima. |
-| **Imprensa / Eventos** | Entrevistas e acontecimentos que mexem com torcida, diretoria e vestiário. |
+| "Posso contratar esse jogador?" | Orçamento, multa de rescisão, contrato e proposta precisam bater |
+| "A diretoria está insatisfeita" | Metas por temporada, ações e notícias ligadas ao clube |
+| "Esse patrocinador exige reputação mínima" | Regra de negócio atravessando manager, clube e contrato |
+| "Meu elenco está lesionado" | Relação N:N entre jogador e lesão, com gravidade e dias de recuperação |
 
-<!-- FOTO 2 e 3: duas telas lado a lado, ilustrando elenco e patrocínio -->
+---
+
+## 🧭 O jogo em um minuto
+
+1. Você cria seu técnico e escolhe um clube da Série A.
+2. Cai na tela inicial com elenco, tabela, transferências e imprensa.
+3. A partir daí, cada tela é uma frente de trabalho: **Clube**, **Negociação**, **Gestão** e **Carreira**.
+
 <p align="center">
   <img src="/fotosReadMe/central-elenco.png" alt="Central do Elenco" width="49%">
   <img src="/fotosReadMe/patrocinios.png" alt="Patrocínios" width="49%">
 </p>
 
-Algumas mecânicas planejadas: reputação do manager, pressão de diretoria e torcida, leilões movidos por bots e lendas aposentadas. O detalhamento de cada uma vai ficar no [`funcionalidades.md`](docs/funcionalidades.md).
+A base de jogadores cobre os **20 clubes** e **676 jogadores** da Série A 2025. Os atributos foram gerados por um modelo heurístico (nível do clube, idade e posição), com ajustes manuais nos grandes nomes.
 
-### Base de jogadores
-
-O jogo usa uma base de dados de jogadores da **Série A 2025**, cobrindo os **20 clubes** e **676 jogadores**. Os atributos foram gerados por um modelo heurístico (considerando nível do clube, idade e posição), com ajustes manuais para os grandes nomes.
-
-### Uma instância de banco por jogador
-
-O arquivo `manager.sql` funciona como um **molde**: cada jogador (usuário) do jogo recebe a sua própria instância do banco, criada a partir dele. É por isso que a API trabalha só com leitura e escrita nos dados e nunca altera o schema.
+O detalhamento de cada mecânica está em [`FUNCIONALIDADES.md`](FUNCIONALIDADES.md).
 
 ---
 
-## 🏗️ Arquitetura
+## 🧠 Decisões de projeto que valem a pena contar
+
+**Um banco por jogador.** O `manager.sql` é um molde. Cada usuário recebe a sua própria instância do banco, e a API nunca altera o schema, só lê e grava dados. O `ddl-auto=validate` garante que, se o código e o banco divergirem, a aplicação nem sobe.
+
+**API e front falam só por JSON.** O PHP não toca no banco. Tudo passa pelo `ApiService`, o que me forçou a pensar em contrato: o que cada endpoint devolve, o que é opcional, o que pode vir `null`.
+
+**Estado da carreira como objeto.** A sessão começou como um array solto e migrou para uma classe `EstadoJogo`. Foi o primeiro refactor "de verdade" do projeto e rendeu um bom aprendizado sobre o que o `session_start()` espera encontrar (veja o troubleshooting da [instalação](INSTALACAO.md)).
+
+**Camadas explícitas na API.** `controller → service → repository → model`, com `responses` separando o que vai pro front do que existe no banco.
 
 ```
-┌──────────────┐   HTTP    ┌──────────────────┐   JPA    ┌─────────┐
-│ manager-web  │ ────────► │   manager-api    │ ───────► │  MySQL  │
-│  (PHP)       │ ◄──────── │ (Spring Boot)    │ ◄─────── │ manager │
-│ porta 8000*  │   JSON    │   porta 8080     │          └─────────┘
-└──────────────┘           └──────────────────┘
-```
-
-\* A porta do PHP depende de como você servir o front. A API usa a `8080` padrão do Spring Boot, que é para onde o `ApiService.php` aponta.
-
-**Camadas da API** (`com.manager.api`):
-
-| Pacote | Responsabilidade |
-|---|---|
-| `controller` | Recebe as requisições HTTP e define as rotas. |
-| `service` | Regras de negócio. |
-| `repository` | Acesso ao banco via Spring Data JPA. |
-| `model` | Entidades JPA mapeadas para as tabelas. |
-| `responses` | Objetos de resposta enviados ao front. |
-| `enums` | Valores fixos do domínio (status, tipos, níveis, fases). |
-
-**Camadas do front** (`manager-web`):
-
-| Pasta | Responsabilidade |
-|---|---|
-| `index.php` | Ponto de entrada. Resolve a página pelo parâmetro `?pag=`. |
-| `routes/Pagina.php` | Enum com todas as páginas e o arquivo de cada uma. |
-| `view/` | Telas do jogo. |
-| `services/ApiService.php` | Cliente HTTP (cURL) que consome a API. |
-| `controller/` | Controladores de formulários e ações. |
-| `assets/` | CSS e imagens (escudos dos clubes). |
-
----
-
-## 🛠️ Tecnologias
-
-**Back-end**
-- Java 17
-- Spring Boot 4.1.1 (Web MVC, Spring Data JPA)
-- Hibernate
-- Lombok
-- Maven (com Maven Wrapper)
-
-**Front-end**
-- PHP (com extensão cURL habilitada)
-- HTML e CSS
-
-**Banco de dados**
-- MySQL
-
----
-
-## 📁 Estrutura de pastas
-
-```
-Futebol/
-├── manager-api/                 # Back-end Spring Boot
-│   ├── src/main/java/com/manager/api/
-│   │   ├── controller/          # ClubeController, CompeticaoController
-│   │   ├── enums/               # clube/ e competicao/
-│   │   ├── model/               # Clube, Competicao, ClubeCompeticao...
-│   │   ├── repository/
-│   │   ├── responses/
-│   │   └── service/
-│   ├── src/main/resources/application.properties
-│   └── pom.xml
-│
-└── manager-web/                 # Front-end PHP
-    ├── assets/
-    │   ├── css/                 # Um CSS por tela
-    │   └── img/escudosClubes/   # Escudos dos clubes
-    ├── controller/
-    ├── includes/
-    ├── routes/Pagina.php
-    ├── services/ApiService.php
-    ├── view/                    # Telas do jogo
-    └── index.php
+┌──────────────┐   HTTP/JSON   ┌──────────────────┐   JPA    ┌─────────┐
+│ manager-web  │ ────────────► │   manager-api    │ ───────► │  MySQL  │
+│    (PHP)     │ ◄──────────── │  (Spring Boot)   │ ◄─────── │ manager │
+└──────────────┘               └──────────────────┘          └─────────┘
 ```
 
 ---
 
-## 🗄️ Banco de dados
+## 🛠️ Stack
 
-- **SGBD:** MySQL
-- **Nome do banco:** `manager`
-- **Schema:** vem do arquivo `manager.sql`
-- A API usa `spring.jpa.hibernate.ddl-auto=validate`, ou seja, **só confere** se as entidades batem com as tabelas existentes. Se o schema estiver diferente, a aplicação não sobe.
-
-Entidades já mapeadas na API:
-
-- **`Clube`**: dados do clube, incluindo status de confiança (`PESSIMO`, `INSTAVEL`, `ESTAVEL`, `EXCELENTE`).
-- **`Competicao`**: competições com tipo (`PONTOS_CORRIDOS`, `MATA_MATA`, `MISTO`), nível (`NACIONAL`, `CONTINENTAL`, `ESTADUAL`) e status (`NAO_INICIADA`, `EM_ANDAMENTO`, `FINALIZADA`).
-- **`ClubeCompeticao`**: relação entre clube e competição (chave composta), com pontos e fase atual (`OITAVAS`, `QUARTAS`, `SEMI`, `FINAL`).
+**Back-end:** Java 17 · Spring Boot · Spring Data JPA · Hibernate · Lombok · Maven
+**Front-end:** PHP (cURL) · HTML · CSS · JavaScript
+**Banco:** MySQL / MariaDB
 
 ---
 
-## 🔌 Endpoints da API
+## 🚧 Onde o projeto está hoje
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `GET` | `/competicoes` | Lista as competições. Aceita o filtro opcional `?tipo=PONTOS_CORRIDOS`. |
-| `GET` | `/competicoes/{id}/clubes` | Lista os clubes (foto e nome) de uma competição. |
-| `GET` | `/competicoes/{id}/classificacao` | Retorna a classificação de uma competição. |
-| `GET` | `/clubes/{id}` | Busca os dados de um clube pelo id. |
+Já funciona de ponta a ponta:
 
-Exemplo:
+- Cadastro do técnico e escolha do clube
+- Tela inicial, tabela, elenco e ficha detalhada do jogador (com lesões e estatísticas)
+- Patrocínios, upgrades e histórico de temporadas do clube
+- Mercado com busca, filtros, ordenação e paginação
+- Carreira do técnico com propostas de emprego
 
-```bash
-curl http://localhost:8080/jogadores/clube/12?todos=false
-```
+Ainda é esqueleto ou está em construção:
+
+- Ações dos botões (assinar patrocínio, aceitar proposta, melhorar clube, enviar proposta)
+- Simulação de partidas e de temporada
+- Leilões com bots, pressão de diretoria e lendas aposentadas
+
+O histórico detalhado, dia a dia, está no [`CHANGELOG.md`](CHANGELOG.md).
 
 <p align="center">
-  <img src="/fotosReadMe/postman.png" alt="Exemplo de resposta da API" width="700">
+  <img src="/fotosReadMe/postman.png" alt="Exemplo de resposta da API no Postman" width="700">
 </p>
 
-Os detalhes completos (parâmetros, exemplos de resposta) vão ficar no [`docs/api.md`](docs/api.md).
-
 ---
 
-## 🖥️ Telas do front-end
+## 📚 Quer ir mais fundo?
 
-A navegação é feita pelo parâmetro `pag` (ex.: `index.php?pag=inicio`). A página padrão é o `cadastro_1`.
-
-| Grupo | Páginas |
+| Quero... | Vá para |
 |---|---|
-| **Cadastro** | `cadastro_1`, `cadastro_2`, `cadastro_3` |
-| **Início** | `inicio` |
-| **Clube** | `equipe`, `estatisticas`, `patrocinios`, `central_elenco` |
-| **Negociação** | `mercado`, `propostas_recebidas`, `propostas_enviadas` |
-| **Gestão** | `calendario`, `treino`, `diretoria` |
-| **Carreira e jogo** | `carreira`, `partida`, `imprensa` |
+| Rodar o projeto na minha máquina | [`INSTALACAO.md`](INSTALACAO.md) |
+| Ver todos os endpoints | [`API.md`](API.md) |
+| Entender cada mecânica do jogo | [`FUNCIONALIDADES.md`](FUNCIONALIDADES.md) |
+| Saber o que mudou e quando | [`CHANGELOG.md`](CHANGELOG.md) |
 
----
-
-## 🚧 Status do projeto
-
-O projeto está **em desenvolvimento ativo**.
-
-**Já existe:**
-- Estrutura base da API com camadas (controller, service, repository, model).
-- Mapeamento de clubes, competições e a relação entre eles.
-- Endpoints de listagem de competições, clubes por competição, classificação e busca de clube.
-- Esqueleto do front com as principais telas e o cliente HTTP para a API.
-- Base de jogadores da Série A 2025.
-
-**Em andamento / planejado:**
-- Integrar as telas do front aos dados reais da API.
-- Endpoints de jogadores, elenco, mercado, propostas e partidas.
-- Mecânicas de reputação, diretoria, patrocínio e imprensa.
-- Simulação de partidas e de temporada.
-
-O planejamento detalhado vai ficar no [`docs/roadmap.md`](docs/roadmap.md).
-
----
-
-## 📚 Documentação
-
-Documentos que complementam este README. Alguns ainda vão ser escritos (🚧).
-
-| Documento | O que vai conter | Status |
-|---|---|---|
-| [`docs/funcionalidades.md`](FUNCIONALIDADES.md) | Todas as funcionalidades e mecânicas do jogo, explicando o que cada uma faz | 🚧 |
-| [`docs/api.md`](API.md) | Referência completa dos endpoints, parâmetros e exemplos de resposta | 🚧 |
-| [`docs/banco-de-dados.md`](banco-de-dados.md) | Modelo de dados, tabelas, relacionamentos e diagrama ER | 🚧 |
-| [`docs/arquitetura.md`](arquitetura.md) | Como API, front e banco se comunicam e as decisões de design | 🚧 |
-| [`docs/instalacao.md`](INSTALACAO.md) | Guia de instalação passo a passo, com solução de problemas comuns | 🚧 |
-| [`CHANGELOG.md`](CHANGELOG.md) | Histórico de mudanças por versão | 🚧 |
+Com a API no ar, o Swagger também mostra tudo em `http://localhost:8080/swagger-ui.html`.
 
 ---
 
 ## ⚖️ Aviso legal
 
-Este é um projeto **pessoal, educacional e sem fins lucrativos**, sem qualquer vínculo com clubes, ligas ou federações.
-
-Nomes e escudos de clubes são **marcas registradas de seus respectivos proprietários** e aparecem aqui apenas para fins de estudo. Se algum titular de direitos quiser que algum material seja removido, basta abrir uma issue.
+Projeto **pessoal, educacional e sem fins lucrativos**, sem qualquer vínculo com clubes, ligas ou federações. Nomes e escudos são marcas registradas de seus respectivos proprietários e aparecem apenas para fins de estudo. Se algum titular quiser a remoção de algum material, é só abrir uma issue.
