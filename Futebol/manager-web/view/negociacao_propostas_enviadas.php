@@ -13,17 +13,27 @@ function moedaEnv($v): string
     return 'R$ ' . formatarNumero((int) ($v ?? 0));
 }
 
-// Normaliza o status vindo da API para uma das classes do CSS (.tag-status)
+// Status do banco: PENDENTE, ACEITA_1, RECUSADA, CANCELADA, ACEITA_2, FEITA
+// Retorna [classe CSS (.tag-status), rótulo]
 function statusProposta($status): array
 {
-    $s = strtolower(trim((string) $status));
-    $s = strtr($s, ['á' => 'a', 'ã' => 'a', 'ç' => 'c', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u']);
+    $s = strtoupper(trim((string) $status));
 
-    if (str_contains($s, 'aceit')) return ['aceita_1', 'Proposta Aceita'];
-    if (str_contains($s, 'recus')) return ['recusada', 'Proposta Recusada'];
-    if (str_contains($s, 'cancel')) return ['recusada', 'Proposta Cancelada'];
-    if (str_contains($s, 'contra')) return ['contraproposta', 'Contraproposta'];
-    return ['enviada', 'Proposta Enviada'];
+    switch ($s) {
+        case 'ACEITA_1':
+            return ['aceita_1', 'Clube Aceitou'];
+        case 'ACEITA_2':
+            return ['aceita_2', 'Jogador Aceitou'];
+        case 'FEITA':
+            return ['feita', 'Transação Concluída'];
+        case 'RECUSADA':
+            return ['recusada', 'Proposta Recusada'];
+        case 'CANCELADA':
+            return ['recusada', 'Proposta Cancelada'];
+        case 'PENDENTE':
+        default:
+            return ['enviada', 'Proposta Enviada'];
+    }
 }
 
 // Lesões e estatísticas são buscadas uma vez por clube alvo (evita chamadas repetidas)
@@ -60,7 +70,7 @@ foreach ($propostas as &$p) {
     [$classe, $rotulo] = statusProposta($p['statusProposta'] ?? $p['status'] ?? '');
 
     $idJogador = $j['idJogador'] ?? $j['id'] ?? null;
-    $idClubeAlvo = $clube['idClube'] ?? $clube['id'] ?? $j['clube_idClube'] ?? null;
+    $idClubeAlvo = $clube['idClube'] ?? $clube['id'] ?? $j['clubeIdClube'] ?? null;
     $dados = dadosClubeAlvo($apiService, $idClubeAlvo, $anoAtual, $cacheClube);
 
     $p['statusClasse'] = $classe;
@@ -90,7 +100,7 @@ unset($p);
 
                 <?php foreach ($propostas as $i => $proposta) {
                     $j = $proposta['jogador'];
-                    $nomeJogador = !empty($j['onfire']) ? "🔥 " . $j['nomeJogador'] : $j['nomeJogador'];
+                    $nomeJogador = $j['nomeJogador'];
                 ?>
                     <div class="jogador-linha <?= $i === 0 ? 'selecionado' : '' ?>" onclick="selecionar(this, <?= $i ?>)">
                         <span class="posicao"><?= htmlspecialchars($j['posicaoPrincipal'] ?? '-') ?></span>
@@ -171,12 +181,12 @@ unset($p);
 
             <div class="campo">
                 <label>Tempo de contrato oferecido</label>
-                <select>
-                    <option>1 ano</option>
-                    <option>2 anos</option>
-                    <option selected>3 anos</option>
-                    <option>4 anos</option>
-                    <option>5 anos</option>
+                <select id="mod-contrato">
+                    <option value="1">1 ano</option>
+                    <option value="2">2 anos</option>
+                    <option value="3" selected>3 anos</option>
+                    <option value="4">4 anos</option>
+                    <option value="5">5 anos</option>
                 </select>
             </div>
 
@@ -186,7 +196,7 @@ unset($p);
             </div>
 
             <div class="campo">
-                <label>Moral do jogador no clube atual</label>
+                <label>Satisfação do jogador no clube atual</label>
                 <div class="moral-gauge">
                     <div class="barra"><i id="mod-moral-barra" style="width:0%"></i></div>
                     <div class="legenda"><span>Quer sair</span><span id="mod-moral-texto"></span><span>Feliz no clube</span></div>
@@ -197,7 +207,26 @@ unset($p);
                 Contratação dificultada pois o jogador não deseja sair do clube atual.
             </div>
 
-            <button class="btn-enviar" type="button" onclick="fecharModal()">Enviar Proposta</button>
+            <!-- Achômetro -->
+            <div class="campo">
+                <label>Achômetro</label>
+                <div id="mod-achometro" style="padding:10px; border-radius:8px; background:var(--fundoMeioTransparente);">
+                    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;">
+                        <strong id="ach-rotulo" style="font-size:14px;"></strong>
+                        <span style="font-size:12px; color:var(--roxoTextoMaisClaro);">É só um palpite</span>
+                    </div>
+                    <div style="height:10px; border-radius:5px; background:var(--cinza); overflow:hidden;">
+                        <div id="ach-barra" style="height:100%; width:0%; border-radius:5px; transition:width .25s ease, background .25s ease;"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:12px; color:var(--roxoTextoMaisClaro);">
+                        <span>Dificilmente</span>
+                        <span>Com certeza</span>
+                    </div>
+                </div>
+                <div id="mod-resultado" style="display:none; margin-top:8px; padding:10px; border-radius:8px; background:var(--fundoMeioTransparente); border-left:3px solid var(--vermelho); font-size:14px;"></div>
+            </div>
+
+            <button class="btn-enviar" type="button" onclick="enviarProposta()">Enviar Proposta</button>
         </div>
     </div>
 
@@ -206,6 +235,7 @@ unset($p);
 
 <script>
     const propostas = <?= json_encode($propostas, JSON_UNESCAPED_UNICODE) ?>;
+    let propostaAtual = 0;
 
     const listaAtributos = [
         ['Velocidade', 'velocidade'],
@@ -215,6 +245,172 @@ unset($p);
         ['Marcação', 'marcacao'],
         ['Passe', 'passe']
     ];
+
+    // Texto do botão conforme a etapa da negociação
+    const textoBotao = {
+        aceita_1: 'Formalizar Contratação',
+        aceita_2: 'Jogador já aceitou',
+        feita: 'Transação concluída',
+        enviada: 'Aguardando resposta do clube',
+        recusada: 'Proposta encerrada'
+    };
+
+    // =====================================================================
+    // IA DO JOGADOR
+    //
+    // avaliarProposta() calcula um score de interesse (0-100) e se a
+    // proposta está bloqueada (filtro duro).
+    //
+    // O ACHÔMETRO mostra uma estimativa borrada desse score (distorção
+    // fixa por jogador). A DECISÃO REAL acontece só em enviarProposta(),
+    // com uma variação aleatória em cima do score.
+    //
+    // titular: 0 = titular | 1 = reserva | 2 = não relacionado
+    // =====================================================================
+    const IA = {
+        notaMinima: 60,
+        toleranciaReputacao: 15,      // quanto o clube pode estar abaixo da moral do jogador
+        bonusToleranciaVeterano: 10,  // jogador 32+ aceita clube menor
+        limiteFolhaOrcamento: 0.25,   // salário anual máx. = 25% do orçamento (após pagar a transferência)
+        bonusReserva: 5,
+        bonusNaoRelacionado: 12,
+        ruidoAchometro: 10,           // erro máximo do palpite mostrado (+/-)
+        ruidoDecisao: 8               // variação aleatória na decisão real (+/-)
+    };
+
+    // Faixas do achômetro: [limite superior, rótulo, cor]
+    const FAIXAS_ACHOMETRO = [
+        [25,  'Muito improvável', 'var(--vermelho)'],
+        [45,  'Improvável',       'var(--laranja)'],
+        [60,  'Incerto',          'var(--amarelo)'],
+        [80,  'Provável',         'var(--verdeBrilho)'],
+        [101, 'Muito provável',   'var(--verde)']
+    ];
+
+    function limitar(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+    }
+
+    // Faixa de contrato que o jogador considera ideal para a idade [min, max] em anos
+    function contratoIdeal(idade) {
+        if (idade <= 23) return [4, 5];
+        if (idade <= 28) return [3, 5];
+        if (idade <= 31) return [2, 3];
+        return [1, 2];
+    }
+
+    function avaliarProposta(p, salario, anos) {
+        const j = p.jogador || {};
+        const ext = p.clubeExterior || {};
+        const intr = p.clubeInterior || {};
+
+        const idade = Number(j.idade) || 25;
+        const moral = Number(j.moral) || 0;
+        const satisfacao = Number(j.satisfacao ?? 50);
+        const repExt = Number(ext.reputacao) || 0;
+        const repInt = Number(intr.reputacao) || 0;
+        const salarioAtual = Number(j.salario) || 1;
+
+        // ---- 0) o clube externo consegue bancar? ----
+        const orcamentoLivre = (Number(ext.orcamento) || 0) - (Number(p.valorOferecido) || 0);
+        const folhaAnual = salario * 12;
+        if (folhaAnual > orcamentoLivre * IA.limiteFolhaOrcamento) {
+            return { bloqueado: true, score: 0 };
+        }
+
+        // ---- 1) filtro duro: moral x reputação ----
+        const tolerancia = IA.toleranciaReputacao + (idade >= 32 ? IA.bonusToleranciaVeterano : 0);
+        if (repExt < moral - tolerancia) {
+            return { bloqueado: true, score: 0 };
+        }
+
+        let score = 50;
+
+        // ---- 2) reputação relativa (subir/descer de patamar) ----
+        score += limitar((repExt - repInt) * 0.5, -20, 20);
+        if (repExt > moral + 10) score += 5; // clube de prestígio acima da moral dele
+
+        // ---- 3) salário (comparado ao atual) ----
+        const ratio = salario / salarioAtual;
+        score += limitar((ratio - 1) * 60, -40, 30);
+
+        // ---- 4) tempo de contrato x idade ----
+        const [min, max] = contratoIdeal(idade);
+        const desvio = anos < min ? min - anos : (anos > max ? anos - max : 0);
+        score += desvio === 0 ? 5 : -desvio * 8;
+
+        // ---- 5) satisfação no clube atual (feliz = mais difícil sair) ----
+        score -= (satisfacao - 50) * 0.4;
+
+        // ---- 6) situação no time: 0 = titular | 1 = reserva | 2 = não relacionado ----
+        const situacao = Number(j.titular ?? 0);
+        if (situacao === 2) score += IA.bonusNaoRelacionado;
+        else if (situacao === 1) score += IA.bonusReserva;
+
+        return { bloqueado: false, score: Math.round(limitar(score, 0, 100)) };
+    }
+
+    // Lê os campos do modal e avalia a proposta atual
+    function avaliarModal() {
+        const p = propostas[propostaAtual];
+        if (!p) return null;
+        const salario = Number(document.getElementById('mod-salario').value) || 0;
+        const anos = Number(document.getElementById('mod-contrato').value) || 1;
+        return avaliarProposta(p, salario, anos);
+    }
+
+    // Palpite mostrado ao usuário: score com distorção fixa por jogador
+    function palpiteAchometro(p, r) {
+        if (r.bloqueado) return 3;
+        const seed = Number(p.jogador && p.jogador.idJogador) || 0;
+        const distorcao = ((seed * 37) % (IA.ruidoAchometro * 2 + 1)) - IA.ruidoAchometro;
+        return limitar(r.score + distorcao, 0, 100);
+    }
+
+    function esconderResultado() {
+        document.getElementById('mod-resultado').style.display = 'none';
+    }
+
+    function atualizarAchometro() {
+        const p = propostas[propostaAtual];
+        const r = avaliarModal();
+        if (!p || !r) return null;
+
+        const valor = palpiteAchometro(p, r);
+        const faixa = FAIXAS_ACHOMETRO.find(f => valor < f[0]);
+
+        const barra = document.getElementById('ach-barra');
+        barra.style.width = Math.max(valor, 3) + '%';
+        barra.style.background = faixa[2];
+
+        const rotulo = document.getElementById('ach-rotulo');
+        rotulo.textContent = faixa[1];
+        rotulo.style.color = faixa[2];
+
+        return r;
+    }
+
+    function enviarProposta() {
+        const r = atualizarAchometro();
+        if (!r) return;
+
+        // decisão real: score + variação aleatória
+        const ruido = (Math.random() * 2 - 1) * IA.ruidoDecisao;
+        const aceita = !r.bloqueado && (r.score + ruido) >= IA.notaMinima;
+
+        if (!aceita) {
+            const res = document.getElementById('mod-resultado');
+            res.textContent = 'O jogador recusou a proposta. Ajuste a oferta e tente novamente.';
+            res.style.display = '';
+            return;
+        }
+
+        // TODO: chamar a API para mudar o status para ACEITA_2
+        // (salário, anos e rescisão estão em #mod-salario, #mod-contrato e #mod-rescisao)
+        fecharModal();
+    }
+
+    // =====================================================================
 
     function set(id, texto) {
         const el = document.getElementById(id);
@@ -258,6 +454,7 @@ unset($p);
     function preencherFicha(i) {
         const p = propostas[i];
         if (!p) return;
+        propostaAtual = i;
         const j = p.jogador || {};
         const clube = (p.clubeExterior && p.clubeExterior.nomeClube) || '-';
 
@@ -317,21 +514,29 @@ unset($p);
             });
         }
 
-        // botão: só habilita formalizar quando a proposta foi aceita
+        // botão: só habilita formalizar quando o CLUBE aceitou (ACEITA_1)
+        // ACEITA_2 = jogador já aceitou, FEITA = transação concluída
         const btn = document.getElementById('btn-formalizar');
-        const aceita = p.statusClasse === 'aceita';
-        btn.disabled = !aceita;
-        btn.style.opacity = aceita ? '' : '0.5';
-        btn.style.cursor = aceita ? '' : 'not-allowed';
+        const podeFormalizar = p.statusClasse === 'aceita_1';
+        btn.disabled = !podeFormalizar;
+        btn.style.opacity = podeFormalizar ? '' : '0.5';
+        btn.style.cursor = podeFormalizar ? '' : 'not-allowed';
+        btn.textContent = textoBotao[p.statusClasse] || 'Formalizar Contratação';
 
         // modal
         set('mod-titulo', 'Formalizar Contratação — ' + (j.nomeJogador || ''));
         document.getElementById('mod-salario').value = j.salario ?? '';
         document.getElementById('mod-rescisao').value = j.valorRescisao ?? '';
-        const moral = Number(j.satisfacao ?? j.moral ?? 0);
-        document.getElementById('mod-moral-barra').style.width = moral + '%';
-        set('mod-moral-texto', moral + ' / 100');
-        document.getElementById('mod-aviso').style.display = moral >= 50 ? '' : 'none';
+        document.getElementById('mod-contrato').value = '3';
+
+        // gauge = satisfação do jogador no clube atual
+        const satisfacao = Number(j.satisfacao ?? 0);
+        document.getElementById('mod-moral-barra').style.width = satisfacao + '%';
+        set('mod-moral-texto', satisfacao + ' / 100');
+        document.getElementById('mod-aviso').style.display = satisfacao >= 70 ? '' : 'none';
+
+        esconderResultado();
+        atualizarAchometro();
     }
 
     function selecionar(el, i) {
@@ -342,6 +547,8 @@ unset($p);
 
     function abrirModal() {
         if (document.getElementById('btn-formalizar').disabled) return;
+        esconderResultado();
+        atualizarAchometro();
         document.getElementById('overlayFormalizar').classList.add('aberto');
     }
 
@@ -352,6 +559,15 @@ unset($p);
     document.getElementById('overlayFormalizar').addEventListener('click', function(e) {
         if (e.target === this) fecharModal();
     });
+
+    // achômetro reage em tempo real enquanto o usuário mexe na oferta
+    function aoMudarOferta() {
+        esconderResultado();
+        atualizarAchometro();
+    }
+    document.getElementById('mod-salario').addEventListener('input', aoMudarOferta);
+    document.getElementById('mod-contrato').addEventListener('change', aoMudarOferta);
+    document.getElementById('mod-rescisao').addEventListener('input', aoMudarOferta);
 
     if (propostas.length > 0) {
         preencherFicha(0);
