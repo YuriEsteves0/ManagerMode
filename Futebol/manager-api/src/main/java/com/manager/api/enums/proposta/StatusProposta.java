@@ -5,5 +5,6 @@ public enum StatusProposta{
 	ACEITA_1,
 	ACEITA_2,
 	RECUSADA,
-	CANCELADA
+	CANCELADA,
+	FEITA
 }

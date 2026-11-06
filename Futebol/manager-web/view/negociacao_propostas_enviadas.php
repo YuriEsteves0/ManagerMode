@@ -19,7 +19,7 @@ function statusProposta($status): array
     $s = strtolower(trim((string) $status));
     $s = strtr($s, ['á' => 'a', 'ã' => 'a', 'ç' => 'c', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u']);
 
-    if (str_contains($s, 'aceit')) return ['aceita', 'Proposta Aceita'];
+    if (str_contains($s, 'aceit')) return ['aceita_1', 'Proposta Aceita'];
     if (str_contains($s, 'recus')) return ['recusada', 'Proposta Recusada'];
     if (str_contains($s, 'cancel')) return ['recusada', 'Proposta Cancelada'];
     if (str_contains($s, 'contra')) return ['contraproposta', 'Contraproposta'];

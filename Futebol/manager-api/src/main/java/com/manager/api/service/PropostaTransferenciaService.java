@@ -32,19 +32,6 @@ public class PropostaTransferenciaService{
         this.jogadorRepository = jogadorRepository;
         this.clubeRepository = clubeRepository;
     }
-    
-//    public Optional<PropostaTransferenciaResponse> buscarTransferenciaJogador(Integer idJogador, Integer idClube, String tipoTransferencia){
-//    	String tipo = tipoTransferencia == null ? "" : tipoTransferencia.trim().toLowerCase();
-//    	
-//    	Optional<PropostaTransferencia> proposta = switch(tipo) {
-//	    	case "recebida","recebidas" -> propostaRepository.findByJogador_IdJogadorAndClubeInterior_Id(idJogador, idClube);
-//	    	case "enviada","enviadas" -> propostaRepository.findByJogador_IdJogadorAndClubeExterior_Id(idJogador, idClube);
-//	    	default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-//					"tipoTransferencia deve ser 'enviada' ou 'recebida'");
-//    	};
-//    	
-//    	return proposta;
-//    }
 	
 	public List<PropostaTransferenciaResponse> transferencia(Integer idClube, String tipoTransferencia) {
 		String tipo = tipoTransferencia == null ? "" : tipoTransferencia.trim().toLowerCase();
@@ -122,4 +109,18 @@ public class PropostaTransferenciaService{
 		
 	}
 	
+	@Transactional
+	public PropostaTransferenciaResponse atualizarProposta(PropostaTransferenciaRequest request) {
+	    PropostaTransferencia proposta = propostaRepository
+	        .findByJogador_IdJogadorAndClubeExterior_Id(request.idJogador(), request.idClubeExterior())
+	        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposta inexistente!"));
+
+	    StatusProposta atual = proposta.getStatusProposta();
+	    if (atual == StatusProposta.RECUSADA || atual == StatusProposta.FEITA) {
+	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Proposta já finalizada!");
+	    }
+
+	    proposta.setStatusProposta(request.statusProposta());
+	    return toResponse(propostaRepository.save(proposta));
+	}
 }
