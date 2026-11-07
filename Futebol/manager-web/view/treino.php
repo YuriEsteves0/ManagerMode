@@ -1,3 +1,75 @@
+<?php
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch') {
+
+    // Descarta qualquer saída anterior (caso um layout já tenha impresso algo)
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+
+    header('Content-Type: application/json; charset=utf-8');
+
+    $responder = function (int $codigo, array $dados): void {
+        http_response_code($codigo);
+        echo json_encode($dados, JSON_UNESCAPED_UNICODE);
+        exit;
+    };
+
+    $estado = $_SESSION['estado_jogo'] ?? null;
+    if (!$estado) {
+        $responder(401, ['sucesso' => false, 'erro' => 'Sessão expirada']);
+    }
+    $idClubePost = (int) $estado->clube->id;
+
+    $entrada = json_decode(file_get_contents('php://input'), true);
+    $ids = $entrada['treinos'] ?? null;
+
+    if (!is_array($ids)) {
+        $responder(422, ['sucesso' => false, 'erro' => 'Formato inválido']);
+    }
+
+    // Normaliza: inteiros positivos, sem repetidos
+    $ids = array_values(array_unique(array_filter(array_map('intval', $ids), fn($v) => $v > 0)));
+
+    if (count($ids) < 1 || count($ids) > 4) {
+        $responder(422, ['sucesso' => false, 'erro' => 'Selecione de 1 a 4 treinos']);
+    }
+
+    // O slot é a ordem da seleção (1 a 4)
+    $treinosBody = [];
+    foreach ($ids as $i => $idTreino) {
+        $treinosBody[] = ['idTreino' => $idTreino, 'slot' => $i + 1];
+    }
+
+    // PUT para o Spring
+    $ch = curl_init("http://localhost:8080/clubes/{$idClubePost}/treino");
+    curl_setopt_array($ch, [
+        CURLOPT_CUSTOMREQUEST  => 'PUT',
+        CURLOPT_POSTFIELDS     => json_encode(['treinos' => $treinosBody]),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 5,
+        CURLOPT_HTTPHEADER     => [
+            'Accept: application/json',
+            'Content-Type: application/json'
+        ]
+    ]);
+    curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    // Qualquer 2xx (200, 204...) conta como sucesso
+    if ($httpCode >= 200 && $httpCode < 300) {
+        $responder(200, ['sucesso' => true]);
+    }
+
+    $responder(502, ['sucesso' => false, 'erro' => "A API respondeu com status {$httpCode}"]);
+}
+
+?>
 <link rel="stylesheet" href="assets/css/treino.css">
 
 <?php
@@ -8,7 +80,7 @@ $idClube = $estadoJogo->clube->id;
 $treinosEscolhidosJogador = $apiService->get("/clubes/{$idClube}/treino");
 $todosTreinos = $apiService->get("/treinos");
 
-// Garante que seja array, caso o ApiService retorne string JSON ou objetos
+// Garante que seja array
 if (is_string($todosTreinos)) {
     $todosTreinos = json_decode($todosTreinos, true);
 } else {
@@ -16,8 +88,10 @@ if (is_string($todosTreinos)) {
 }
 $todosTreinos = $todosTreinos ?: [];
 
-// Ids já escolhidos (ajuste se o formato do endpoint for outro)
+// Ids já escolhidos, ordenados pelo slot
 $escolhidos = json_decode(json_encode($treinosEscolhidosJogador), true) ?: [];
+usort($escolhidos, fn($a, $b) => ($a['slot'] ?? 0) <=> ($b['slot'] ?? 0));
+
 $idsEscolhidos = array_map(function ($t) {
     return is_array($t) ? ($t['idTreino'] ?? null) : $t;
 }, $escolhidos);
@@ -44,7 +118,7 @@ var TREINOS = <?= json_encode($todosTreinos, JSON_UNESCAPED_UNICODE | JSON_HEX_T
 var JA_ESCOLHIDOS = <?= json_encode($idsEscolhidos) ?>;
 
 var LIMITE = 4;
-var selecionados = new Set(); // guarda idTreino
+var selecionados = new Set(); // guarda idTreino, na ordem da seleção
 
 function escapar(txt) {
     var d = document.createElement('div');
@@ -58,21 +132,25 @@ function abreviacao(nome) {
 
 function montarGrade() {
     var grade = document.getElementById('gradeTreinos');
+
+    // Pré-seleciona na ordem dos slots salvos (respeitando o limite)
+    JA_ESCOLHIDOS.forEach(function (id) {
+        if (selecionados.size < LIMITE) selecionados.add(id);
+    });
+
     TREINOS.forEach(function (t) {
         var card = document.createElement('div');
         card.className = 'treino';
         card.dataset.id = t.idTreino;
         card.onclick = function () { alternar(t.idTreino, card); };
-                card.innerHTML =
+        card.innerHTML =
             '<div class="marcador">✓</div>' +
             '<div class="icone">' + escapar(abreviacao(t.nomeTreino)) + '</div>' +
             '<h3>' + escapar(t.nomeTreino) + '</h3>' +
             '<p>' + escapar(t.descTreino) + '</p>';
         grade.appendChild(card);
 
-        // pré-seleciona o que já estava escolhido (respeitando o limite)
-        if (JA_ESCOLHIDOS.indexOf(t.idTreino) !== -1 && selecionados.size < LIMITE) {
-            selecionados.add(t.idTreino);
+        if (selecionados.has(t.idTreino)) {
             card.classList.add('selecionado');
         }
     });
@@ -107,10 +185,43 @@ function atualizarContador() {
 }
 
 function confirmar() {
-    // Ainda não salva nada: só mostra os ids escolhidos
+    var btn = document.getElementById('btnConfirmar');
+    var dica = document.getElementById('dicaRodape');
     var ids = Array.from(selecionados);
-    console.log('Treinos selecionados:', ids);
-    alert('Treino da semana confirmado com ' + ids.length + ' atividade(s).');
+
+    if (ids.length < 1 || ids.length > LIMITE) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Salvando...';
+
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'fetch'
+        },
+        body: JSON.stringify({ treinos: ids })
+    })
+        .then(function (resp) {
+            return resp.json().then(function (dados) {
+                return { ok: resp.ok && dados.sucesso, dados: dados };
+            });
+        })
+        .then(function (r) {
+            if (r.ok) {
+                Toast.sucesso('Todos os treinos foram salvos!');
+                dica.textContent = 'Selecione até 4 treinos para a semana.';
+                btn.textContent = 'Confirmar Treino';
+                btn.disabled = false;
+            } else {
+                throw new Error(r.dados.erro || 'Erro ao salvar');
+            }
+        })
+        .catch(function (e) {
+            Toast.erro('Erro: ' + e.message);
+            btn.textContent = 'Confirmar Treino';
+            btn.disabled = false;
+        });
 }
 
 montarGrade();
