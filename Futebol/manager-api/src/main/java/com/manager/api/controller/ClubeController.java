@@ -1,6 +1,7 @@
 package com.manager.api.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
@@ -391,8 +392,8 @@ public class ClubeController {
     }
     
     @PutMapping("/clubes/{id}/acoesDiretoria")
-    public ResponseEntity<Void> salvarAcoes(@PathVariable Integer id, @Valid @RequestBody ClubeHasAcaoDiretoriaRequest request){
+    public ResponseEntity<Map<String, Object>> salvarAcoes(@PathVariable Integer id, @Valid @RequestBody ClubeHasAcaoDiretoriaRequest request){
     	clubeAcaoDiretoriaService.atualizarStatusAcaoDiretoria(id, request);
-    	return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(Map.of("sucesso", true));
     }
 }

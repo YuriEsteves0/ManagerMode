@@ -1,6 +1,40 @@
-<link rel="stylesheet" href="assets/css/diretoria.css">
-
 <?php
+// ===== 1. MODO ENDPOINT: só entra aqui quando o JS faz o fetch (POST) =====
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // descarta qualquer HTML que o layout (header/menu) já tenha gerado
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+
+    header('Content-Type: application/json');
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    $idAcao = (int)($input['idAcaoDiretoria'] ?? 0);
+
+    if ($idAcao <= 0 || !isset($_SESSION['estado_jogo'])) {
+        http_response_code(400);
+        echo json_encode(['sucesso' => false]);
+        exit;
+    }
+
+    $idClubePost = $_SESSION['estado_jogo']->clube->id;
+
+    $api = new ApiService();
+    $resultado = $api->put("/clubes/{$idClubePost}/acoesDiretoria", [
+        'idClube'         => $idClubePost,
+        'idAcaoDiretoria' => $idAcao,
+        'statusAcao'      => 'EM_ANALISE',
+    ]);
+
+    $sucesso = $resultado !== null && ($resultado['sucesso'] ?? false) === true;
+
+    http_response_code($sucesso ? 200 : 500);
+    echo json_encode(['sucesso' => $sucesso]);
+    exit;
+}
+
+// ===== 2. MODO PÁGINA: monta os dados normalmente =====
 $estadoJogo = $_SESSION['estado_jogo'];
 $apiService = new ApiService();
 $idClube = $estadoJogo->clube->id;
@@ -37,9 +71,8 @@ function extrairConfiancaMinima($requisito)
     }
     return 0; // sem exigência
 }
-
-
 ?>
+<link rel="stylesheet" href="assets/css/diretoria.css">
 
 <main>
 
@@ -68,7 +101,6 @@ function extrairConfiancaMinima($requisito)
                     <h2>Metas da Temporada</h2>
                     <ul class="metas" style="margin-top:6px;">
                         <?php
-
                         foreach ($metasDaTemporada as $meta) {
                             $status = "";
 
@@ -87,12 +119,9 @@ function extrairConfiancaMinima($requisito)
                                     break;
                             }
                         ?>
-
                             <li><?= $meta['metaTemporada']['descricao'] ?> - <?= $status ?></li>
-
                         <?php
                         }
-
                         ?>
                     </ul>
                 </div>
@@ -102,15 +131,11 @@ function extrairConfiancaMinima($requisito)
                 <h2>Recados da Diretoria</h2>
                 <div class="recados">
                     <?php
-
                     if (count($noticiasDiretoria) == 0) {
                     ?>
                         <div><span style="font-size: 15px; color: var(--roxoTextoMaisClaro);">Não há noticias no momento!</span></div>
-
                         <?php
                     } else {
-
-
                         foreach ($noticiasDiretoria as $noticia) {
                             $tipoModificador = ($noticia['tipoModificador'] == "SOMA") ? "+" : "-";
                             $classModificador = ($noticia['tipoModificador'] == "SOMA") ? "pos" : "neg";
@@ -127,62 +152,60 @@ function extrairConfiancaMinima($requisito)
 
         <div class="coluna-direita">
             <section class="box">
-    <h2>Ações de Carreira</h2>
-    <div class="acoes-lista rolavel">
+                <h2>Ações de Carreira</h2>
+                <div class="acoes-lista rolavel">
 
-        <?php if (empty($acoesDiretoria)) { ?>
-            <div><span style="font-size: 15px; color: var(--roxoTextoMaisClaro);">Não há ações disponíveis no momento!</span></div>
-        <?php } else {
-            foreach ($acoesDiretoria as $item) {
-                $acao = $item['acaoDiretoria'];
-                $confiancaMinima = extrairConfiancaMinima($acao['requisito']);
-                $statusAcao = $item['statusAcao'];
+                    <?php if (empty($acoesDiretoria)) { ?>
+                        <div><span style="font-size: 15px; color: var(--roxoTextoMaisClaro);">Não há ações disponíveis no momento!</span></div>
+                        <?php } else {
+                        foreach ($acoesDiretoria as $item) {
+                            $acao = $item['acaoDiretoria'];
+                            $confiancaMinima = extrairConfiancaMinima($acao['requisito']);
+                            $statusAcao = $item['statusAcao'];
 
-                // Define o estado visual e o texto do botão
-                if ($statusAcao === 'EM_ANALISE') {
-                    $classeStatus = 'analise';
-                    $textoStatus  = 'Em Análise';
-                    $textoBotao   = 'Aguardando resposta';
-                    $desabilitado = true;
-                } elseif ($statusAcao === 'CONCLUIDO') {
-                    $classeStatus = 'bloqueado';
-                    $textoStatus  = 'Concluído';
-                    $textoBotao   = 'Já utilizada';
-                    $desabilitado = true;
-                } elseif ($confianca <= $confiancaMinima && $confiancaMinima > 0) {
-                    // DISPONIVEL no banco, mas confiança insuficiente
-                    $classeStatus = 'bloqueado';
-                    $textoStatus  = 'Bloqueado';
-                    $textoBotao   = 'Solicitar à Diretoria';
-                    $desabilitado = true;
-                } else {
-                    $classeStatus = 'disponivel';
-                    $textoStatus  = 'Disponível';
-                    $textoBotao   = 'Solicitar à Diretoria';
-                    $desabilitado = false;
-                }
-        ?>
-                <div class="acao-item">
-                    <div class="acao-topo">
-                        <strong><?= h($acao['titulo']) ?></strong>
-                        <span class="status-tag <?= $classeStatus ?>"><?= $textoStatus ?></span>
-                    </div>
-                    <p><?= h($acao['requisito']) ?></p>
-                    <p>Efeito: <strong><?= h($acao['efeito']) ?></strong></p>
-                    <div class="acao-rodape">
-                        <button class="btn-acao"
-                                data-id-acao="<?= (int)$acao['idAcaoDiretoria'] ?>"
-                                <?= $desabilitado ? 'disabled' : '' ?>>
-                            <?= $textoBotao ?>
-                        </button>
-                    </div>
+                            if ($statusAcao === 'EM_ANALISE') {
+                                $classeStatus = 'analise';
+                                $textoStatus  = 'Em Análise';
+                                $textoBotao   = 'Aguardando resposta';
+                                $desabilitado = true;
+                            } elseif ($statusAcao === 'CONCLUIDO') {
+                                $classeStatus = 'bloqueado';
+                                $textoStatus  = 'Concluído';
+                                $textoBotao   = 'Já utilizada';
+                                $desabilitado = true;
+                            } elseif ($confianca <= $confiancaMinima && $confiancaMinima > 0) {
+                                $classeStatus = 'bloqueado';
+                                $textoStatus  = 'Bloqueado';
+                                $textoBotao   = 'Solicitar à Diretoria';
+                                $desabilitado = true;
+                            } else {
+                                $classeStatus = 'disponivel';
+                                $textoStatus  = 'Disponível';
+                                $textoBotao   = 'Solicitar à Diretoria';
+                                $desabilitado = false;
+                            }
+                        ?>
+                            <div class="acao-item">
+                                <div class="acao-topo">
+                                    <strong><?= h($acao['titulo']) ?></strong>
+                                    <span class="status-tag <?= $classeStatus ?>"><?= $textoStatus ?></span>
+                                </div>
+                                <p><?= h($acao['requisito']) ?></p>
+                                <p>Efeito: <strong><?= h($acao['efeito']) ?></strong></p>
+                                <div class="acao-rodape">
+                                    <button class="btn-acao"
+                                        data-id-acao="<?= (int)$acao['idAcaoDiretoria'] ?>"
+                                        <?= $desabilitado ? 'disabled' : '' ?>>
+                                        <?= $textoBotao ?>
+                                    </button>
+                                </div>
+                            </div>
+                    <?php
+                        }
+                    } ?>
+
                 </div>
-        <?php
-            }
-        } ?>
-
-    </div>
-</section>
+            </section>
         </div>
 
     </div>
@@ -190,3 +213,48 @@ function extrairConfiancaMinima($requisito)
 </main>
 
 <script src="assets/js/animations/diretoria.js"></script>
+
+<!-- ===== 3. JS DO BOTÃO (inline) ===== -->
+<script>
+    document.querySelectorAll('.btn-acao').forEach(btn => {
+
+        btn.addEventListener('click', async () => {
+            const idAcao = Number(btn.dataset.idAcao);
+
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+
+            try {
+                const resp = await fetch(window.location.href, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        idAcaoDiretoria: idAcao
+                    })
+                });
+
+                const texto = await resp.text(); // lê como texto puro, sem converter
+                console.log('STATUS:', resp.status);
+                console.log('RESPOSTA:', texto);
+
+                const data = JSON.parse(texto); // converte manualmente
+
+                if (!data.sucesso) throw new Error('Falhou');
+
+                const item = btn.closest('.acao-item');
+                const tag = item.querySelector('.status-tag');
+                tag.className = 'status-tag analise';
+                tag.textContent = 'Em Análise';
+                btn.textContent = 'Aguardando resposta';
+
+            } catch (e) {
+                console.error('ERRO:', e);
+                btn.disabled = false;
+                btn.textContent = 'Solicitar à Diretoria';
+                alert('Não foi possível enviar a solicitação.');
+            }
+        });
+    });
+</script>
