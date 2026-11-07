@@ -1,8 +1,12 @@
 package com.manager.api.responses;
 
+import java.util.List;
+
 import com.manager.api.enums.competicao.NivelCompeticao;
 import com.manager.api.enums.competicao.StatusCompeticao;
 import com.manager.api.enums.competicao.TipoCompeticao;
+import com.manager.api.model.Clube;
+import com.manager.api.requests.ClubeHasTreinoRequest.TreinoSlotRequest;
 
 public record CompeticaoResponse(
 		Integer idCompeticao,
@@ -14,5 +18,8 @@ public record CompeticaoResponse(
 		Integer ano,
 		StatusCompeticao statusCompeticao
 ) {
-	
+	public record clubesParticipantes(
+			Integer idCompeticao,
+			List<Clube> clubes
+	) {}
 }

@@ -57,4 +57,6 @@ p.dataPartida, p.horario)
 	        @Param("idClube") Integer idClube,
 	        @Param("dataPartida") LocalDate dataPartida);
 	
+	boolean existsByCompeticaoIdCompeticao(Integer competicaoIdCompeticao);
+	
 }
