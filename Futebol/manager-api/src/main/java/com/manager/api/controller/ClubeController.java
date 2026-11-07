@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.manager.api.requests.ClubeHasTreinoRequest;
 import com.manager.api.requests.ClubeHasUpgradeRequest;
 import com.manager.api.responses.ClubeCompeticaoResponse;
 import com.manager.api.responses.ClubeHasAcaoDiretoriaResponse;
@@ -207,5 +208,11 @@ public class ClubeController {
     	return clubeHasUpgradeService.updateUpgrade(idClube, idUpgrade, request)
     			.map(ResponseEntity::ok)
     			.orElse(ResponseEntity.notFound().build());
+    }
+    
+    @PutMapping("/clubes/{id}/treino")
+    public ResponseEntity<ClubeHasTreinoResponse> salvarTreino(@PathVariable Integer id, @Valid @RequestBody ClubeHasTreinoRequest.ClubeTreinosRequest request){
+    	clubeHasTreinoService.atualizarOuSalvarTreino(id, request);
+    	return ResponseEntity.noContent().build();
     }
 }

@@ -3,6 +3,7 @@ package com.manager.api.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -16,4 +17,8 @@ public interface ClubeHasTreinoRepository extends JpaRepository<ClubeHasTreino, 
 		       "JOIN FETCH ct.treino " +
 		       "WHERE ct.id.clubeId = :idClube")
 		List<ClubeHasTreino> buscarPorClube(@Param("idClube") Integer idClube);
+	
+	@Modifying
+	@Query("DELETE FROM ClubeHasTreino ct WHERE ct.id.clubeId = :idClube")
+	void deletarPorClube(@Param("idClube") Integer idClube);
 }

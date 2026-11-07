@@ -101,8 +101,6 @@ function formatarTitulo(string $titulo, int $qtdDestaque, int $limite = 10): arr
         <section class="box" id="box-tabela">
             <h2>Tabela</h2>
             <div class="tabela-scroll">
-
-
                 <table>
                     <thead>
                         <tr>
@@ -116,6 +114,7 @@ function formatarTitulo(string $titulo, int $qtdDestaque, int $limite = 10): arr
                     </thead>
                     <tbody>
                         <?php foreach ($classificacao as $i => $clube):
+                        
                             $ehJogador = (int)$clube['clube_idClube'] === $idClubeJogador;
                         ?>
                             <tr class="<?= $ehJogador ? 'destaque' : '' ?>">
