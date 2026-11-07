@@ -8,7 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.manager.api.responses.NoticiaDiretoriaResponse;
 import com.manager.api.service.NoticiaDiretoriaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Notícias da Diretoria", description = "Notícias da diretoria que afetam a confiança no manager")
 @RestController
 public class NoticiaDiretoriaController {
 	private final NoticiaDiretoriaService service;
@@ -30,6 +35,10 @@ public class NoticiaDiretoriaController {
 	 * 		<li>Modificador e seu tipo (soma ou subtração)</li>
 	 * 	</ul>
 	 */
+	@Operation(summary = "Lista as notícias da diretoria de todos os clubes", description = "Para um clube específico, use /clubes/{idClube}/noticiasDiretoria.")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "Notícias da diretoria")
+	})
 	@GetMapping("/noticiasDiretoria")
 	public List<NoticiaDiretoriaResponse> listarTodasNoticias() {
 		return service.listarTodas();

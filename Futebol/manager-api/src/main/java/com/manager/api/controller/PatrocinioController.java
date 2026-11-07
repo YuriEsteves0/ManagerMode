@@ -7,7 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.manager.api.responses.PatrocinadorResponse;
 import com.manager.api.service.PatrocinadorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Patrocínios", description = "Patrocinadores disponíveis")
 @RestController
 public class PatrocinioController{
 	private final PatrocinadorService patrocinadorService;
@@ -27,6 +32,10 @@ public class PatrocinioController{
 	 * 		<li>Multa de rescisão</li>
 	 * 	</ul>
 	 */
+	@Operation(summary = "Lista os patrocínios disponíveis", description = "Nome, descrição, foto, duração do contrato, valor mensal e multa de rescisão.")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "Patrocínios disponíveis")
+	})
 	@GetMapping("/patrocinios")
 	public List<PatrocinadorResponse> listarPatrocinios(){
 		return patrocinadorService.listarPatrocinios();

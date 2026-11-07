@@ -27,7 +27,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Jogadores", description = "Elenco, ranking, estatísticas e lesões dos jogadores")
 @RestController
 public class JogadoresController {
 
@@ -53,10 +56,12 @@ public class JogadoresController {
      * @return Lista de {@link JogadoresResponse} refletindo os dados dos jogadores
      * 	(atributos, overall, potencial, moral, contrato, valor, salário e posição em campo)
      */
-    @Operation(
-        summary = "Lista jogadores por clube", 
-        description = "Retorna uma lista resumida contendo ID, nome, número da camisa e status de titularidade dos jogadores pertencentes ao clube especificado."
-    )
+    @Operation(summary = "Lista jogadores por clube", description = "Com todos=true retorna o elenco completo. Com todos=false retorna apenas os jogadores que não são titulares.")
+    @Parameter(name = "clube_idClube", description = "ID do clube dono dos jogadores", example = "1")
+    @Parameter(name = "todos", description = "true = elenco completo; false = apenas não titulares", example = "true")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Jogadores do clube")
+    })
     @GetMapping("/jogadores/clube/{clube_idClube}")
     public List<JogadoresResponse> listarJogadoresPorClube(
             @PathVariable Integer clube_idClube, @RequestParam Boolean todos) {
@@ -77,6 +82,10 @@ public class JogadoresController {
      * @return Lista de {@link JogadoresResponse.comClube} refletindo os dados do jogador
      * 	acrescidos do <strong>nome do clube</strong> ao qual ele pertence
      */
+    @Operation(summary = "Ranking de jogadores por overall", description = "Do maior para o menor overall, já com o nome do clube. Jogadores com lesão ativa ficam fora do ranking.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ranking de jogadores")
+    })
     @GetMapping("/jogadores/overall")
     public List<JogadoresResponse.comClube> listarJogadoresPorOverAll(){
     	return jogadoresService.listarPorOverall();
@@ -96,6 +105,11 @@ public class JogadoresController {
      * 		<li>Nota média</li>
      * 	</ul>
      */
+    @Operation(summary = "Lista as estatísticas dos jogadores de um clube", description = "Ordenadas pelo nome do jogador e, dentro de cada um, do ano mais recente para o mais antigo.")
+    @Parameter(name = "clube_idClube", description = "ID do clube dono dos jogadores", example = "1")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Estatísticas dos jogadores")
+    })
     @GetMapping("/jogadores/clube/{clube_idClube}/estatisticas")
     public List<EstatisticasJogadorCompeticaoResponse> listarEstatisticasJogadoresPorClube(
             @PathVariable Integer clube_idClube) {
@@ -114,6 +128,11 @@ public class JogadoresController {
      * 	</ul>
      */
     @CrossOrigin(origins="http://localhost")
+    @Operation(summary = "Lista as estatísticas de um jogador", description = "Todas as competições e anos que o jogador disputou: jogos, gols, assistências e nota média.")
+    @Parameter(name = "id", description = "ID do jogador", example = "1")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Estatísticas do jogador")
+    })
     @GetMapping("/jogador/{id}/estatistica")
     public List<EstatisticasJogadorCompeticaoResponse> estatisticaJogador(@PathVariable Integer id) {
         return estatisticaJogadoresService.estatisticas(id);
@@ -130,6 +149,11 @@ public class JogadoresController {
      * @return Lista de {@link EstatisticasJogadorCompeticaoResponse} contendo jogos, gols,
      * 	assistências e nota média de cada jogador na competição
      */
+    @Operation(summary = "Lista a artilharia de uma competição", description = "Estatísticas de todos os jogadores da competição, ordenadas por gols (do maior para o menor).")
+    @Parameter(name = "id", description = "ID da competição (e não do jogador)", example = "1")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Estatísticas da competição")
+    })
     @GetMapping("/jogador/competicao/{id}/estatistica")
     public List<EstatisticasJogadorCompeticaoResponse> estatisticaJogadorFull(@PathVariable Integer id) {
         return estatisticaJogadoresService.estatisticasFull(id);
@@ -147,6 +171,11 @@ public class JogadoresController {
      * 		<li>Gravidade da lesão</li>
      * 	</ul>
      */
+    @Operation(summary = "Lista as lesões de um clube", description = "Departamento médico: lesões de todos os jogadores do clube.")
+    @Parameter(name = "clube_idClube", description = "ID do clube dono dos jogadores", example = "1")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lesões do clube")
+    })
     @GetMapping("/jogadores/clube/{clube_idClube}/lesoes")
     public List<LesaoJogadorResponse> listarLesoesPorClube(@PathVariable Integer clube_idClube) {
         return jogadorLesaoService.listarLesoesPorClube(clube_idClube);
@@ -159,6 +188,11 @@ public class JogadoresController {
      * @return Lista de {@link LesaoResponse} contendo ID, nome, tempo de lesão e gravidade de cada lesão.
      * 	Retorna uma lista vazia caso o jogador não esteja lesionado
      */
+    @Operation(summary = "Lista as lesões de um jogador", description = "Retorna lista vazia se o jogador não estiver lesionado.")
+    @Parameter(name = "id", description = "ID do jogador", example = "1")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lesões do jogador")
+    })
     @GetMapping("/jogador/{id}/lesoes")
     public List<LesaoResponse> listarLesoesJogador(@PathVariable Integer id) {
         return jogadorLesaoService.listarLesoesJogador(id);
@@ -172,6 +206,12 @@ public class JogadoresController {
      * @return {@link ResponseEntity} com status <strong>200 (OK)</strong> e o {@link JogadoresResponse} do jogador já atualizado
      * @throws ResponseStatusException com status <strong>404 (Not Found)</strong> caso nenhum jogador seja encontrado com o <strong>id</strong> informado
      */
+    @Operation(summary = "Atualiza a titularidade de um jogador", description = "Altera apenas o campo titular e devolve o jogador já atualizado.")
+    @Parameter(name = "id", description = "ID do jogador", example = "1")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Jogador atualizado"),
+        @ApiResponse(responseCode = "404", description = "Jogador não encontrado", content = @Content)
+    })
     @PutMapping("/jogador/{id}")
     public ResponseEntity<JogadoresResponse> atualizarTitularidadeJogador(@PathVariable Integer id, @RequestBody @Valid JogadoresRequest.titularidade request){
     	return ResponseEntity.ok(jogadoresService.atualizarPorId(id, request));

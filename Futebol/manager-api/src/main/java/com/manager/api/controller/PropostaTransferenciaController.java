@@ -17,7 +17,13 @@ import com.manager.api.service.PropostaTransferenciaService;
 
 
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Propostas de Transferência", description = "Criação e atualização de propostas por jogadores")
 @RestController
 @CrossOrigin(origins="http://localhost")
 public class PropostaTransferenciaController{
@@ -44,6 +50,12 @@ public class PropostaTransferenciaController{
 	 * @throws ResponseStatusException com status <strong>404 (Not Found)</strong> caso o jogador ou algum dos clubes não exista,
 	 * 	ou <strong>409 (Conflict)</strong> caso o clube que faz a oferta já tenha uma proposta <strong>pendente</strong> por esse jogador
 	 */
+	@Operation(summary = "Cria uma proposta de transferência", description = "idClubeExterior é o clube que faz a oferta e idClubeInterior é o dono do jogador. A proposta sempre nasce revelada, independente do valor de revelado.")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "201", description = "Proposta criada", content = @Content),
+	    @ApiResponse(responseCode = "404", description = "Jogador ou clube não encontrado", content = @Content),
+	    @ApiResponse(responseCode = "409", description = "O clube já tem uma proposta pendente por esse jogador", content = @Content)
+	})
 	@PostMapping("/propostaTransferencia")
 	public ResponseEntity<PropostaTransferenciaResponse> criarProposta(@Valid @RequestBody PropostaTransferenciaRequest request){
 		PropostaTransferenciaResponse response = propostaTransferenciaService.criarPropostaTransferencia(request);
@@ -63,6 +75,12 @@ public class PropostaTransferenciaController{
 	 * @throws ResponseStatusException com status <strong>404 (Not Found)</strong> caso a proposta não exista,
 	 * 	ou <strong>409 (Conflict)</strong> caso ela já esteja finalizada (recusada ou feita)
 	 */
+	@Operation(summary = "Atualiza o status de uma proposta de transferência", description = "A proposta é localizada por idJogador + idClubeExterior e só o statusProposta muda. Propostas recusadas ou feitas não podem mais ser alteradas.")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "201", description = "Proposta atualizada", content = @Content),
+	    @ApiResponse(responseCode = "404", description = "Proposta inexistente", content = @Content),
+	    @ApiResponse(responseCode = "409", description = "Proposta já finalizada", content = @Content)
+	})
 	@PutMapping("/propostaTransferencia")
 	public ResponseEntity<PropostaTransferenciaResponse> atualizarProposta(@Valid @RequestBody PropostaTransferenciaRequest request){
 		PropostaTransferenciaResponse response = propostaTransferenciaService.atualizarProposta(request);

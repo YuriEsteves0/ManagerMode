@@ -7,7 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.manager.api.responses.TreinoResponse;
 import com.manager.api.service.TreinoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Treinos", description = "Catálogo de treinos")
 @RestController
 public class TreinoController{
 	private final TreinoService treinoService;
@@ -30,6 +35,10 @@ public class TreinoController{
 	 * 		<li>Data</li>
 	 * 	</ul>
 	 */
+	@Operation(summary = "Lista o catálogo de treinos", description = "Catálogo geral. Para os treinos configurados por um clube, use /clubes/{id}/treino.")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "Treinos disponíveis")
+	})
 	@GetMapping("/treinos")
 	public List<TreinoResponse> listarTodos(){
 		return treinoService.listarTreinos();

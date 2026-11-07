@@ -15,7 +15,13 @@ import com.manager.api.responses.ClubeCompeticaoResponse;
 import com.manager.api.responses.CompeticaoResponse;
 import com.manager.api.service.ClubeCompeticaoService;
 import com.manager.api.service.CompeticaoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Competições", description = "Competições, clubes participantes e classificação")
 @RestController
 public class CompeticaoController {
 
@@ -43,6 +49,11 @@ public class CompeticaoController {
      * 	</ul>
      * @return Lista de {@link Competicao} correspondentes ao filtro aplicado, ou a lista completa caso nenhum filtro seja informado
      */
+    @Operation(summary = "Lista as competições", description = "Retorna todas as competições cadastradas. Use o parâmetro tipo para filtrar.")
+    @Parameter(name = "tipo", description = "Filtro opcional por tipo de competição", example = "PONTOS_CORRIDOS")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Competições encontradas")
+    })
     @GetMapping("/competicoes")
     public List<Competicao> listarCompeticoes(@RequestParam(required = false) TipoCompeticao tipo) {
         if (tipo != null) {
@@ -63,6 +74,11 @@ public class CompeticaoController {
      * 	</ul>
      * 	Retorna vazio caso nenhuma competição seja encontrada com o <strong>id</strong> informado
      */
+    @Operation(summary = "Busca uma competição por ID", description = "Retorna nome, ano, status, tipo, nível e premiações. O corpo vem vazio se a competição não existir.")
+    @Parameter(name = "id", description = "ID da competição", example = "1")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Competição encontrada (ou corpo vazio)")
+    })
     @GetMapping("/competicoes/{id}")
     public Optional<CompeticaoResponse> buscarCompeticao(@PathVariable Integer id){
     	return competicaoService.buscarCompeticao(id);
@@ -82,6 +98,11 @@ public class CompeticaoController {
      * 		<li>Orçamento disponível</li>
      * 	</ul>
      */
+    @Operation(summary = "Lista os clubes de uma competição", description = "Formato resumido, pensado para exibição e seleção: ID, nome, foto (escudo) e orçamento.")
+    @Parameter(name = "id", description = "ID da competição", example = "1")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Clubes participantes")
+    })
     @GetMapping("/competicoes/{id}/clubes")
     public List<ClubeCompeticaoResponse.ClubeResponse.ClubeFotoNomeResponse> listarClubesDaCompeticao(@PathVariable Integer id) {
         return clubeCompeticaoService.listarClubeFotoNome(id);
@@ -103,6 +124,11 @@ public class CompeticaoController {
      * 		<li>Fase atual do clube na competição</li>
      * 	</ul>
      */
+    @Operation(summary = "Busca a tabela de classificação", description = "Clubes em ordem decrescente de pontos (o líder vem primeiro), com a fase atual de cada um.")
+    @Parameter(name = "id", description = "ID da competição", example = "1")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Tabela de classificação")
+    })
     @GetMapping("/competicoes/{id}/classificacao")
     public List<ClubeCompeticaoResponse.IdClubeIdCompeticaoPontosFaseAtual> classificacao(@PathVariable Integer id) {
         return clubeCompeticaoService.listarClassificacao(id);

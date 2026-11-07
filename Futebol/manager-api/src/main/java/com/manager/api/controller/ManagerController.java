@@ -19,7 +19,14 @@ import com.manager.api.service.ManagerService;
 import com.manager.api.service.TituloTecnicoService;
 
 import org.springframework.web.bind.annotation.RequestBody;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Managers", description = "Técnicos, títulos e histórico de passagens")
 @RestController
 public class ManagerController{
 	private ManagerService managerService;
@@ -44,6 +51,11 @@ public class ManagerController{
 	 * 	</ul>
 	 * 	Retorna vazio caso nenhum manager seja encontrado com o <strong>id</strong> informado
 	 */
+	@Operation(summary = "Busca um manager por ID", description = "Retorna nome, nacionalidade, foto, reputação, experiência, fim de contrato e clube atual. O corpo vem vazio se não existir.")
+	@Parameter(name = "id", description = "ID do manager", example = "1")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "Manager encontrado (ou corpo vazio)")
+	})
 	@GetMapping("/manager/{id}")
 	public Optional<ManagerResponse> buscarDadosManager(@PathVariable Integer id){
 		return managerService.buscarDadosManager(id);
@@ -60,6 +72,11 @@ public class ManagerController{
 	 * 		<li>Ano da conquista</li>
 	 * 	</ul>
 	 */
+	@Operation(summary = "Lista os títulos de um manager", description = "Competições vencidas e o ano de cada conquista.")
+	@Parameter(name = "idManager", description = "ID do manager", example = "1")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "Títulos do manager")
+	})
 	@GetMapping("/manager/{idManager}/titulos")
 	public List<TituloTecnicoResponse> listarTitulosPorManager(@PathVariable Integer idManager){
 		return tituloService.listarPorManager(idManager);
@@ -79,6 +96,11 @@ public class ManagerController{
 	 * 		<li>Ano da passagem</li>
 	 * 	</ul>
 	 */
+	@Operation(summary = "Lista o histórico de clubes de um manager", description = "Clubes que o manager já comandou, do ano mais recente para o mais antigo.")
+	@Parameter(name = "idManager", description = "ID do manager", example = "1")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "Histórico do manager")
+	})
 	@GetMapping("/manager/{idManager}/historico")
 	public List<HistoricoManagerResponse> listarHistoricoPorManager(@PathVariable Integer idManager){
 		return historicoService.listarPorManager(idManager);
@@ -96,6 +118,10 @@ public class ManagerController{
 	 * @return {@link ResponseEntity} com status <strong>201 (Created)</strong> e o {@link ManagerResponse}
 	 * 	do manager criado, já com o <strong>id</strong> gerado
 	 */
+	@Operation(summary = "Cria um manager", description = "Cria um novo técnico e devolve o registro já com o ID gerado.")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "201", description = "Manager criado", content = @Content)
+	})
 	@PostMapping("/manager/criar")
 	public ResponseEntity<ManagerResponse> criarManager(@RequestBody ManagerRequest request){
 		ManagerResponse criado = managerService.criarManager(request);

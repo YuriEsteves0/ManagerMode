@@ -10,7 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.manager.api.responses.PartidaResponse;
 import com.manager.api.service.PartidaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Partidas", description = "Próximos jogos e calendário")
 @RestController
 public class PartidaController{
 	private final PartidaService partidaService;
@@ -37,6 +43,12 @@ public class PartidaController{
 	 * 		<li>Data e horário</li>
 	 * 	</ul>
 	 */
+	@Operation(summary = "Lista as próximas 4 partidas de um clube", description = "Considera mandante e visitante, apenas partidas com data posterior à informada, ordenadas por data e horário.")
+	@Parameter(name = "idClube", description = "ID do clube", example = "1")
+	@Parameter(name = "dataPartida", description = "Data de referência (yyyy-MM-dd)", example = "2026-10-21")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "Próximas partidas (no máximo 4)")
+	})
 	@GetMapping("/partidas/clube/{idClube}/proximosJogos")
 	public List<PartidaResponse.RodadaIdMandanteIdVisitanteLocalEstadioDataHorario> listarProximosJogos(@PathVariable Integer idClube, @RequestParam(required = true) LocalDate dataPartida){
 		return partidaService.listarProximasPartidas(idClube, dataPartida);
@@ -61,6 +73,12 @@ public class PartidaController{
 	 * 		<li>ID da competição</li>
 	 * 	</ul>
 	 */
+	@Operation(summary = "Lista todas as partidas futuras de um clube", description = "Sem limite de partidas e com dados completos de mandante e visitante, pensado para montar o calendário.")
+	@Parameter(name = "idClube", description = "ID do clube", example = "1")
+	@Parameter(name = "dataPartida", description = "Data de referência (yyyy-MM-dd)", example = "2026-10-21")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "Partidas futuras")
+	})
 	@GetMapping("/partidas/clube/{idClube}/proximosJogosCalendario")
 	public List<PartidaResponse> listarProximosJogosCalendario(@PathVariable Integer idClube, @RequestParam(required = true) LocalDate dataPartida){
 		return partidaService.listarProximasPartidasCalendario(idClube, dataPartida);
