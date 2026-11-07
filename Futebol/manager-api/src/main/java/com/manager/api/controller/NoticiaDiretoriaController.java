@@ -17,6 +17,19 @@ public class NoticiaDiretoriaController {
 		this.service = service;
 	}
 
+	/**
+	 * Lista as notícias da diretoria de <strong>todos</strong> os clubes.
+	 * <p>
+	 * Para listar apenas as notícias de um clube, use <strong>/clubes/{idClube}/noticiasDiretoria</strong>.
+	 * </p>
+	 *
+	 * @return Lista de {@link NoticiaDiretoriaResponse} contendo, por notícia:
+	 * 	<ul>
+	 * 		<li>ID, texto e data de registro</li>
+	 * 		<li>ID do clube relacionado</li>
+	 * 		<li>Modificador e seu tipo (soma ou subtração)</li>
+	 * 	</ul>
+	 */
 	@GetMapping("/noticiasDiretoria")
 	public List<NoticiaDiretoriaResponse> listarTodasNoticias() {
 		return service.listarTodas();

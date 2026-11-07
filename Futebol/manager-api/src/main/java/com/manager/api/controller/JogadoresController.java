@@ -41,10 +41,6 @@ public class JogadoresController {
 		this.jogadorLesaoService = jogadorLesaoService;
     }
 
-    @Operation(
-        summary = "Lista jogadores por clube", 
-        description = "Retorna uma lista resumida contendo ID, nome, número da camisa e status de titularidade dos jogadores pertencentes ao clube especificado."
-    )
     /**
      * Lista os jogadores de um clube, conforme o parâmetro <strong>todos</strong>.
      *
@@ -57,6 +53,10 @@ public class JogadoresController {
      * @return Lista de {@link JogadoresResponse} refletindo os dados dos jogadores
      * 	(atributos, overall, potencial, moral, contrato, valor, salário e posição em campo)
      */
+    @Operation(
+        summary = "Lista jogadores por clube", 
+        description = "Retorna uma lista resumida contendo ID, nome, número da camisa e status de titularidade dos jogadores pertencentes ao clube especificado."
+    )
     @GetMapping("/jogadores/clube/{clube_idClube}")
     public List<JogadoresResponse> listarJogadoresPorClube(
             @PathVariable Integer clube_idClube, @RequestParam Boolean todos) {
@@ -164,6 +164,14 @@ public class JogadoresController {
         return jogadorLesaoService.listarLesoesJogador(id);
     }
     
+    /**
+     * Atualiza a titularidade de um jogador.
+     *
+     * @param id Parâmetro usado como id do jogador que será atualizado
+     * @param request {@link JogadoresRequest.titularidade} no corpo da requisição, contendo o novo valor de <strong>titular</strong>
+     * @return {@link ResponseEntity} com status <strong>200 (OK)</strong> e o {@link JogadoresResponse} do jogador já atualizado
+     * @throws ResponseStatusException com status <strong>404 (Not Found)</strong> caso nenhum jogador seja encontrado com o <strong>id</strong> informado
+     */
     @PutMapping("/jogador/{id}")
     public ResponseEntity<JogadoresResponse> atualizarTitularidadeJogador(@PathVariable Integer id, @RequestBody @Valid JogadoresRequest.titularidade request){
     	return ResponseEntity.ok(jogadoresService.atualizarPorId(id, request));

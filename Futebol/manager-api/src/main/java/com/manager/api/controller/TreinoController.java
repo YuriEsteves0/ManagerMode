@@ -16,6 +16,20 @@ public class TreinoController{
 		this.treinoService= treinoService;
 	}
 	
+	/**
+	 * Lista todos os treinos disponíveis no jogo.
+	 * <p>
+	 * Esse é o catálogo geral de treinos. Para ver os treinos que um clube já configurou,
+	 * use <strong>/clubes/{id}/treino</strong>.
+	 * </p>
+	 *
+	 * @return Lista de {@link TreinoResponse} contendo:
+	 * 	<ul>
+	 * 		<li>ID, nome e descrição do treino</li>
+	 * 		<li>Intensidade</li>
+	 * 		<li>Data</li>
+	 * 	</ul>
+	 */
 	@GetMapping("/treinos")
 	public List<TreinoResponse> listarTodos(){
 		return treinoService.listarTreinos();

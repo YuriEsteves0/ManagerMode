@@ -152,6 +152,18 @@ public class ClubeController {
     	return clubeHasUpgradeService.listarUpgradesClubeComNome(id);
     }
     
+    /**
+     * Busca um upgrade específico de um clube, com o progresso do clube nele.
+     * <p>
+     * Mesmo formato de <strong>/clubes/{id}/upgrades</strong>, mas para um único upgrade.
+     * </p>
+     *
+     * @param id Parâmetro usado como id do clube que será consultado
+     * @param idUpgrade Parâmetro usado como id do upgrade que será consultado
+     * @return {@link Optional} de {@link ClubeHasUpgradeResponse} contendo os dados do upgrade
+     * 	(nome, preço, tipo, descrição e modificador) e o <strong>nivelAtual</strong> e o <strong>nivelMaximo</strong> do clube nele.
+     * 	Retorna vazio caso o clube não possua o upgrade informado
+     */
     @GetMapping("/clubes/{id}/upgrade/{idUpgrade}")
     public Optional<ClubeHasUpgradeResponse> buscarUpgradePorId(@PathVariable Integer id, @PathVariable Integer idUpgrade){
     	return clubeHasUpgradeService.listarUpgradeClubeComNome(id, idUpgrade);
@@ -179,26 +191,95 @@ public class ClubeController {
     	return propostaTransferenciaService.transferencia(id, tipoTransferencia);
     }
     
+    /**
+     * Lista os treinos configurados para um clube.
+     * <p>
+     * Cada item representa um treino ocupando um <strong>slot</strong> do clube.
+     * </p>
+     *
+     * @param id Parâmetro usado como id do clube que será consultado
+     * @return Lista de {@link ClubeHasTreinoResponse} contendo, por treino:
+     * 	<ul>
+     * 		<li>Dados do clube</li>
+     * 		<li>ID e dados do treino (nome, descrição, intensidade e data)</li>
+     * 		<li>Slot ocupado pelo treino</li>
+     * 	</ul>
+     */
     @GetMapping("/clubes/{id}/treino")
     public List<ClubeHasTreinoResponse> listarTreinos(@PathVariable Integer id){
     	return clubeHasTreinoService.buscarPorClube(id);
     }
     
+    /**
+     * Lista as metas de temporada de um clube, com o andamento de cada uma.
+     *
+     * @param id Parâmetro usado como id do clube que será consultado
+     * @return Lista de {@link ClubeHasMetaTemporadaResponse} contendo, por meta:
+     * 	<ul>
+     * 		<li>Dados do clube</li>
+     * 		<li>ID e descrição da meta</li>
+     * 		<li>Status da meta (dentro do esperado, abaixo do esperado, concluída ou falhou)</li>
+     * 	</ul>
+     */
     @GetMapping("/clubes/{id}/metaTemporada")
     public List<ClubeHasMetaTemporadaResponse> listarMetas(@PathVariable Integer id){
     	return clubeHasMetaTemporadaService.buscarClube(id);
     }
     
+    /**
+     * Lista as notícias da diretoria de um clube.
+     * <p>
+     * O resultado vem ordenado pela data de registro, da mais recente para a mais antiga.
+     * Para listar as notícias de <strong>todos</strong> os clubes, use <strong>/noticiasDiretoria</strong>.
+     * </p>
+     *
+     * @param idClube Parâmetro usado como id do clube que será consultado
+     * @return Lista de {@link NoticiaDiretoriaResponse} contendo, por notícia:
+     * 	<ul>
+     * 		<li>ID, texto e data de registro</li>
+     * 		<li>ID do clube relacionado</li>
+     * 		<li>Modificador e seu tipo (soma ou subtração)</li>
+     * 	</ul>
+     */
     @GetMapping("/clubes/{idClube}/noticiasDiretoria")
 	public List<NoticiaDiretoriaResponse> listarPorClube(@PathVariable Integer idClube) {
 		return noticiaDiretoriaService.buscarPorClube(idClube);
 	}
     
+    /**
+     * Lista as ações da diretoria de um clube, com o status de cada uma.
+     * <p>
+     * O resultado vem ordenado pelo status da ação.
+     * </p>
+     *
+     * @param idClube Parâmetro usado como id do clube que será consultado
+     * @return Lista de {@link ClubeHasAcaoDiretoriaResponse} contendo, por ação:
+     * 	<ul>
+     * 		<li>Dados do clube</li>
+     * 		<li>ID e dados da ação (título, requisito e efeito)</li>
+     * 		<li>Status da ação (disponível, em análise ou concluída)</li>
+     * 	</ul>
+     */
     @GetMapping("/clubes/{idClube}/acaoDiretoria")
     public List<ClubeHasAcaoDiretoriaResponse> listarAcoes(@PathVariable Integer idClube){
     	return clubeAcaoDiretoriaService.listarAcoesClube(idClube);
     }
     
+    /**
+     * Atualiza o nível de um upgrade que o clube já possui.
+     * <p>
+     * O novo nível precisa estar entre <strong>0</strong> e o <strong>nivelMaximo</strong> do upgrade,
+     * e <strong>não pode ser menor</strong> que o nível atual do clube (upgrades só sobem).
+     * </p>
+     *
+     * @param idClube Parâmetro usado como id do clube dono do upgrade
+     * @param idUpgrade Parâmetro usado como id do upgrade que será atualizado
+     * @param request {@link ClubeHasUpgradeRequest} no corpo da requisição, contendo o novo <strong>nivelAtual</strong>
+     * @return {@link ResponseEntity} com status <strong>200 (OK)</strong> e o {@link ClubeHasUpgradeResponse} já atualizado.
+     * 	Retorna <strong>404 (Not Found)</strong> caso o clube não possua o upgrade informado
+     * @throws ResponseStatusException com status <strong>400 (Bad Request)</strong> caso o nível esteja fora do intervalo
+     * 	permitido ou seja menor que o nível atual, ou <strong>404 (Not Found)</strong> caso o upgrade não exista
+     */
     @PutMapping("/clubes/{idClube}/upgrade/{idUpgrade}")
     public ResponseEntity<ClubeHasUpgradeResponse> updateUpgradeClube(
     		@PathVariable Integer idClube,
@@ -210,6 +291,19 @@ public class ClubeController {
     			.orElse(ResponseEntity.notFound().build());
     }
     
+    /**
+     * Salva os treinos de um clube, <strong>substituindo</strong> a configuração anterior.
+     * <p>
+     * Todos os treinos atuais do clube são removidos e a lista enviada passa a ser a nova configuração.
+     * Tudo acontece em uma única transação: se algo falhar, a configuração anterior é mantida.
+     * </p>
+     *
+     * @param id Parâmetro usado como id do clube que será atualizado
+     * @param request {@link ClubeHasTreinoRequest.ClubeTreinosRequest} no corpo da requisição, contendo a lista de treinos,
+     * 	cada um com o <strong>idTreino</strong> e o <strong>slot</strong> que ele vai ocupar
+     * @return {@link ResponseEntity} com status <strong>204 (No Content)</strong> e sem corpo
+     * @throws RuntimeException caso o clube ou algum dos treinos informados não seja encontrado
+     */
     @PutMapping("/clubes/{id}/treino")
     public ResponseEntity<ClubeHasTreinoResponse> salvarTreino(@PathVariable Integer id, @Valid @RequestBody ClubeHasTreinoRequest.ClubeTreinosRequest request){
     	clubeHasTreinoService.atualizarOuSalvarTreino(id, request);

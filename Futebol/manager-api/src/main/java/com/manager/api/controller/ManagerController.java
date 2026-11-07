@@ -84,6 +84,18 @@ public class ManagerController{
 		return historicoService.listarPorManager(idManager);
 	}
 	
+	/**
+	 * Cria um novo manager (técnico).
+	 *
+	 * @param request {@link ManagerRequest} no corpo da requisição, contendo:
+	 * 	<ul>
+	 * 		<li>Nome, nacionalidade e foto</li>
+	 * 		<li>Reputação (iniciante, promissor, renomando ou lenda) e experiência</li>
+	 * 		<li>Ano de fim do contrato e ID do clube</li>
+	 * 	</ul>
+	 * @return {@link ResponseEntity} com status <strong>201 (Created)</strong> e o {@link ManagerResponse}
+	 * 	do manager criado, já com o <strong>id</strong> gerado
+	 */
 	@PostMapping("/manager/criar")
 	public ResponseEntity<ManagerResponse> criarManager(@RequestBody ManagerRequest request){
 		ManagerResponse criado = managerService.criarManager(request);
