@@ -160,77 +160,95 @@ unset($p);
                     </table>
                 </div>
 
-                <button class="btn-formalizar" id="btn-formalizar" type="button" onclick="abrirModal()">Formalizar Contratação</button>
+                <button class="btn-formalizar" id="btn-formalizar" type="button">Formalizar Contratação</button>
             </div>
         </section>
 
     </div>
 
-    <!-- MODAL DE FORMALIZAÇÃO -->
-    <div class="overlay" id="overlayFormalizar">
-        <div class="modal">
-            <div class="modal-topo">
-                <h2 id="mod-titulo">Formalizar Contratação</h2>
-                <button class="modal-fechar" onclick="fecharModal()">✕</button>
-            </div>
+</main>
 
-            <div class="campo">
-                <label>Salário oferecido ao jogador</label>
-                <input type="number" id="mod-salario" placeholder="Ex: 210000">
-            </div>
-
-            <div class="campo">
-                <label>Tempo de contrato oferecido</label>
-                <select id="mod-contrato">
-                    <option value="1">1 ano</option>
-                    <option value="2">2 anos</option>
-                    <option value="3" selected>3 anos</option>
-                    <option value="4">4 anos</option>
-                    <option value="5">5 anos</option>
-                </select>
-            </div>
-
-            <div class="campo">
-                <label>Valor de rescisão</label>
-                <input type="number" id="mod-rescisao" placeholder="Ex: 90000000">
-            </div>
-
-            <div class="campo">
-                <label>Satisfação do jogador no clube atual</label>
-                <div class="moral-gauge">
-                    <div class="barra"><i id="mod-moral-barra" style="width:0%"></i></div>
-                    <div class="legenda"><span>Quer sair</span><span id="mod-moral-texto"></span><span>Feliz no clube</span></div>
+<!-- MODAL DE FORMALIZAÇÃO (mesmo padrão do modal de proposta do mercado) -->
+<dialog class="proposta-modal" id="modal-formalizar">
+    <form class="proposta-form" id="form-formalizar" novalidate>
+        <header class="proposta-topo">
+            <div class="proposta-id">
+                <span class="proposta-pos" id="mod-pos">-</span>
+                <div>
+                    <h2 id="mod-nome">Formalizar Contratação</h2>
+                    <span id="mod-sub">-</span>
                 </div>
             </div>
+            <button type="button" class="proposta-fechar" id="mod-fechar" aria-label="Fechar">&times;</button>
+        </header>
 
+        <div class="proposta-ref">
+            <div class="item"><span>Valor acordado</span><strong id="mod-ref-valor">-</strong></div>
+            <div class="item"><span>Multa de rescisão</span><strong id="mod-ref-multa">-</strong></div>
+            <div class="item"><span>Salário atual</span><strong id="mod-ref-salario">-</strong></div>
+            <div class="item"><span>Contrato restante</span><strong id="mod-ref-contrato">-</strong></div>
+            <div class="item"><span>Overall</span><strong id="mod-ref-overall">-</strong></div>
+            <div class="item"><span>Moral</span><strong id="mod-ref-moral">-</strong></div>
+        </div>
+
+        <div class="proposta-campo">
+            <label for="mod-salario">Salário oferecido ao jogador (R$)</label>
+            <input type="text" id="mod-salario" inputmode="numeric" autocomplete="off" placeholder="Ex: 210.000">
+        </div>
+
+        <div class="proposta-campo">
+            <label for="mod-contrato">Tempo de contrato oferecido</label>
+            <select id="mod-contrato">
+                <option value="1">1 ano</option>
+                <option value="2">2 anos</option>
+                <option value="3" selected>3 anos</option>
+                <option value="4">4 anos</option>
+                <option value="5">5 anos</option>
+            </select>
+        </div>
+
+        <div class="proposta-campo">
+            <label for="mod-rescisao">Valor de rescisão (R$)</label>
+            <input type="text" id="mod-rescisao" inputmode="numeric" autocomplete="off" placeholder="Ex: 90.000.000">
+        </div>
+
+        <div class="proposta-campo">
+            <label>Satisfação do jogador no clube atual</label>
+            <div class="moral-gauge">
+                <div class="barra"><i id="mod-moral-barra" style="width:0%"></i></div>
+                <div class="legenda"><span>Quer sair</span><span id="mod-moral-texto"></span><span>Feliz no clube</span></div>
+            </div>
             <div class="aviso" id="mod-aviso" style="display:none;">
                 Contratação dificultada pois o jogador não deseja sair do clube atual.
             </div>
-
-            <!-- Achômetro -->
-            <div class="campo">
-                <label>Achômetro</label>
-                <div id="mod-achometro" style="padding:10px; border-radius:8px; background:var(--fundoMeioTransparente);">
-                    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;">
-                        <strong id="ach-rotulo" style="font-size:14px;"></strong>
-                        <span style="font-size:12px; color:var(--roxoTextoMaisClaro);">É só um palpite</span>
-                    </div>
-                    <div style="height:10px; border-radius:5px; background:var(--cinza); overflow:hidden;">
-                        <div id="ach-barra" style="height:100%; width:0%; border-radius:5px; transition:width .25s ease, background .25s ease;"></div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:12px; color:var(--roxoTextoMaisClaro);">
-                        <span>Dificilmente</span>
-                        <span>Com certeza</span>
-                    </div>
-                </div>
-                <div id="mod-resultado" style="display:none; margin-top:8px; padding:10px; border-radius:8px; background:var(--fundoMeioTransparente); border-left:3px solid var(--vermelho); font-size:14px;"></div>
-            </div>
-
-            <button class="btn-enviar" type="button" onclick="enviarProposta()">Enviar Proposta</button>
         </div>
-    </div>
 
-</main>
+        <!-- Achômetro -->
+        <div class="proposta-campo">
+            <label>Achômetro</label>
+            <div id="mod-achometro" style="padding:10px; border-radius:8px; background:var(--fundoMeioTransparente);">
+                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;">
+                    <strong id="ach-rotulo" style="font-size:14px;"></strong>
+                    <span style="font-size:12px; color:var(--roxoTextoMaisClaro);">É só um palpite</span>
+                </div>
+                <div style="height:10px; border-radius:5px; background:var(--cinza); overflow:hidden;">
+                    <div id="ach-barra" style="height:100%; width:0%; border-radius:5px; transition:width .25s ease, background .25s ease;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:12px; color:var(--roxoTextoMaisClaro);">
+                    <span>Dificilmente</span>
+                    <span>Com certeza</span>
+                </div>
+            </div>
+        </div>
+
+        <p class="proposta-erro" id="mod-resultado" hidden></p>
+
+        <footer class="proposta-acoes">
+            <button type="button" class="btn-secundario" id="mod-cancelar">Cancelar</button>
+            <button type="submit" class="btn-proposta" id="mod-enviar">Enviar proposta</button>
+        </footer>
+    </form>
+</dialog>
 
 
 <script>
@@ -254,6 +272,8 @@ unset($p);
         enviada: 'Aguardando resposta do clube',
         recusada: 'Proposta encerrada'
     };
+
+    const modal = document.getElementById('modal-formalizar');
 
     // =====================================================================
     // IA DO JOGADOR
@@ -350,11 +370,27 @@ unset($p);
         return { bloqueado: false, score: Math.round(limitar(score, 0, 100)) };
     }
 
+    // Lê só os dígitos de um campo com máscara de milhar
+    function digitos(id) {
+        const v = document.getElementById(id).value.replace(/\D/g, '');
+        return v === '' ? 0 : Number(v);
+    }
+
+    function formatarMilhar(v) {
+        const n = Number(v);
+        return n > 0 ? Math.round(n).toLocaleString('pt-BR') : '';
+    }
+
+    function dinheiro(v) {
+        if (v === null || v === undefined) return '-';
+        return 'R$ ' + Number(v).toLocaleString('pt-BR');
+    }
+
     // Lê os campos do modal e avalia a proposta atual
     function avaliarModal() {
         const p = propostas[propostaAtual];
         if (!p) return null;
-        const salario = Number(document.getElementById('mod-salario').value) || 0;
+        const salario = digitos('mod-salario');
         const anos = Number(document.getElementById('mod-contrato').value) || 1;
         return avaliarProposta(p, salario, anos);
     }
@@ -367,8 +403,16 @@ unset($p);
         return limitar(r.score + distorcao, 0, 100);
     }
 
+    function mostrarResultado(msg) {
+        const res = document.getElementById('mod-resultado');
+        res.textContent = msg;
+        res.hidden = false;
+    }
+
     function esconderResultado() {
-        document.getElementById('mod-resultado').style.display = 'none';
+        const res = document.getElementById('mod-resultado');
+        res.textContent = '';
+        res.hidden = true;
     }
 
     function atualizarAchometro() {
@@ -394,19 +438,22 @@ unset($p);
         const r = atualizarAchometro();
         if (!r) return;
 
+        if (digitos('mod-salario') <= 0) {
+            mostrarResultado('Informe o salário oferecido.');
+            return;
+        }
+
         // decisão real: score + variação aleatória
         const ruido = (Math.random() * 2 - 1) * IA.ruidoDecisao;
         const aceita = !r.bloqueado && (r.score + ruido) >= IA.notaMinima;
 
         if (!aceita) {
-            const res = document.getElementById('mod-resultado');
-            res.textContent = 'O jogador recusou a proposta. Ajuste a oferta e tente novamente.';
-            res.style.display = '';
+            mostrarResultado('O jogador recusou a proposta. Ajuste a oferta e tente novamente.');
             return;
         }
 
         // TODO: chamar a API para mudar o status para ACEITA_2
-        // (salário, anos e rescisão estão em #mod-salario, #mod-contrato e #mod-rescisao)
+        // (salário, anos e rescisão: digitos('mod-salario'), #mod-contrato e digitos('mod-rescisao'))
         fecharModal();
     }
 
@@ -523,10 +570,9 @@ unset($p);
         btn.style.cursor = podeFormalizar ? '' : 'not-allowed';
         btn.textContent = textoBotao[p.statusClasse] || 'Formalizar Contratação';
 
-        // modal
-        set('mod-titulo', 'Formalizar Contratação — ' + (j.nomeJogador || ''));
-        document.getElementById('mod-salario').value = j.salario ?? '';
-        document.getElementById('mod-rescisao').value = j.valorRescisao ?? '';
+        // campos do modal
+        document.getElementById('mod-salario').value = formatarMilhar(j.salario);
+        document.getElementById('mod-rescisao').value = formatarMilhar(j.valorRescisao);
         document.getElementById('mod-contrato').value = '3';
 
         // gauge = satisfação do jogador no clube atual
@@ -545,29 +591,65 @@ unset($p);
         preencherFicha(i);
     }
 
+    /* ===== MODAL ===== */
+
     function abrirModal() {
         if (document.getElementById('btn-formalizar').disabled) return;
+
+        const p = propostas[propostaAtual];
+        if (!p) return;
+        const j = p.jogador || {};
+        const clube = (p.clubeExterior && p.clubeExterior.nomeClube) || '-';
+
+        set('mod-pos', valorOuTraco(j.posicaoPrincipal));
+        set('mod-nome', j.nomeJogador || 'Formalizar Contratação');
+        set('mod-sub', 'Formalizar contratação • ' + (j.idade ? j.idade + ' anos • ' : '') + clube);
+
+        set('mod-ref-valor', p.fmt.valor);
+        set('mod-ref-multa', p.fmt.rescisao);
+        set('mod-ref-salario', p.fmt.salario);
+        set('mod-ref-contrato', p.fmt.contrato);
+        set('mod-ref-overall', valorOuTraco(j.overall) + (j.potencial ? ' / ' + j.potencial : ''));
+        set('mod-ref-moral', valorOuTraco(j.moral));
+
         esconderResultado();
         atualizarAchometro();
-        document.getElementById('overlayFormalizar').classList.add('aberto');
+        modal.showModal();
+        document.getElementById('mod-salario').focus();
+        document.getElementById('mod-salario').select();
     }
 
     function fecharModal() {
-        document.getElementById('overlayFormalizar').classList.remove('aberto');
+        modal.close();
     }
 
-    document.getElementById('overlayFormalizar').addEventListener('click', function(e) {
-        if (e.target === this) fecharModal();
+    document.getElementById('btn-formalizar').addEventListener('click', abrirModal);
+    document.getElementById('mod-fechar').addEventListener('click', fecharModal);
+    document.getElementById('mod-cancelar').addEventListener('click', fecharModal);
+
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) fecharModal();
     });
 
-    // achômetro reage em tempo real enquanto o usuário mexe na oferta
+    document.getElementById('form-formalizar').addEventListener('submit', function(e) {
+        e.preventDefault();
+        enviarProposta();
+    });
+
+    // máscara de milhar + achômetro reagindo em tempo real
     function aoMudarOferta() {
         esconderResultado();
         atualizarAchometro();
     }
-    document.getElementById('mod-salario').addEventListener('input', aoMudarOferta);
+
+    ['mod-salario', 'mod-rescisao'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', function() {
+            const d = this.value.replace(/\D/g, '');
+            this.value = d === '' ? '' : Number(d).toLocaleString('pt-BR');
+            aoMudarOferta();
+        });
+    });
     document.getElementById('mod-contrato').addEventListener('change', aoMudarOferta);
-    document.getElementById('mod-rescisao').addEventListener('input', aoMudarOferta);
 
     if (propostas.length > 0) {
         preencherFicha(0);
