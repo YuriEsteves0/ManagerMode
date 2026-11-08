@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,12 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.manager.api.repository.JogadorHasLesaoRepository;
 import com.manager.api.responses.EstatisticasJogadorCompeticaoResponse;
+import com.manager.api.responses.JogadorHasCartoesResponse;
 import com.manager.api.responses.JogadoresResponse;
 import com.manager.api.responses.LesaoJogadorResponse;
 import com.manager.api.responses.LesaoResponse;
 import com.manager.api.service.EstatisticaJogadoresService;
+import com.manager.api.service.JogadorHasCartoesService;
 import com.manager.api.service.JogadorLesaoService;
 import com.manager.api.service.JogadoresService;
+import com.manager.api.requests.JogadorHasCartoesRequest;
 import com.manager.api.requests.JogadoresRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,11 +41,13 @@ public class JogadoresController {
     private final JogadoresService jogadoresService;
     private final EstatisticaJogadoresService estatisticaJogadoresService;
     private final JogadorLesaoService jogadorLesaoService;
+    private final JogadorHasCartoesService jogadorHasCartoesService;
 
-    public JogadoresController(JogadoresService jogadoresService, EstatisticaJogadoresService estatisticaJogadoresService, JogadorLesaoService jogadorLesaoService) {
+    public JogadoresController(JogadoresService jogadoresService, EstatisticaJogadoresService estatisticaJogadoresService, JogadorLesaoService jogadorLesaoService, JogadorHasCartoesService jogadorHasCartoesService) {
 		this.jogadoresService = jogadoresService;
 		this.estatisticaJogadoresService = estatisticaJogadoresService;
 		this.jogadorLesaoService = jogadorLesaoService;
+		this.jogadorHasCartoesService=jogadorHasCartoesService;
     }
 
     /**
@@ -215,5 +221,15 @@ public class JogadoresController {
     @PutMapping("/jogador/{id}")
     public ResponseEntity<JogadoresResponse> atualizarTitularidadeJogador(@PathVariable Integer id, @RequestBody @Valid JogadoresRequest.titularidade request){
     	return ResponseEntity.ok(jogadoresService.atualizarPorId(id, request));
+    }
+    
+    @GetMapping("/jogador/{id}/cartoes")
+    public List<JogadorHasCartoesResponse> buscarCartoesJogador(@PathVariable Integer id){
+    	return jogadorHasCartoesService.buscarCartaoJogador(id);
+    }
+    
+    @PostMapping("/jogador/{id}/cartoes")
+    public ResponseEntity<JogadoresResponse> adicionarCartaoJogador(@PathVariable Integer id, @RequestBody @Valid JogadorHasCartoesRequest request){
+    	return ResponseEntity.ok(jogadorHasCartoesService.adicionarCartaoJogador(id, request));
     }
 }

@@ -161,3 +161,17 @@
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
 }
+
+.btn-pular {
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 1rem;
+}
+
+.btn-pular:hover {
+    opacity: 1;
+}

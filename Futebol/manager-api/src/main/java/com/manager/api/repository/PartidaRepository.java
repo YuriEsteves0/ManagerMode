@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.manager.api.enums.partida.StatusPartida;
 import com.manager.api.model.Partida;
 import com.manager.api.responses.PartidaResponse;
 
@@ -58,6 +59,7 @@ p.dataPartida, p.horario)
 	        @Param("dataPartida") LocalDate dataPartida);
 	
 	boolean existsByCompeticaoIdCompeticao(Integer competicaoIdCompeticao);
+	boolean existsByIdPartidaAndStatusPartida(Integer idPartida, StatusPartida statusPartida);
 	
 	@Query("""
 		    SELECT p FROM Partida p

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.manager.api.requests.AtualizarPartidaRequest;
 import com.manager.api.requests.CriarCalendarioRequest;
 import com.manager.api.responses.PartidaResponse;
 import com.manager.api.service.PartidaService;
@@ -23,6 +25,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Tag(name = "Partidas", description = "Próximos jogos e calendário")
 @RestController
@@ -103,5 +106,11 @@ public class PartidaController{
 		int total = partidaService.criarCalendario(request.dataInicio());
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(Map.of("sucesso", true, "partidasCriadas", total));
+	}
+	
+	@PutMapping("/partida/placar")
+	public ResponseEntity<Map<String, Object>> salvarDadosPartida(@Valid @RequestBody AtualizarPartidaRequest.atualizarComCartoes request){
+		partidaService.atualizarPlacarPartida(request);
+		return ResponseEntity.status(HttpStatus.OK).body(Map.of("sucesso", true));
 	}
 }

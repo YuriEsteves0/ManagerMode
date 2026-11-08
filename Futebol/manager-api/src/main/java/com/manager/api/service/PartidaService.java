@@ -5,18 +5,29 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.manager.api.enums.cartoes.TipoCartoes;
 import com.manager.api.enums.partida.StatusPartida;
+import com.manager.api.model.Cartoes;
 import com.manager.api.model.Clube;
 import com.manager.api.model.Competicao;
+import com.manager.api.model.JogadorHasCartao;
+import com.manager.api.model.JogadorHasCartoesId;
+import com.manager.api.model.Jogadores;
 import com.manager.api.model.Partida;
+import com.manager.api.repository.CartoesRepository;
 import com.manager.api.repository.ClubeCompeticaoRepository;
 import com.manager.api.repository.ClubeRepository;
 import com.manager.api.repository.CompeticaoRepository;
+import com.manager.api.repository.JogadorHasCartoesRepository;
+import com.manager.api.repository.JogadoresRepository;
 import com.manager.api.repository.PartidaRepository;
+import com.manager.api.requests.AtualizarPartidaRequest;
 import com.manager.api.responses.PartidaResponse;
 
 import jakarta.transaction.Transactional;
@@ -28,15 +39,24 @@ public class PartidaService {
 	private final ClubeCompeticaoRepository clubeCompeticaoRepository;
 	private final CompeticaoRepository competicaoRepository;
 	private final ClubeRepository clubeRepository;
+	private final JogadoresRepository jogadoresRepository;
+	private final JogadorHasCartoesRepository jogadoresHasCartoesRepository;
+	private final CartoesRepository cartoesRepository;
 
 	public PartidaService(PartidaRepository partidaRepository,
 			ClubeCompeticaoRepository clubeCompeticaoRepository,
 			CompeticaoRepository competicaoRepository,
-			ClubeRepository clubeRepository) {
+			ClubeRepository clubeRepository,
+			JogadoresRepository jogadoresRepository,
+			JogadorHasCartoesRepository jogadoresHasCartoesRepository,
+			CartoesRepository cartoesRepository) {
 		this.partidaRepository = partidaRepository;
 		this.clubeCompeticaoRepository = clubeCompeticaoRepository;
 		this.competicaoRepository = competicaoRepository;
-		this.clubeRepository=clubeRepository;
+		this.clubeRepository = clubeRepository;
+		this.jogadoresRepository = jogadoresRepository;
+		this.jogadoresHasCartoesRepository = jogadoresHasCartoesRepository;
+		this.cartoesRepository = cartoesRepository;
 	}
 
 	public List<PartidaResponse.RodadaIdMandanteIdVisitanteLocalEstadioDataHorario> listarProximasPartidas(Integer idClube, LocalDate dataPartida) {
@@ -162,5 +182,52 @@ public class PartidaService {
 	                        p.getCompeticaoIdCompeticao()
 	                );
 	            });
+	}
+	
+	@Transactional
+	public void atualizarPlacarPartida(AtualizarPartidaRequest.atualizarComCartoes request) {
+		Partida p = partidaRepository.findById(request.idPartida())
+			.orElseThrow(() -> new RuntimeException("Partida não encontrada: " + request.idPartida()));
+
+		p.setGolsMandante(request.golsMandante());
+		p.setGolsVisitante(request.golsVisitante());
+		p.setStatusPartida(StatusPartida.FINALIZADA);
+
+		// carrega os tipos uma vez só: AMARELO -> entidade, VERMELHO -> entidade
+		Map<TipoCartoes, Cartoes> tipos = cartoesRepository.findAll().stream()
+			.collect(Collectors.toMap(Cartoes::getTipoCartoes, c -> c));
+
+		request.cartoes().forEach((idJogador, listaCartoes) -> {
+			Jogadores jogador = jogadoresRepository.findById(idJogador)
+				.orElseThrow(() -> new RuntimeException("Jogador não encontrado: " + idJogador));
+
+			List<TipoCartoes> cartoesFinais = new ArrayList<>(listaCartoes);
+
+			long amarelos = cartoesFinais.stream()
+				.filter(t -> t == TipoCartoes.AMARELO)
+				.count();
+			boolean jaTemVermelho = cartoesFinais.contains(TipoCartoes.VERMELHO);
+
+			if (amarelos >= 2 && !jaTemVermelho) {
+				cartoesFinais.add(TipoCartoes.VERMELHO);
+			}
+
+			for (TipoCartoes tipo : cartoesFinais) {
+				Cartoes cartao = tipos.get(tipo);
+				if (cartao == null) {
+					throw new RuntimeException("Tipo de cartão não cadastrado: " + tipo);
+				}
+
+				JogadorHasCartao jhc = new JogadorHasCartao();
+				jhc.setId(new JogadorHasCartoesId(idJogador, cartao.getIdCartao()));
+				jhc.setJogador(jogador);
+				jhc.setCartoes(cartao);
+				jhc.setData(p.getDataPartida());
+
+				jogadoresHasCartoesRepository.save(jhc);
+			}
+		});
+
+		partidaRepository.save(p);
 	}
 }
