@@ -4,15 +4,23 @@
 
 $estadoJogo = $_SESSION['estado_jogo'];
 $idClubeJogador = $estadoJogo->clube->id;
+$idLiga = (int)($estadoJogo->liga ?? 0);
 $apiService = new ApiService();
 
-// ================= SALVAR PARTIDA =================
+// ================= CONFIG DA API =================
+// Ajuste aqui se o método HTTP ou a URL forem diferentes no seu controller.
+const API_BASE = 'http://localhost:8080';
+const METODO_ESTATISTICA = 'PUT';
+const METODO_CLASSIFICACAO = 'PUT';
+const ROTA_PLACAR = '/partida/placar';
 
-// Manda o resultado pro Spring Boot (PUT /partida/placar)
-function salvarPlacar(array $dados): bool {
-  $ch = curl_init('http://localhost:8080/partida/placar');
+// ================= CHAMADAS À API =================
+
+// Chamada genérica pro Spring Boot. Considera sucesso qualquer 2xx.
+function chamarApi(string $metodo, string $rota, array $dados): bool {
+  $ch = curl_init(API_BASE . $rota);
   curl_setopt_array($ch, [
-    CURLOPT_CUSTOMREQUEST  => 'PUT',
+    CURLOPT_CUSTOMREQUEST  => $metodo,
     CURLOPT_POSTFIELDS     => json_encode($dados),
     CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
     CURLOPT_RETURNTRANSFER => true,
@@ -20,20 +28,48 @@ function salvarPlacar(array $dados): bool {
   curl_exec($ch);
   $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   curl_close($ch);
-  return $status === 200;
+  return $status >= 200 && $status < 300;
 }
 
-// Clicou em "Próximo": salva a partida e vai pra imprensa
+// Clicou em "Próximo": salva placar, estatísticas dos jogadores e pontos dos clubes.
+// Cada envio bem-sucedido é anotado em "enviados". Se algo falhar no meio,
+// ao tentar de novo só reenvia o que faltou (evita somar gols/pontos duas vezes).
 if (isset($_GET['finalizar']) && isset($_SESSION['partida_pendente'])) {
-  $dados = $_SESSION['partida_pendente'];
-  $dados['cartoes'] = (object) $dados['cartoes']; // sem isso, cartões vazios viram [] e o Spring dá erro 400
+  $pendente = $_SESSION['partida_pendente'];
+  $pendente['enviados'] = $pendente['enviados'] ?? [];
 
-  if (salvarPlacar($dados)) {
-    $_SESSION['id_ultima_partida'] = $dados['idPartida']; // usado na página da imprensa
+  // sem isso, cartões vazios viram [] e o Spring dá erro 400
+  $placar = $pendente['placar'];
+  $placar['cartoes'] = (object) $placar['cartoes'];
+
+  $envios = [['chave' => 'placar', 'metodo' => 'PUT', 'rota' => ROTA_PLACAR, 'dados' => $placar]];
+
+  foreach ($pendente['estatisticas'] as $e) {
+    $envios[] = ['chave' => $e['chave'], 'metodo' => METODO_ESTATISTICA, 'rota' => $e['rota'], 'dados' => $e['dados']];
+  }
+  foreach ($pendente['classificacao'] as $c) {
+    $envios[] = ['chave' => $c['chave'], 'metodo' => METODO_CLASSIFICACAO, 'rota' => $c['rota'], 'dados' => $c['dados']];
+  }
+
+  $falhou = false;
+  foreach ($envios as $envio) {
+    if (in_array($envio['chave'], $pendente['enviados'], true)) continue;
+
+    if (chamarApi($envio['metodo'], $envio['rota'], $envio['dados'])) {
+      $pendente['enviados'][] = $envio['chave'];
+    } else {
+      $falhou = true;
+      $_SESSION['partida_pendente'] = $pendente; // guarda o progresso
+      echo "<p>Erro ao salvar ({$envio['chave']}). "
+         . "<a href='index.php?pag=partida&finalizar=1'>Tentar de novo</a></p>";
+      break;
+    }
+  }
+
+  if (!$falhou) {
+    $_SESSION['id_ultima_partida'] = $pendente['placar']['idPartida']; // usado na página da imprensa
     unset($_SESSION['partida_pendente']);
     echo "<script>location.replace('index.php?pag=imprensa')</script>";
-  } else {
-    echo "<p>Erro ao salvar a partida. Tente de novo.</p>";
   }
   return;
 }
@@ -89,8 +125,9 @@ function forcaTime(array $jogadores): array {
     $linha = array_merge($linha, array_slice(array_values($reservas), 0, 10 - count($linha)));
   }
 
-  $linha   = array_slice($linha, 0, 10);
-  $goleiro = $goleiros[0]['overall'] ?? 50;
+  $linha     = array_slice($linha, 0, 10);
+  $goleiroJ  = $goleiros[0] ?? null;
+  $goleiro   = $goleiroJ['overall'] ?? 50;
 
   $ataque = media(array_map(
     fn($j) => $j['finalizacao'] * 0.4 + $j['passe'] * 0.3 + $j['velocidade'] * 0.3, $linha));
@@ -99,7 +136,7 @@ function forcaTime(array $jogadores): array {
     fn($j) => $j['marcacao'] * 0.4 + $j['forca'] * 0.3 + $j['inteligencia'] * 0.3, $linha));
   $defesa = $defesa * 0.7 + $goleiro * 0.3; // goleiro pesa 30% da defesa
 
-  return ['ataque' => $ataque, 'defesa' => $defesa, 'linha' => $linha];
+  return ['ataque' => $ataque, 'defesa' => $defesa, 'linha' => $linha, 'goleiro' => $goleiroJ];
 }
 
 function poisson(float $lambda): int {
@@ -129,9 +166,24 @@ function eventosDoLado(string $lado, array $time, int $gols): array {
 
   for ($i = 0; $i < $gols; $i++) {
     $autor = sortearJogador($linha, fn($j) => $j['finalizacao'] ** 2);
+
+    // 75% dos gols têm assistência. Quem passa melhor tem mais chance. Nunca é o próprio autor.
+    $assistente = null;
+    if (mt_rand(1, 100) <= 75) {
+      $candidatos = array_values(array_filter(
+        $linha,
+        fn($j) => (int)$j['idJogador'] !== (int)$autor['idJogador']
+      ));
+      if ($candidatos) {
+        $assistente = sortearJogador($candidatos, fn($j) => $j['passe'] ** 2);
+      }
+    }
+
     $eventos[] = [
       'minuto' => mt_rand(1, 90), 'tipo' => 'gol', 'lado' => $lado,
       'jogador' => $autor['nomeJogador'], 'idJogador' => $autor['idJogador'],
+      'assistente'   => $assistente['nomeJogador'] ?? null,
+      'idAssistente' => $assistente['idJogador'] ?? null,
     ];
   }
 
@@ -156,11 +208,67 @@ function eventosDoLado(string $lado, array $time, int $gols): array {
   return $eventos;
 }
 
+// Monta o request de estatística de cada jogador que entrou em campo (goleiro + 10 de linha).
+// Cada chamada soma 1 jogo no banco, então todo titular recebe uma, mesmo sem gol.
+function montarEstatisticas(array $time, array $eventos, string $lado, int $golsPro, int $golsContra, int $ano, int $idLiga): array {
+  $saida = [];
+  $goleiroId = $time['goleiro'] ? (int)$time['goleiro']['idJogador'] : null;
+  $escalados = array_filter(array_merge([$time['goleiro']], $time['linha']));
+
+  foreach ($escalados as $j) {
+    $id = (int)$j['idJogador'];
+    $gols = $assist = $amarelos = $vermelhos = 0;
+
+    foreach ($eventos as $e) {
+      if ($e['lado'] !== $lado) continue;
+      if ($e['tipo'] === 'gol') {
+        if ((int)$e['idJogador'] === $id) $gols++;
+        if ($e['idAssistente'] !== null && (int)$e['idAssistente'] === $id) $assist++;
+      } elseif ($e['tipo'] === 'amarelo' && (int)$e['idJogador'] === $id) {
+        $amarelos++;
+      } elseif ($e['tipo'] === 'vermelho' && (int)$e['idJogador'] === $id) {
+        $vermelhos++;
+      }
+    }
+
+    // Nota da partida (3.0 a 10.0): resultado, gols, assistências, cartões, defesa e um pouco de sorte
+    $ehGoleiro = $id === $goleiroId;
+    $nota = 6.0;
+    $nota += $golsPro > $golsContra ? 0.5 : ($golsPro < $golsContra ? -0.3 : 0.0);
+    $nota += $gols * 1.0 + $assist * 0.6 - $amarelos * 0.3 - $vermelhos * 1.5;
+    if ($golsContra === 0) {
+      $nota += $ehGoleiro ? 0.8 : 0.3;
+    } else {
+      $nota -= min($golsContra, 4) * ($ehGoleiro ? 0.3 : 0.1);
+    }
+    $nota += (mt_rand() / mt_getrandmax() - 0.5) * 1.6;
+    $nota = round(max(3.0, min(10.0, $nota)), 1);
+
+    $saida[] = [
+      'chave' => "stat:$id",
+      'rota'  => "/jogador/$id/competicao/$idLiga/estatistica",
+      'dados' => [
+        'idJogador'    => $id,
+        'idCompeticao' => $idLiga,
+        'ano'          => $ano,
+        'gols'         => $gols,
+        'assistencias' => $assist,
+        'notaPartida'  => $nota,
+      ],
+    ];
+  }
+
+  return $saida;
+}
+
 $eventos = [];
 
 if ($ehDiaDeJogo) {
-  $jogadoresMandante  = $apiService->get("/jogadores/clube/{$proximoJogo['clubeMandante']['id']}?todos=true");
-  $jogadoresVisitante = $apiService->get("/jogadores/clube/{$proximoJogo['clubeVisitante']['id']}?todos=true");
+  $idMandante  = (int)$proximoJogo['clubeMandante']['id'];
+  $idVisitante = (int)$proximoJogo['clubeVisitante']['id'];
+
+  $jogadoresMandante  = $apiService->get("/jogadores/clube/{$idMandante}?todos=true");
+  $jogadoresVisitante = $apiService->get("/jogadores/clube/{$idVisitante}?todos=true");
 
   // sorteia a seed uma vez por carreira e reaproveita nas próximas vezes
   if (!isset($_SESSION['seed_jogo'])) {
@@ -197,12 +305,47 @@ if ($ehDiaDeJogo) {
     if ($e['tipo'] === 'vermelho') $cartoes[$e['idJogador']][] = 'VERMELHO';
   }
 
+  // Estatísticas individuais (gols, assistências, nota) dos dois times
+  $anoAtual = (int)$estadoJogo->dataAtual->format('Y');
+  $estatisticas = [];
+  if ($idLiga > 0) {
+    $estatisticas = array_merge(
+      montarEstatisticas($mandante,  $eventos, 'mandante',  $golsMandante,  $golsVisitante, $anoAtual, $idLiga),
+      montarEstatisticas($visitante, $eventos, 'visitante', $golsVisitante, $golsMandante,  $anoAtual, $idLiga)
+    );
+  }
+
+  // Pontos: vitória 3, empate 1, derrota 0
+  $pontosMandante  = $golsMandante > $golsVisitante ? 3 : ($golsMandante === $golsVisitante ? 1 : 0);
+  $pontosVisitante = $golsVisitante > $golsMandante ? 3 : ($golsMandante === $golsVisitante ? 1 : 0);
+
+  $classificacao = [];
+  if ($idLiga > 0) {
+    $classificacao = [
+      [
+        'chave' => "pts:$idMandante",
+        'rota'  => "/competicoes/$idMandante/classificao", // mesma grafia do seu endpoint
+        'dados' => ['idClube' => $idMandante, 'idCompeticao' => $idLiga, 'pontosAdicionados' => $pontosMandante],
+      ],
+      [
+        'chave' => "pts:$idVisitante",
+        'rota'  => "/competicoes/$idVisitante/classificao",
+        'dados' => ['idClube' => $idVisitante, 'idCompeticao' => $idLiga, 'pontosAdicionados' => $pontosVisitante],
+      ],
+    ];
+  }
+
   // Guarda na sessão. Só vai pro banco quando o jogador clicar em "Próximo".
   $_SESSION['partida_pendente'] = [
-    'idPartida'     => $proximoJogo['idPartida'],
-    'golsMandante'  => $golsMandante,
-    'golsVisitante' => $golsVisitante,
-    'cartoes'       => $cartoes,
+    'placar' => [
+      'idPartida'     => $proximoJogo['idPartida'],
+      'golsMandante'  => $golsMandante,
+      'golsVisitante' => $golsVisitante,
+      'cartoes'       => $cartoes,
+    ],
+    'estatisticas'  => $estatisticas,
+    'classificacao' => $classificacao,
+    'enviados'      => [],
   ];
 }
 
@@ -258,7 +401,7 @@ if ($ehDiaDeJogo) {
 
       <button class="btn-pular" type="button">Pular partida</button>
 
-      <!-- "Próximo" salva a partida no banco e depois vai pra imprensa -->
+      <!-- "Próximo" salva tudo no banco e depois vai pra imprensa -->
       <a href="index.php?pag=partida&finalizar=1" class="link-proximo" hidden>
         <button class="btn-primario">Próximo</button>
       </a>

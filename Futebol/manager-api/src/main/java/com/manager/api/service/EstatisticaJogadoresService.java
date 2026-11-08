@@ -39,6 +39,7 @@ public class EstatisticaJogadoresService {
         return repository.buscarPorJogador(id);
     }
 
+
     public List<EstatisticasJogadorCompeticaoResponse> estatisticasFull(Integer idCompeticao) {
         List<EstatisticasJogadorCompeticaoResponse> lista = repository.buscarTodosJogadores(idCompeticao);
 
@@ -47,7 +48,6 @@ public class EstatisticaJogadoresService {
                 || lista.get(0).gols() == 0;
 
         if (ninguemMarcou) {
-            // Se não há estatística nenhuma, pega os jogadores direto da competição
             List<EstatisticasJogadorCompeticaoResponse> base = lista.isEmpty()
                     ? new ArrayList<>(repository.buscarJogadoresDaCompeticao(idCompeticao))
                     : new ArrayList<>(lista);
@@ -56,9 +56,10 @@ public class EstatisticaJogadoresService {
             return base.subList(0, Math.min(5, base.size()));
         }
 
-        return lista;
+        // Há artilheiros: devolve só os 5 primeiros (a lista já vem ordenada por gols)
+        return lista.subList(0, Math.min(5, lista.size()));
     }
-
+    
     public List<EstatisticasJogadorCompeticaoResponse> estatisticasPorClube(Integer idClube) {
         return repository.buscarPorClube(idClube);
     }
