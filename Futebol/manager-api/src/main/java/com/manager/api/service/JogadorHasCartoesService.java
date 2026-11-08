@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.manager.api.model.Cartoes;
 import com.manager.api.model.JogadorHasCartao;
-import com.manager.api.model.JogadorHasCartoesId;
 import com.manager.api.model.Jogadores;
 import com.manager.api.repository.CartoesRepository;
 import com.manager.api.repository.JogadorHasCartoesRepository;
@@ -33,13 +32,12 @@ public class JogadorHasCartoesService {
 
 	public List<JogadorHasCartoesResponse> buscarCartaoJogador(Integer idJogador) {
 		return jogadorHasCartoesRepository.buscarPorJogador(idJogador).stream()
-			.map(j -> new JogadorHasCartoesResponse(
-				null,
-				j.getId().getIdJogador(),
-				j.getJogador(),
-				j.getId().getIdCartoes(),
-				j.getCartoes(),
-				j.getData()))
+				.map(j -> new JogadorHasCartoesResponse(
+						j.getJogador().getIdJogador(),
+						j.getJogador(),
+						j.getCartoes().getIdCartao(),
+						j.getCartoes(),
+						j.getData()))
 			.toList();
 	}
 
@@ -52,7 +50,6 @@ public class JogadorHasCartoesService {
 			.orElseThrow(() -> new RuntimeException("Cartão não encontrado!"));
 
 		JogadorHasCartao novo = new JogadorHasCartao();
-		novo.setId(new JogadorHasCartoesId(idJogador, request.idCartao()));
 		novo.setJogador(jogador);
 		novo.setCartoes(cartao);
 		novo.setData(LocalDate.now());
@@ -60,7 +57,6 @@ public class JogadorHasCartoesService {
 		jogadorHasCartoesRepository.save(novo);
 
 		return new JogadorHasCartoesResponse(
-			null,
 			idJogador,
 			jogador,
 			cartao.getIdCartao(),

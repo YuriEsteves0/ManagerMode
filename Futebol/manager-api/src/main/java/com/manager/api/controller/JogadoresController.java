@@ -229,7 +229,7 @@ public class JogadoresController {
     }
     
     @PostMapping("/jogador/{id}/cartoes")
-    public ResponseEntity<JogadoresResponse> adicionarCartaoJogador(@PathVariable Integer id, @RequestBody @Valid JogadorHasCartoesRequest request){
+    public ResponseEntity<JogadorHasCartoesResponse> adicionarCartaoJogador(@PathVariable Integer id, @RequestBody @Valid JogadorHasCartoesRequest request){
     	return ResponseEntity.ok(jogadorHasCartoesService.adicionarCartaoJogador(id, request));
     }
 }

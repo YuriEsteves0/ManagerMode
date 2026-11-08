@@ -17,7 +17,6 @@ import com.manager.api.model.Cartoes;
 import com.manager.api.model.Clube;
 import com.manager.api.model.Competicao;
 import com.manager.api.model.JogadorHasCartao;
-import com.manager.api.model.JogadorHasCartoesId;
 import com.manager.api.model.Jogadores;
 import com.manager.api.model.Partida;
 import com.manager.api.repository.CartoesRepository;
@@ -219,7 +218,6 @@ public class PartidaService {
 				}
 
 				JogadorHasCartao jhc = new JogadorHasCartao();
-				jhc.setId(new JogadorHasCartoesId(idJogador, cartao.getIdCartao()));
 				jhc.setJogador(jogador);
 				jhc.setCartoes(cartao);
 				jhc.setData(p.getDataPartida());

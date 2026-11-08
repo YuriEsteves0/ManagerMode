@@ -7,10 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.manager.api.model.JogadorHasCartao;
-import com.manager.api.model.JogadorHasCartoesId;
 
-public interface JogadorHasCartoesRepository extends JpaRepository<JogadorHasCartao, JogadorHasCartoesId> {
+public interface JogadorHasCartoesRepository extends JpaRepository<JogadorHasCartao, Integer> {
 
-	@Query("SELECT j FROM JogadorHasCartao j WHERE j.id.idJogador = :idJogador")
+	@Query("SELECT j FROM JogadorHasCartao j WHERE j.jogador.idJogador = :idJogador")
 	List<JogadorHasCartao> buscarPorJogador(@Param("idJogador") Integer idJogador);
 }
