@@ -6,43 +6,205 @@ $estadoJogo = $_SESSION['estado_jogo'];
 $idClubeJogador = $estadoJogo->clube->id;
 $apiService = new ApiService();
 
+// ================= SALVAR PARTIDA =================
+
+// Manda o resultado pro Spring Boot (PUT /partida/placar)
+function salvarPlacar(array $dados): bool {
+  $ch = curl_init('http://localhost:8080/partida/placar');
+  curl_setopt_array($ch, [
+    CURLOPT_CUSTOMREQUEST  => 'PUT',
+    CURLOPT_POSTFIELDS     => json_encode($dados),
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+    CURLOPT_RETURNTRANSFER => true,
+  ]);
+  curl_exec($ch);
+  $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  return $status === 200;
+}
+
+// Clicou em "Próximo": salva a partida e vai pra imprensa
+if (isset($_GET['finalizar']) && isset($_SESSION['partida_pendente'])) {
+  $dados = $_SESSION['partida_pendente'];
+  $dados['cartoes'] = (object) $dados['cartoes']; // sem isso, cartões vazios viram [] e o Spring dá erro 400
+
+  if (salvarPlacar($dados)) {
+    $_SESSION['id_ultima_partida'] = $dados['idPartida']; // usado na página da imprensa
+    unset($_SESSION['partida_pendente']);
+    echo "<script>location.replace('index.php?pag=imprensa')</script>";
+  } else {
+    echo "<p>Erro ao salvar a partida. Tente de novo.</p>";
+  }
+  return;
+}
+
+// ================= DADOS DA PARTIDA =================
+
 $proximoJogo = $apiService->get("/partidas/clube/{$idClubeJogador}/proximaPartida?dataAtual={$estadoJogo->dataAtual->format('d/m/Y')}");
 
-// A API devolve "2026-01-10" em dataPartida. Se não vier jogo (fim da temporada), fica null.
 $dataJogo = $proximoJogo ? new DateTime($proximoJogo['dataPartida']) : null;
 
-// Clicou em "Ir para o dia do jogo": pula a data atual direto para o dia da partida
 if (isset($_GET['avancar']) && $dataJogo) {
   $estadoJogo->dataAtual = clone $dataJogo;
 }
 
-// Compara só a data (Y-m-d), ignorando hora
 $ehDiaDeJogo = $dataJogo && $estadoJogo->dataAtual->format('Y-m-d') === $dataJogo->format('Y-m-d');
 
-// Monta a lista de dias entre hoje e o jogo (só quando NÃO é dia de jogo)
 $dias = [];
 if ($dataJogo && !$ehDiaDeJogo) {
   $dia = (clone $estadoJogo->dataAtual)->setTime(0, 0);
   $fim = (clone $dataJogo)->setTime(0, 0);
-
   while ($dia <= $fim) {
     $dias[] = $dia->format('d');
     $dia->modify('+1 day');
   }
 }
 
-// EVENTOS DA PARTIDA (MOCK).
-// tipo: 'gol' | 'amarelo' | 'vermelho'   lado: 'mandante' | 'visitante'
-// TODO: quando o backend mandar os eventos, trocar por $proximoJogo['eventos'] ?? []
-// O placar final é calculado a partir dos gols desta lista.
-$eventos = [
-  ['minuto' => 12, 'tipo' => 'gol',      'lado' => 'mandante',  'jogador' => 'P. Coutinho'],
-  ['minuto' => 45, 'tipo' => 'gol',      'lado' => 'visitante', 'jogador' => 'R. Almeida'],
-  ['minuto' => 63, 'tipo' => 'amarelo',  'lado' => 'mandante',  'jogador' => 'Hugo Moura'],
-  ['minuto' => 78, 'tipo' => 'gol',      'lado' => 'mandante',  'jogador' => 'P. Coutinho'],
-  ['minuto' => 82, 'tipo' => 'vermelho', 'lado' => 'mandante',  'jogador' => 'Hugo Moura'],
-  ['minuto' => 89, 'tipo' => 'gol', 'lado' => 'visitante', 'jogador' => 'Loide Augusto'],
-];
+// ================= SIMULAÇÃO =================
+
+function media(array $v): float {
+  return count($v) ? array_sum($v) / count($v) : 0;
+}
+
+// Usa os titulares (titular = 0): 1 goleiro + 10 de linha. Calcula ataque/defesa.
+// ATENÇÃO: confira na entidade Jogadores o que o campo "titular" significa de verdade.
+function forcaTime(array $jogadores): array {
+  usort($jogadores, fn($a, $b) => $b['overall'] <=> $a['overall']);
+
+  $titulares = array_values(array_filter($jogadores, fn($j) => (int)$j['titular'] === 0));
+
+  $goleiros = array_values(array_filter($titulares, fn($j) => $j['posicaoPrincipal'] === 'GOL'));
+  $linha    = array_values(array_filter($titulares, fn($j) => $j['posicaoPrincipal'] !== 'GOL'));
+
+  // Fallback: se faltar gente escalada, completa com os melhores do elenco
+  if (count($goleiros) === 0) {
+    $goleiros = array_values(array_filter($jogadores, fn($j) => $j['posicaoPrincipal'] === 'GOL'));
+  }
+  if (count($linha) < 10) {
+    $idsLinha = array_column($linha, 'idJogador');
+    $reservas = array_filter(
+      $jogadores,
+      fn($j) => $j['posicaoPrincipal'] !== 'GOL' && !in_array($j['idJogador'], $idsLinha)
+    );
+    $linha = array_merge($linha, array_slice(array_values($reservas), 0, 10 - count($linha)));
+  }
+
+  $linha   = array_slice($linha, 0, 10);
+  $goleiro = $goleiros[0]['overall'] ?? 50;
+
+  $ataque = media(array_map(
+    fn($j) => $j['finalizacao'] * 0.4 + $j['passe'] * 0.3 + $j['velocidade'] * 0.3, $linha));
+
+  $defesa = media(array_map(
+    fn($j) => $j['marcacao'] * 0.4 + $j['forca'] * 0.3 + $j['inteligencia'] * 0.3, $linha));
+  $defesa = $defesa * 0.7 + $goleiro * 0.3; // goleiro pesa 30% da defesa
+
+  return ['ataque' => $ataque, 'defesa' => $defesa, 'linha' => $linha];
+}
+
+function poisson(float $lambda): int {
+  $limite = exp(-$lambda);
+  $k = 0;
+  $p = 1.0;
+  do {
+    $k++;
+    $p *= mt_rand() / mt_getrandmax();
+  } while ($p > $limite);
+  return $k - 1;
+}
+
+function sortearJogador(array $jogadores, callable $peso): array {
+  $total = array_sum(array_map($peso, $jogadores));
+  $sorteio = mt_rand() / mt_getrandmax() * $total;
+  foreach ($jogadores as $j) {
+    $sorteio -= $peso($j);
+    if ($sorteio <= 0) return $j;
+  }
+  return end($jogadores);
+}
+
+function eventosDoLado(string $lado, array $time, int $gols): array {
+  $eventos = [];
+  $linha = $time['linha'];
+
+  for ($i = 0; $i < $gols; $i++) {
+    $autor = sortearJogador($linha, fn($j) => $j['finalizacao'] ** 2);
+    $eventos[] = [
+      'minuto' => mt_rand(1, 90), 'tipo' => 'gol', 'lado' => $lado,
+      'jogador' => $autor['nomeJogador'], 'idJogador' => $autor['idJogador'],
+    ];
+  }
+
+  // Amarelos: média de 1.5 por time. Quem marca pior (marcação baixa) leva mais.
+  for ($i = poisson(1.5); $i > 0; $i--) {
+    $j = sortearJogador($linha, fn($j) => 101 - $j['marcacao']);
+    $eventos[] = [
+      'minuto' => mt_rand(1, 90), 'tipo' => 'amarelo', 'lado' => $lado,
+      'jogador' => $j['nomeJogador'], 'idJogador' => $j['idJogador'],
+    ];
+  }
+
+  // Vermelho: 5% de chance por time
+  if (mt_rand(1, 100) <= 5) {
+    $j = sortearJogador($linha, fn($j) => 101 - $j['marcacao']);
+    $eventos[] = [
+      'minuto' => mt_rand(20, 90), 'tipo' => 'vermelho', 'lado' => $lado,
+      'jogador' => $j['nomeJogador'], 'idJogador' => $j['idJogador'],
+    ];
+  }
+
+  return $eventos;
+}
+
+$eventos = [];
+
+if ($ehDiaDeJogo) {
+  $jogadoresMandante  = $apiService->get("/jogadores/clube/{$proximoJogo['clubeMandante']['id']}?todos=true");
+  $jogadoresVisitante = $apiService->get("/jogadores/clube/{$proximoJogo['clubeVisitante']['id']}?todos=true");
+
+  // sorteia a seed uma vez por carreira e reaproveita nas próximas vezes
+  if (!isset($_SESSION['seed_jogo'])) {
+    $_SESSION['seed_jogo'] = random_int(1, 999999);
+  }
+  mt_srand($proximoJogo['idPartida'] + $_SESSION['seed_jogo']);
+
+  $mandante  = forcaTime($jogadoresMandante);
+  $visitante = forcaTime($jogadoresVisitante);
+
+  $BASE = 1.35;        // média de gols por time num jogo equilibrado
+  $PESO_FORCA = 2.0;   // quanto a diferença de qualidade pesa (use o valor que você calibrou)
+  $CASA = 1.10;        // vantagem de jogar em casa
+
+  $lambdaMandante  = $BASE * $CASA * (($mandante['ataque']  / $visitante['defesa']) ** $PESO_FORCA);
+  $lambdaVisitante = $BASE / $CASA * (($visitante['ataque'] / $mandante['defesa'])  ** $PESO_FORCA);
+
+  $lambdaMandante  = max(0.25, min(4.0, $lambdaMandante));
+  $lambdaVisitante = max(0.25, min(4.0, $lambdaVisitante));
+
+  $golsMandante  = poisson($lambdaMandante);
+  $golsVisitante = poisson($lambdaVisitante);
+
+  $eventos = array_merge(
+    eventosDoLado('mandante',  $mandante,  $golsMandante),
+    eventosDoLado('visitante', $visitante, $golsVisitante)
+  );
+  usort($eventos, fn($a, $b) => $a['minuto'] <=> $b['minuto']);
+
+  // Monta os cartões no formato que o Spring espera: idJogador => ["AMARELO", ...]
+  $cartoes = [];
+  foreach ($eventos as $e) {
+    if ($e['tipo'] === 'amarelo')  $cartoes[$e['idJogador']][] = 'AMARELO';
+    if ($e['tipo'] === 'vermelho') $cartoes[$e['idJogador']][] = 'VERMELHO';
+  }
+
+  // Guarda na sessão. Só vai pro banco quando o jogador clicar em "Próximo".
+  $_SESSION['partida_pendente'] = [
+    'idPartida'     => $proximoJogo['idPartida'],
+    'golsMandante'  => $golsMandante,
+    'golsVisitante' => $golsVisitante,
+    'cartoes'       => $cartoes,
+  ];
+}
 
 ?>
 
@@ -96,7 +258,8 @@ $eventos = [
 
       <button class="btn-pular" type="button">Pular partida</button>
 
-      <a href="index.php?pag=imprensa" class="link-proximo" hidden>
+      <!-- "Próximo" salva a partida no banco e depois vai pra imprensa -->
+      <a href="index.php?pag=partida&finalizar=1" class="link-proximo" hidden>
         <button class="btn-primario">Próximo</button>
       </a>
 

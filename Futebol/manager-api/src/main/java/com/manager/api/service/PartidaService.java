@@ -228,4 +228,30 @@ public class PartidaService {
 
 		partidaRepository.save(p);
 	}
+	
+	public Optional<PartidaResponse> buscarPartida(Integer idPartida){
+		return partidaRepository.findById(idPartida)
+		        .map(p -> {
+		            Clube mandante = clubeRepository.findById(p.getMandanteIdClube())
+		                    .orElseThrow(() -> new RuntimeException("Clube mandante não encontrado"));
+		            Clube visitante = clubeRepository.findById(p.getVisitanteIdClube())
+		                    .orElseThrow(() -> new RuntimeException("Clube visitante não encontrado"));
+
+		            return new PartidaResponse(
+		                    p.getIdPartida(),
+		                    p.getGolsMandante(),
+		                    p.getGolsVisitante(),
+		                    p.getRodada(),
+		                    p.getDataPartida(),
+		                    p.getStatusPartida(),
+		                    p.getVisitanteIdClube(),
+		                    visitante,
+		                    p.getMandanteIdClube(),
+		                    mandante,
+		                    p.getHorario(),
+		                    p.getLocal(),
+		                    p.getCompeticaoIdCompeticao()
+		            );
+		});
+	}
 }

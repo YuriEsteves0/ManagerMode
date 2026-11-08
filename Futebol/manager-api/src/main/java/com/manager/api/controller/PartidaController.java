@@ -108,6 +108,11 @@ public class PartidaController{
 				.body(Map.of("sucesso", true, "partidasCriadas", total));
 	}
 	
+	@GetMapping("/partida/{id}")
+	public Optional<PartidaResponse> buscarPartida(@PathVariable Integer id){
+		return partidaService.buscarPartida(id);
+	}
+	
 	@PutMapping("/partida/placar")
 	public ResponseEntity<Map<String, Object>> salvarDadosPartida(@Valid @RequestBody AtualizarPartidaRequest.atualizarComCartoes request){
 		partidaService.atualizarPlacarPartida(request);
