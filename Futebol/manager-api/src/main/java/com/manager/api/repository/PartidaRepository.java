@@ -59,4 +59,15 @@ p.dataPartida, p.horario)
 	
 	boolean existsByCompeticaoIdCompeticao(Integer competicaoIdCompeticao);
 	
+	@Query("""
+		    SELECT p FROM Partida p
+		    WHERE (p.mandanteIdClube = :idClube OR p.visitanteIdClube = :idClube)
+		      AND p.dataPartida >= :dataPartida
+		      AND p.statusPartida = com.manager.api.enums.partida.StatusPartida.AGENDADA
+		    ORDER BY p.dataPartida ASC, p.horario ASC
+		    LIMIT 1
+		    """)
+		Optional<Partida> buscarProximaPartida(@Param("idClube") Integer idClube,
+		                                       @Param("dataPartida") LocalDate dataPartida);
+	
 }

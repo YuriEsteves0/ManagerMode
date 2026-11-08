@@ -1,5 +1,13 @@
 <link rel="stylesheet" href="assets/css/partida.css"> 
 
+<?php 
+
+$estadoJogo = $_SESSION['estado_jogo'];
+$idClubeJogador = $estadoJogo->clube->id;
+$proximosJogos = 
+?>
+
+
 <main>
     
 <!-- Escudo genérico reutilizável (brasão sem logo real) -->

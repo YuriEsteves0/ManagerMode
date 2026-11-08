@@ -223,6 +223,21 @@
         color: var(--branco);
         border-color: var(--verde);
     }
+
+    .dataAtual{
+            display: inline-block;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 12.5px;
+    letter-spacing: 0.03em;
+    color: var(--roxoTextoMaisClaro);
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    }
 </style>
 <?php
 $pagina_atual = isset($_GET['pag']) ? $_GET['pag'] : 'inicio';
@@ -231,6 +246,7 @@ $paginas_clube = ['equipe', 'estatisticas', 'patrocinios', 'central-elenco'];
 $paginas_negociacao = ['mercado', 'meus-atletas', 'propostas-enviadas', 'propostas-recebidas'];
 
 $clube = $_SESSION['estado_jogo']->clube ?? null;
+$diaAtual = $_SESSION['estado_jogo']->dataAtual ?? null;
 ?>
 
 <header>
@@ -279,6 +295,9 @@ $clube = $_SESSION['estado_jogo']->clube ?? null;
         </nav>
 
         <div class="header-actions">
+
+            <p class="dataAtual"><?= $diaAtual->format('d/m/Y'); ?></p>
+
 
             <a href="index.php?pag=diretoria" class="clube-atual">
                 <img src="assets/<?= htmlspecialchars($clube->foto ?? '') ?>" alt="" style="width: 24px; height: 24px; object-fit: contain;">

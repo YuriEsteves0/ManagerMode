@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import com.manager.api.model.Clube;
 import com.manager.api.model.Competicao;
 import com.manager.api.model.Partida;
 import com.manager.api.repository.ClubeCompeticaoRepository;
+import com.manager.api.repository.ClubeRepository;
 import com.manager.api.repository.CompeticaoRepository;
 import com.manager.api.repository.PartidaRepository;
 import com.manager.api.responses.PartidaResponse;
@@ -25,13 +27,16 @@ public class PartidaService {
 	private final PartidaRepository partidaRepository;
 	private final ClubeCompeticaoRepository clubeCompeticaoRepository;
 	private final CompeticaoRepository competicaoRepository;
+	private final ClubeRepository clubeRepository;
 
 	public PartidaService(PartidaRepository partidaRepository,
 			ClubeCompeticaoRepository clubeCompeticaoRepository,
-			CompeticaoRepository competicaoRepository) {
+			CompeticaoRepository competicaoRepository,
+			ClubeRepository clubeRepository) {
 		this.partidaRepository = partidaRepository;
 		this.clubeCompeticaoRepository = clubeCompeticaoRepository;
 		this.competicaoRepository = competicaoRepository;
+		this.clubeRepository=clubeRepository;
 	}
 
 	public List<PartidaResponse.RodadaIdMandanteIdVisitanteLocalEstadioDataHorario> listarProximasPartidas(Integer idClube, LocalDate dataPartida) {
@@ -131,5 +136,31 @@ public class PartidaService {
 		p.setGolsMandante(0);
 		p.setGolsVisitante(0);
 		return p;
+	}
+	
+	public Optional<PartidaResponse> buscarProximaPartida(Integer idClube, LocalDate data) {
+	    return partidaRepository.buscarProximaPartida(idClube, data)
+	            .map(p -> {
+	                Clube mandante = clubeRepository.findById(p.getMandanteIdClube())
+	                        .orElseThrow(() -> new RuntimeException("Clube mandante não encontrado"));
+	                Clube visitante = clubeRepository.findById(p.getVisitanteIdClube())
+	                        .orElseThrow(() -> new RuntimeException("Clube visitante não encontrado"));
+
+	                return new PartidaResponse(
+	                        p.getIdPartida(),
+	                        p.getGolsMandante(),
+	                        p.getGolsVisitante(),
+	                        p.getRodada(),
+	                        p.getDataPartida(),
+	                        p.getStatusPartida(),
+	                        p.getVisitanteIdClube(),
+	                        visitante,
+	                        p.getMandanteIdClube(),
+	                        mandante,
+	                        p.getHorario(),
+	                        p.getLocal(),
+	                        p.getCompeticaoIdCompeticao()
+	                );
+	            });
 	}
 }

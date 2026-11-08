@@ -3,6 +3,7 @@ package com.manager.api.controller;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,6 +92,10 @@ public class PartidaController{
 		return partidaService.listarProximasPartidasCalendario(idClube, dataPartida);
 	}
 	
+	@GetMapping("/partidas/clube/{idClube}/proximaPartida")
+	public Optional<PartidaResponse> buscarProximaPartida(@PathVariable Integer idClube, @RequestParam(required=true) LocalDate dataAtual){
+		return partidaService.buscarProximaPartida(idClube,dataAtual);
+	}
 	
 	@PostMapping("/partida/calendario")
 	public ResponseEntity<Map<String, Object>> criarCalendario(
