@@ -46,4 +46,14 @@ public interface EstatisticasJogadorCompeticaoRepository extends JpaRepository<E
 		    """)
 		List<EstatisticasJogadorCompeticaoResponse> buscarPorClube(@Param("idClube") Integer idClube);
 	
+	@Query("""
+		    SELECT new com.manager.api.responses.EstatisticasJogadorCompeticaoResponse(
+		        j.idJogador, j.nomeJogador, c.nomeCompeticao)
+		    FROM ClubeCompeticao cc
+		    JOIN cc.competicao c
+		    JOIN Jogadores j ON j.clubeIdClube = cc.id.clubeID
+		    WHERE c.idCompeticao = :idCompeticao
+		    """)
+		List<EstatisticasJogadorCompeticaoResponse> buscarJogadoresDaCompeticao(@Param("idCompeticao") Integer idCompeticao);
+	
 }

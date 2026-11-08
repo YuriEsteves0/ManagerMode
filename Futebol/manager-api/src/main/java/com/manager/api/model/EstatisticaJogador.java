@@ -10,9 +10,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "estatisticas_jogador_competicao")
+@Data
 public class EstatisticaJogador {
 
 	@EmbeddedId
@@ -41,5 +43,5 @@ public class EstatisticaJogador {
     private Integer assistencias;
 
     @Column(name = "notaMedia")
-    private Integer notaMedia;
+    private Double notaMedia;
 }

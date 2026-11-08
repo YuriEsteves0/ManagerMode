@@ -12,6 +12,7 @@ $jogadores       = [];
 $imprensas       = [];
 $transferencias  = [];
 $partidasFuturas = [];
+$estatistica     = [];
 
 
 if ($idLiga > 0 && $idClubeJogador > 0) {
@@ -24,7 +25,8 @@ if ($idLiga > 0 && $idClubeJogador > 0) {
 
     $partidasFuturas = $apiService->get("/partidas/clube/{$idClubeJogador}/proximosJogos", ["dataPartida" => $dataPartidaFormatada]) ?? [];
 
-    $estatistica = $apiService->get("/jogador/competicao/{$idLiga}/estatistica");
+    $estatistica = $apiService->get("/jogador/competicao/{$idLiga}/estatistica") ?? [];
+
 }
 
 function formatarTitulo(string $titulo, int $qtdDestaque, int $limite = 10): array

@@ -3,6 +3,7 @@ package com.manager.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import com.manager.api.service.EstatisticaJogadoresService;
 import com.manager.api.service.JogadorHasCartoesService;
 import com.manager.api.service.JogadorLesaoService;
 import com.manager.api.service.JogadoresService;
+import com.manager.api.requests.EstatisticasJogadorCompeticaoRequest;
 import com.manager.api.requests.JogadorHasCartoesRequest;
 import com.manager.api.requests.JogadoresRequest;
 
@@ -163,6 +165,11 @@ public class JogadoresController {
     @GetMapping("/jogador/competicao/{id}/estatistica")
     public List<EstatisticasJogadorCompeticaoResponse> estatisticaJogadorFull(@PathVariable Integer id) {
         return estatisticaJogadoresService.estatisticasFull(id);
+    }
+    
+    @PutMapping("/jogador/{idJogador}/competicao/{idCompeticao}/estatistica")
+    public ResponseEntity<EstatisticasJogadorCompeticaoResponse.atualizarDados> atualizarGolsJogador(@PathVariable Integer idJogador, @PathVariable Integer idCompeticao, @RequestBody @Valid EstatisticasJogadorCompeticaoRequest.atualizarDadosJogador request){
+    	return ResponseEntity.ok(estatisticaJogadoresService.atualizarDadosJogador(idJogador, idCompeticao, request));
     }
     
     /**
