@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 28, 2026 at 03:40 AM
+-- Generation Time: Nov 10, 2026 at 10:48 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,12 +41,30 @@ CREATE TABLE `acao_diretoria` (
 INSERT INTO `acao_diretoria` (`idAcaoDiretoria`, `titulo`, `requisito`, `efeito`) VALUES
 (1, 'Solicitar Aumento de Verba para Transferências', 'Exige Confiança acima de 60%', 'Injeta verba extra no orçamento da próxima janela de transferências.'),
 (2, 'Pedir Mais Tempo para Cumprir a Meta', 'Exige Confiança acima de 40%', 'Alivia a pressão da diretoria por 5 rodadas em momentos de crise.'),
-(3, 'Solicitar Aumento Salarial do Treinador', 'Exige Confiança acima de 70%', 'Aumenta o seu salário anual e garante maior estabilidade no cargo.'),
-(4, 'Pedir Liberação para Viagem de Observação no Mercado', 'Exige Confiança acima de 55%', 'Revela relatórios completos e atributos reais de alvos de transferência.'),
-(5, 'Solicitar Busca por Jogadores Sem Contrato', 'Exige Confiança acima de 70%', 'Pede aval para assinar com atletas livres no mercado.'),
-(6, 'Solicitar Voos Fretados para Jogos Fora', 'Exige Confiança acima de 40%', 'Reduz o cansaço do elenco em viagens longas.'),
+(3, 'Solicitar Investimento em Infraestrutura', 'Exige Confiança acima de 65%', 'Desconto no próximo upgrade de estádio, CT, gramado, megaloja ou marketing.'),
+(4, 'Solicitar Campanha de Sócio-Torcedor', 'Exige Confiança acima de 65%', 'Aumenta torcedores e receita de bilheteria por um tempo.'),
+(5, 'Pedir Premiação por Desempenho ao Elenco', 'Exige Confiança acima de 50%', 'Gasta parte do orçamento e sobe a satisfação de todo o elenco.'),
 (7, 'Solicitar Redução no Preço dos Ingressos', 'Exige Confiança acima de 80%', 'Aumenta a presença de público e o apoio no estádio.'),
 (8, 'Solicitar Pacto de Confiança do Presidente', 'Exige Confiança acima de 90%', 'Garanta permanência no cargo até o fim da temporada.');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cartao`
+--
+
+CREATE TABLE `cartao` (
+  `idCartao` int(11) NOT NULL,
+  `tipoCartao` enum('AMARELO','VERMELHO') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cartao`
+--
+
+INSERT INTO `cartao` (`idCartao`, `tipoCartao`) VALUES
+(1, 'AMARELO'),
+(2, 'VERMELHO');
 
 -- --------------------------------------------------------
 
@@ -77,7 +95,7 @@ CREATE TABLE `clube` (
 
 INSERT INTO `clube` (`idClube`, `nomeClube`, `orcamento`, `valorClube`, `camisasVendidas`, `qntTorcedores`, `reputacao`, `patrocinador_idPatrocinador`, `confiancaDiretoria`, `statusConfianca`, `eventoAtual`, `capacidadeEstadio`, `foto`, `nomeEstadio`) VALUES
 (1, 'Flamengo', 105600000, 845000000, 1200000, 40000000, 60, 1, 85, 'EXCELENTE', 'Boa Gestão', 78838, 'img/escudosClubes/brasileiraoSerieA/flamengo.png', 'Maracanã'),
-(2, 'Palmeiras', 107200000, 533000000, 950000, 15000000, 58, 3, 88, 'EXCELENTE', 'Boa Gestão', 43713, 'img/escudosClubes/brasileiraoSerieA/palmeiras.png', 'Allianz Parque'),
+(2, 'Palmeiras', 107200000, 533000000, 950000, 15000000, 58, 1, 88, 'EXCELENTE', 'Boa Gestão', 43713, 'img/escudosClubes/brasileiraoSerieA/palmeiras.png', 'Allianz Parque'),
 (3, 'São Paulo', 37600000, 219400000, 600000, 18000000, 50, 8, 65, 'ESTAVEL', NULL, 66795, 'img/escudosClubes/brasileiraoSerieA/sao_paulo.png', 'MorumBIS'),
 (4, 'Corinthians', 72300000, 530400000, 700000, 30000000, 52, 6, 55, 'INSTAVEL', 'Crise Financeira', 47605, 'img/escudosClubes/brasileiraoSerieA/Corinthians.png', 'Neo Química Arena'),
 (5, 'Atlético-MG', 47900000, 218200000, 500000, 7000000, 45, 2, 70, 'ESTAVEL', NULL, 47465, 'img/escudosClubes/brasileiraoSerieA/Atletico_mineiro.png', 'Arena MRV'),
@@ -89,7 +107,7 @@ INSERT INTO `clube` (`idClube`, `nomeClube`, `orcamento`, `valorClube`, `camisas
 (11, 'Bahia', 43400000, 232500000, 220000, 6000000, 30, NULL, 60, 'ESTAVEL', NULL, 47907, 'img/escudosClubes/brasileiraoSerieA/bahia.png', 'Arena Fonte Nova'),
 (12, 'Vasco da Gama', 54400000, 349800000, 250000, 13000000, 32, NULL, 57, 'INSTAVEL', 'Pressão da Torcida', 21880, 'img/escudosClubes/brasileiraoSerieA/vascoDaGama.png', 'São Januário'),
 (13, 'Santos', 39200000, 244800000, 400000, 10000000, 28, NULL, 50, 'INSTAVEL', 'Reconstrução Pós-Rebaixamento', 16068, 'img/escudosClubes/brasileiraoSerieA/Santos.png', 'Vila Belmiro'),
-(14, 'Bragantino', 33700000, 154000000, 150000, 500000, 27, 3, 78, 'EXCELENTE', 'Boa Gestão', 17000, 'img/escudosClubes/brasileiraoSerieA/RedBullBragantino.png', 'Nabi Abi Chedid'),
+(14, 'Bragantino', 33700000, 154000000, 150000, 500000, 27, 9, 78, 'EXCELENTE', 'Boa Gestão', 17000, 'img/escudosClubes/brasileiraoSerieA/RedBullBragantino.png', 'Nabi Abi Chedid'),
 (15, 'Athletico Paranaense', 35700000, 178600000, 180000, 2000000, 25, NULL, 62, 'ESTAVEL', NULL, 42372, 'img/escudosClubes/brasileiraoSerieA/cap.png', 'Ligga Arena'),
 (16, 'Vitória', 15100000, 85100000, 130000, 3000000, 20, NULL, 55, 'ESTAVEL', NULL, 30240, 'img/escudosClubes/brasileiraoSerieA/vitoria.png', 'Barradão'),
 (17, 'Coritiba', 14500000, 79400000, 90000, 1500000, 18, NULL, 80, 'EXCELENTE', 'Acesso à Série A', 40502, 'img/escudosClubes/brasileiraoSerieA/Coritiba.png', 'Couto Pereira'),
@@ -159,7 +177,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (1, 3, 'DISPONIVEL'),
 (1, 4, 'DISPONIVEL'),
 (1, 5, 'DISPONIVEL'),
-(1, 6, 'DISPONIVEL'),
 (1, 7, 'DISPONIVEL'),
 (1, 8, 'DISPONIVEL'),
 (2, 1, 'DISPONIVEL'),
@@ -167,7 +184,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (2, 3, 'DISPONIVEL'),
 (2, 4, 'DISPONIVEL'),
 (2, 5, 'DISPONIVEL'),
-(2, 6, 'DISPONIVEL'),
 (2, 7, 'DISPONIVEL'),
 (2, 8, 'DISPONIVEL'),
 (3, 1, 'DISPONIVEL'),
@@ -175,7 +191,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (3, 3, 'DISPONIVEL'),
 (3, 4, 'DISPONIVEL'),
 (3, 5, 'DISPONIVEL'),
-(3, 6, 'DISPONIVEL'),
 (3, 7, 'DISPONIVEL'),
 (3, 8, 'DISPONIVEL'),
 (4, 1, 'DISPONIVEL'),
@@ -183,7 +198,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (4, 3, 'DISPONIVEL'),
 (4, 4, 'DISPONIVEL'),
 (4, 5, 'DISPONIVEL'),
-(4, 6, 'DISPONIVEL'),
 (4, 7, 'DISPONIVEL'),
 (4, 8, 'DISPONIVEL'),
 (5, 1, 'DISPONIVEL'),
@@ -191,7 +205,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (5, 3, 'DISPONIVEL'),
 (5, 4, 'DISPONIVEL'),
 (5, 5, 'DISPONIVEL'),
-(5, 6, 'DISPONIVEL'),
 (5, 7, 'DISPONIVEL'),
 (5, 8, 'DISPONIVEL'),
 (6, 1, 'DISPONIVEL'),
@@ -199,7 +212,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (6, 3, 'DISPONIVEL'),
 (6, 4, 'DISPONIVEL'),
 (6, 5, 'DISPONIVEL'),
-(6, 6, 'DISPONIVEL'),
 (6, 7, 'DISPONIVEL'),
 (6, 8, 'DISPONIVEL'),
 (7, 1, 'DISPONIVEL'),
@@ -207,7 +219,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (7, 3, 'DISPONIVEL'),
 (7, 4, 'DISPONIVEL'),
 (7, 5, 'DISPONIVEL'),
-(7, 6, 'DISPONIVEL'),
 (7, 7, 'DISPONIVEL'),
 (7, 8, 'DISPONIVEL'),
 (8, 1, 'DISPONIVEL'),
@@ -215,7 +226,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (8, 3, 'DISPONIVEL'),
 (8, 4, 'DISPONIVEL'),
 (8, 5, 'DISPONIVEL'),
-(8, 6, 'DISPONIVEL'),
 (8, 7, 'DISPONIVEL'),
 (8, 8, 'DISPONIVEL'),
 (9, 1, 'DISPONIVEL'),
@@ -223,7 +233,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (9, 3, 'DISPONIVEL'),
 (9, 4, 'DISPONIVEL'),
 (9, 5, 'DISPONIVEL'),
-(9, 6, 'DISPONIVEL'),
 (9, 7, 'DISPONIVEL'),
 (9, 8, 'DISPONIVEL'),
 (10, 1, 'DISPONIVEL'),
@@ -231,7 +240,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (10, 3, 'DISPONIVEL'),
 (10, 4, 'DISPONIVEL'),
 (10, 5, 'DISPONIVEL'),
-(10, 6, 'DISPONIVEL'),
 (10, 7, 'DISPONIVEL'),
 (10, 8, 'DISPONIVEL'),
 (11, 1, 'DISPONIVEL'),
@@ -239,7 +247,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (11, 3, 'DISPONIVEL'),
 (11, 4, 'DISPONIVEL'),
 (11, 5, 'DISPONIVEL'),
-(11, 6, 'DISPONIVEL'),
 (11, 7, 'DISPONIVEL'),
 (11, 8, 'DISPONIVEL'),
 (12, 1, 'DISPONIVEL'),
@@ -247,7 +254,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (12, 3, 'DISPONIVEL'),
 (12, 4, 'DISPONIVEL'),
 (12, 5, 'DISPONIVEL'),
-(12, 6, 'DISPONIVEL'),
 (12, 7, 'DISPONIVEL'),
 (12, 8, 'DISPONIVEL'),
 (13, 1, 'DISPONIVEL'),
@@ -255,7 +261,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (13, 3, 'DISPONIVEL'),
 (13, 4, 'DISPONIVEL'),
 (13, 5, 'DISPONIVEL'),
-(13, 6, 'DISPONIVEL'),
 (13, 7, 'DISPONIVEL'),
 (13, 8, 'DISPONIVEL'),
 (14, 1, 'DISPONIVEL'),
@@ -263,7 +268,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (14, 3, 'DISPONIVEL'),
 (14, 4, 'DISPONIVEL'),
 (14, 5, 'DISPONIVEL'),
-(14, 6, 'DISPONIVEL'),
 (14, 7, 'DISPONIVEL'),
 (14, 8, 'DISPONIVEL'),
 (15, 1, 'DISPONIVEL'),
@@ -271,7 +275,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (15, 3, 'DISPONIVEL'),
 (15, 4, 'DISPONIVEL'),
 (15, 5, 'DISPONIVEL'),
-(15, 6, 'DISPONIVEL'),
 (15, 7, 'DISPONIVEL'),
 (15, 8, 'DISPONIVEL'),
 (16, 1, 'DISPONIVEL'),
@@ -279,7 +282,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (16, 3, 'DISPONIVEL'),
 (16, 4, 'DISPONIVEL'),
 (16, 5, 'DISPONIVEL'),
-(16, 6, 'DISPONIVEL'),
 (16, 7, 'DISPONIVEL'),
 (16, 8, 'DISPONIVEL'),
 (17, 1, 'DISPONIVEL'),
@@ -287,7 +289,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (17, 3, 'DISPONIVEL'),
 (17, 4, 'DISPONIVEL'),
 (17, 5, 'DISPONIVEL'),
-(17, 6, 'DISPONIVEL'),
 (17, 7, 'DISPONIVEL'),
 (17, 8, 'DISPONIVEL'),
 (18, 1, 'DISPONIVEL'),
@@ -295,7 +296,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (18, 3, 'DISPONIVEL'),
 (18, 4, 'DISPONIVEL'),
 (18, 5, 'DISPONIVEL'),
-(18, 6, 'DISPONIVEL'),
 (18, 7, 'DISPONIVEL'),
 (18, 8, 'DISPONIVEL'),
 (19, 1, 'DISPONIVEL'),
@@ -303,7 +303,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (19, 3, 'DISPONIVEL'),
 (19, 4, 'DISPONIVEL'),
 (19, 5, 'DISPONIVEL'),
-(19, 6, 'DISPONIVEL'),
 (19, 7, 'DISPONIVEL'),
 (19, 8, 'DISPONIVEL'),
 (20, 1, 'DISPONIVEL'),
@@ -311,7 +310,6 @@ INSERT INTO `clube_has_acao_diretoria` (`clube_idClube`, `acao_diretoria_idAcaoD
 (20, 3, 'DISPONIVEL'),
 (20, 4, 'DISPONIVEL'),
 (20, 5, 'DISPONIVEL'),
-(20, 6, 'DISPONIVEL'),
 (20, 7, 'DISPONIVEL'),
 (20, 8, 'DISPONIVEL');
 
@@ -387,13 +385,6 @@ CREATE TABLE `clube_has_treino` (
   `slot` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
---
--- Dumping data for table `clube_has_treino`
---
-
-INSERT INTO `clube_has_treino` (`clube_idClube`, `treino_idTreino`, `slot`) VALUES
-(7, 9, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -447,7 +438,7 @@ INSERT INTO `clube_has_upgrade` (`clube_idClube`, `upgrade_idUpgrade`, `nivelAtu
 (7, 4, 5),
 (7, 5, 5),
 (8, 1, 10),
-(8, 2, 7),
+(8, 2, 8),
 (8, 3, 6),
 (8, 4, 6),
 (8, 5, 5),
@@ -534,37 +525,10 @@ CREATE TABLE `competicao` (
 --
 
 INSERT INTO `competicao` (`idCompeticao`, `nomeCompeticao`, `valorPremio`, `premioPorVitoria`, `tipoCompeticao`, `nivelCompeticao`, `ano`, `statusCompeticao`) VALUES
-(1, 'Brasileirão Série A', 80000000, 1500000, 'PONTOS_CORRIDOS', 'NACIONAL', 2026, 'EM_ANDAMENTO'),
-(5, 'Copa do Brasil', 55000000, 1000000, 'MATA_MATA', 'NACIONAL', 2026, 'EM_ANDAMENTO'),
-(6, 'Copa Libertadores', 22000000, 2000000, 'MISTO', 'CONTINENTAL', 2026, 'EM_ANDAMENTO'),
-(7, 'Copa Sul-Americana', 12000000, 1200000, 'MISTO', 'CONTINENTAL', 2026, 'EM_ANDAMENTO'),
-(8, 'Campeonato Paulista', 8000000, 300000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(9, 'Campeonato Carioca', 7000000, 280000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(10, 'Campeonato Mineiro', 6000000, 250000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(11, 'Campeonato Gaúcho', 5500000, 220000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(12, 'Campeonato Baiano', 3000000, 150000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(13, 'Campeonato Paranaense', 3500000, 160000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(14, 'Campeonato Catarinense', 3000000, 140000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(15, 'Campeonato Pernambucano', 2500000, 130000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(16, 'Campeonato Cearense', 2500000, 130000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(17, 'Campeonato Paraense', 2000000, 110000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(18, 'Campeonato Goiano', 2000000, 100000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(19, 'Campeonato Capixaba', 1200000, 70000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(20, 'Campeonato Sergipano', 1000000, 60000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(21, 'Campeonato Alagoano', 1000000, 60000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(22, 'Campeonato Potiguar', 1000000, 60000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(23, 'Campeonato Paraibano', 1000000, 60000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(24, 'Campeonato Piauiense', 900000, 50000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(25, 'Campeonato Maranhense', 900000, 50000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(26, 'Campeonato Amazonense', 1000000, 55000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(27, 'Campeonato Rondoniense', 600000, 40000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(28, 'Campeonato Acreano', 500000, 35000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(29, 'Campeonato Roraimense', 400000, 30000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(30, 'Campeonato Amapaense', 400000, 30000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(31, 'Campeonato Tocantinense', 500000, 35000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(32, 'Campeonato Mato-Grossense', 800000, 45000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(33, 'Campeonato Sul-Mato-Grossense', 700000, 40000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA'),
-(34, 'Campeonato Brasiliense', 900000, 50000, 'MISTO', 'ESTADUAL', 2026, 'FINALIZADA');
+(1, 'Brasileirão Série A', 50000000, 400000, 'PONTOS_CORRIDOS', 'NACIONAL', 2026, 'EM_ANDAMENTO'),
+(5, 'Copa do Brasil', 80000000, 1000000, 'MATA_MATA', 'NACIONAL', 2026, 'EM_ANDAMENTO'),
+(6, 'Copa Libertadores', 140000000, 2000000, 'MISTO', 'CONTINENTAL', 2026, 'EM_ANDAMENTO'),
+(7, 'Copa Sul-Americana', 35000000, 700000, 'MISTO', 'CONTINENTAL', 2026, 'EM_ANDAMENTO');
 
 -- --------------------------------------------------------
 
@@ -608,9 +572,7 @@ INSERT INTO `estatisticas_ano_clube` (`idEstatisticasAnoClube`, `ano`, `jogos`, 
 (17, 2026, 0, 0, 0, 0, 0, 0, 17),
 (18, 2026, 0, 0, 0, 0, 0, 0, 18),
 (19, 2026, 0, 0, 0, 0, 0, 0, 19),
-(20, 2026, 0, 0, 0, 0, 0, 0, 20),
-(21, 2025, 10, 10, 10, 10, 10, 10, 12),
-(22, 2024, 10, 10, 10, 10, 10, 10, 8);
+(20, 2026, 0, 0, 0, 0, 0, 0, 20);
 
 -- --------------------------------------------------------
 
@@ -625,7 +587,7 @@ CREATE TABLE `estatisticas_jogador_competicao` (
   `jogos` int(11) NOT NULL,
   `gols` int(11) NOT NULL,
   `assistencias` int(11) NOT NULL,
-  `notaMedia` int(11) NOT NULL
+  `notaMedia` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -1386,6 +1348,19 @@ INSERT INTO `jogador` (`idJogador`, `nomeJogador`, `numeroCamisa`, `idade`, `pos
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `jogador_has_cartoes`
+--
+
+CREATE TABLE `jogador_has_cartoes` (
+  `idJogadorHasCartoes` int(11) NOT NULL,
+  `idJogador` int(11) NOT NULL,
+  `idCartoes` int(11) NOT NULL,
+  `data` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `jogador_lesao`
 --
 
@@ -1412,7 +1387,24 @@ CREATE TABLE `lesao` (
 --
 
 INSERT INTO `lesao` (`idLesao`, `nomeLesao`, `tempoLesionado`, `gravidade`) VALUES
-(1, 'lesao leve', 3, 'LEVE');
+(2, 'Contusão muscular', 5, 'LEVE'),
+(3, 'Torção leve no tornozelo', 7, 'LEVE'),
+(4, 'Fadiga muscular', 4, 'LEVE'),
+(5, 'Pancada no joelho', 6, 'LEVE'),
+(6, 'Cãibra severa', 3, 'LEVE'),
+(7, 'Estiramento leve na coxa', 10, 'LEVE'),
+(8, 'Estiramento muscular na coxa', 21, 'MODERADO'),
+(9, 'Entorse de tornozelo', 28, 'MODERADO'),
+(10, 'Lesão na panturrilha', 25, 'MODERADO'),
+(11, 'Distensão na virilha', 30, 'MODERADO'),
+(12, 'Tendinite no joelho', 35, 'MODERADO'),
+(13, 'Fratura no dedo do pé', 42, 'MODERADO'),
+(14, 'Ruptura do ligamento cruzado anterior', 210, 'GRAVE'),
+(15, 'Fratura na tíbia', 150, 'GRAVE'),
+(16, 'Ruptura do tendão de Aquiles', 240, 'GRAVE'),
+(17, 'Lesão no menisco', 120, 'GRAVE'),
+(18, 'Fratura no metatarso', 90, 'GRAVE'),
+(19, 'Luxação no ombro', 100, 'GRAVE');
 
 -- --------------------------------------------------------
 
@@ -1430,15 +1422,6 @@ CREATE TABLE `manager` (
   `contratoFim` int(11) NOT NULL,
   `clube_idClube` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Dumping data for table `manager`
---
-
-INSERT INTO `manager` (`idManager`, `nomeManager`, `nacionalidade`, `foto`, `reputacao`, `exp`, `contratoFim`, `clube_idClube`) VALUES
-(19, 'trfh', 'portugues', 'img/rostosManagers/padrao.png', 'INICIANTE', 0, 2027, 16),
-(20, 'gdfgdf', 'brasileiro', 'img/rostosManagers/manager-3.jpg', 'INICIANTE', 0, 2027, 16),
-(21, 'teste', 'brasileiro', 'img/rostosManagers/manager-1.jpg', 'INICIANTE', 0, 2027, 12);
 
 -- --------------------------------------------------------
 
@@ -1477,28 +1460,6 @@ CREATE TABLE `noticia` (
   `dataPublicacao` datetime NOT NULL,
   `clube_idClube` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Dumping data for table `noticia`
---
-
-INSERT INTO `noticia` (`idNoticia`, `titulo`, `categoria`, `dataPublicacao`, `clube_idClube`) VALUES
-(23, 'Liverpool prepara uma oferta por Puma Rodriguez (Vasco)', 'MERCADO', '2026-01-05 09:30:00', 12),
-(24, 'Palmeiras monitora situação de Kevin Serna e pode fazer proposta ao Fluminense', 'MERCADO', '2026-01-06 11:15:00', 7),
-(25, 'Flamengo avança nas conversas por zagueiro do Bahia e prepara oferta de R$ 40 milhões', 'MERCADO', '2026-01-07 14:00:00', 11),
-(26, 'Botafogo negocia empréstimo de atacante do Santos até o fim da temporada', 'MERCADO', '2026-01-08 10:45:00', 13),
-(27, 'Corinthians quer repatriar meia que joga na Europa e inicia sondagem', 'MERCADO', '2026-01-09 16:20:00', 4),
-(28, 'Cruzeiro abre negociação para renovar contrato de jovem promessa da base', 'MERCADO', '2026-01-10 12:00:00', 10),
-(29, 'Atlético-MG coloca zagueiro na lista de transferências e aceita propostas', 'MERCADO', '2026-01-11 09:10:00', 5),
-(30, 'Grêmio e Internacional disputam a contratação de lateral argentino', 'MERCADO', '2026-01-12 18:30:00', 8),
-(31, 'Cano marca três gols em treino e anima a torcida do Fluminense', 'IMPRENSA', '2026-01-05 08:00:00', 7),
-(32, 'Ganso elogia ambiente do vestiário e pede foco na sequência do campeonato', 'IMPRENSA', '2026-01-06 13:40:00', 7),
-(33, 'Diretoria avalia renovar contrato de Arana antes do fim do vínculo', 'IMPRENSA', '2026-01-07 17:25:00', 7),
-(34, 'Torcida esgota ingressos para o próximo jogo no Maracanã', 'IMPRENSA', '2026-01-08 15:00:00', 7),
-(35, 'Luciano Acosta é apontado pela imprensa como o melhor meia do campeonato', 'IMPRENSA', '2026-01-09 09:50:00', 7),
-(36, 'Treinador promete mudanças na escalação após sequência de empates', 'IMPRENSA', '2026-01-10 19:10:00', 7),
-(37, 'Riquelme, promessa da base, recebe elogios da comissão técnica', 'IMPRENSA', '2026-01-11 11:30:00', 7),
-(38, 'John Kennedy desperta interesse de clubes europeus, mas Fluminense diz que não vende', 'IMPRENSA', '2026-01-12 14:45:00', 7);
 
 -- --------------------------------------------------------
 
@@ -1540,386 +1501,386 @@ CREATE TABLE `partida` (
 --
 
 INSERT INTO `partida` (`idPartida`, `golsMandante`, `golsVisitante`, `rodada`, `dataPartida`, `statusPartida`, `visitanteIdClube`, `mandanteIdClube`, `horario`, `local`, `competicao_idCompeticao`) VALUES
-(1, 0, 0, 1, '2026-10-10', 'AGENDADA', 20, 1, '16:00:00', 'Maracanã', 1),
-(2, 0, 0, 1, '2026-10-10', 'AGENDADA', 2, 19, '16:00:00', 'Estádio Maião', 1),
-(3, 0, 0, 1, '2026-10-10', 'AGENDADA', 18, 3, '16:00:00', 'MorumBIS', 1),
-(4, 0, 0, 1, '2026-10-10', 'AGENDADA', 4, 17, '18:30:00', 'Couto Pereira', 1),
-(5, 0, 0, 1, '2026-10-10', 'AGENDADA', 16, 5, '18:30:00', 'Arena MRV', 1),
-(6, 0, 0, 1, '2026-10-10', 'AGENDADA', 6, 15, '18:30:00', 'Ligga Arena', 1),
-(7, 0, 0, 1, '2026-10-10', 'AGENDADA', 14, 7, '18:30:00', 'Maracanã', 1),
-(8, 0, 0, 1, '2026-10-10', 'AGENDADA', 8, 13, '21:00:00', 'Vila Belmiro', 1),
-(9, 0, 0, 1, '2026-10-10', 'AGENDADA', 12, 9, '21:00:00', 'Beira-Rio', 1),
-(10, 0, 0, 1, '2026-10-10', 'AGENDADA', 10, 11, '21:00:00', 'Arena Fonte Nova', 1),
-(11, 0, 0, 2, '2026-10-14', 'AGENDADA', 1, 19, '16:00:00', 'Estádio Maião', 1),
-(12, 0, 0, 2, '2026-10-14', 'AGENDADA', 18, 20, '16:00:00', 'Mangueirão', 1),
-(13, 0, 0, 2, '2026-10-14', 'AGENDADA', 2, 17, '16:00:00', 'Couto Pereira', 1),
-(14, 0, 0, 2, '2026-10-14', 'AGENDADA', 16, 3, '18:30:00', 'MorumBIS', 1),
-(15, 0, 0, 2, '2026-10-14', 'AGENDADA', 4, 15, '18:30:00', 'Ligga Arena', 1),
-(16, 0, 0, 2, '2026-10-14', 'AGENDADA', 14, 5, '18:30:00', 'Arena MRV', 1),
-(17, 0, 0, 2, '2026-10-14', 'AGENDADA', 6, 13, '18:30:00', 'Vila Belmiro', 1),
-(18, 0, 0, 2, '2026-10-14', 'AGENDADA', 12, 7, '21:00:00', 'Maracanã', 1),
-(19, 0, 0, 2, '2026-10-14', 'AGENDADA', 8, 11, '21:00:00', 'Arena Fonte Nova', 1),
-(20, 0, 0, 2, '2026-10-14', 'AGENDADA', 10, 9, '21:00:00', 'Beira-Rio', 1),
-(21, 0, 0, 3, '2026-10-17', 'AGENDADA', 18, 1, '16:00:00', 'Maracanã', 1),
-(22, 0, 0, 3, '2026-10-17', 'AGENDADA', 19, 17, '16:00:00', 'Couto Pereira', 1),
-(23, 0, 0, 3, '2026-10-17', 'AGENDADA', 16, 20, '16:00:00', 'Mangueirão', 1),
-(24, 0, 0, 3, '2026-10-17', 'AGENDADA', 2, 15, '18:30:00', 'Ligga Arena', 1),
-(25, 0, 0, 3, '2026-10-17', 'AGENDADA', 14, 3, '18:30:00', 'MorumBIS', 1),
-(26, 0, 0, 3, '2026-10-17', 'AGENDADA', 4, 13, '18:30:00', 'Vila Belmiro', 1),
-(27, 0, 0, 3, '2026-10-17', 'AGENDADA', 12, 5, '18:30:00', 'Arena MRV', 1),
-(28, 0, 0, 3, '2026-10-17', 'AGENDADA', 6, 11, '21:00:00', 'Arena Fonte Nova', 1),
-(29, 0, 0, 3, '2026-10-17', 'AGENDADA', 10, 7, '21:00:00', 'Maracanã', 1),
-(30, 0, 0, 3, '2026-10-17', 'AGENDADA', 8, 9, '21:00:00', 'Beira-Rio', 1),
-(31, 0, 0, 4, '2026-10-21', 'AGENDADA', 1, 17, '16:00:00', 'Couto Pereira', 1),
-(32, 0, 0, 4, '2026-10-21', 'AGENDADA', 16, 18, '16:00:00', 'Arena Condá', 1),
-(33, 0, 0, 4, '2026-10-21', 'AGENDADA', 19, 15, '16:00:00', 'Ligga Arena', 1),
-(34, 0, 0, 4, '2026-10-21', 'AGENDADA', 14, 20, '18:30:00', 'Mangueirão', 1),
-(35, 0, 0, 4, '2026-10-21', 'AGENDADA', 2, 13, '18:30:00', 'Vila Belmiro', 1),
-(36, 0, 0, 4, '2026-10-21', 'AGENDADA', 12, 3, '18:30:00', 'MorumBIS', 1),
-(37, 0, 0, 4, '2026-10-21', 'AGENDADA', 4, 11, '18:30:00', 'Arena Fonte Nova', 1),
-(38, 0, 0, 4, '2026-10-21', 'AGENDADA', 10, 5, '21:00:00', 'Arena MRV', 1),
-(39, 0, 0, 4, '2026-10-21', 'AGENDADA', 6, 9, '21:00:00', 'Beira-Rio', 1),
-(40, 0, 0, 4, '2026-10-21', 'AGENDADA', 8, 7, '21:00:00', 'Maracanã', 1),
-(41, 0, 0, 5, '2026-10-24', 'AGENDADA', 16, 1, '16:00:00', 'Maracanã', 1),
-(42, 0, 0, 5, '2026-10-24', 'AGENDADA', 17, 15, '16:00:00', 'Ligga Arena', 1),
-(43, 0, 0, 5, '2026-10-24', 'AGENDADA', 14, 18, '16:00:00', 'Arena Condá', 1),
-(44, 0, 0, 5, '2026-10-24', 'AGENDADA', 19, 13, '18:30:00', 'Vila Belmiro', 1),
-(45, 0, 0, 5, '2026-10-24', 'AGENDADA', 12, 20, '18:30:00', 'Mangueirão', 1),
-(46, 0, 0, 5, '2026-10-24', 'AGENDADA', 2, 11, '18:30:00', 'Arena Fonte Nova', 1),
-(47, 0, 0, 5, '2026-10-24', 'AGENDADA', 10, 3, '18:30:00', 'MorumBIS', 1),
-(48, 0, 0, 5, '2026-10-24', 'AGENDADA', 4, 9, '21:00:00', 'Beira-Rio', 1),
-(49, 0, 0, 5, '2026-10-24', 'AGENDADA', 8, 5, '21:00:00', 'Arena MRV', 1),
-(50, 0, 0, 5, '2026-10-24', 'AGENDADA', 6, 7, '21:00:00', 'Maracanã', 1),
-(51, 0, 0, 6, '2026-10-28', 'AGENDADA', 1, 15, '16:00:00', 'Ligga Arena', 1),
-(52, 0, 0, 6, '2026-10-28', 'AGENDADA', 14, 16, '16:00:00', 'Barradão', 1),
-(53, 0, 0, 6, '2026-10-28', 'AGENDADA', 17, 13, '16:00:00', 'Vila Belmiro', 1),
-(54, 0, 0, 6, '2026-10-28', 'AGENDADA', 12, 18, '18:30:00', 'Arena Condá', 1),
-(55, 0, 0, 6, '2026-10-28', 'AGENDADA', 19, 11, '18:30:00', 'Arena Fonte Nova', 1),
-(56, 0, 0, 6, '2026-10-28', 'AGENDADA', 10, 20, '18:30:00', 'Mangueirão', 1),
-(57, 0, 0, 6, '2026-10-28', 'AGENDADA', 2, 9, '18:30:00', 'Beira-Rio', 1),
-(58, 0, 0, 6, '2026-10-28', 'AGENDADA', 8, 3, '21:00:00', 'MorumBIS', 1),
-(59, 0, 0, 6, '2026-10-28', 'AGENDADA', 4, 7, '21:00:00', 'Maracanã', 1),
-(60, 0, 0, 6, '2026-10-28', 'AGENDADA', 6, 5, '21:00:00', 'Arena MRV', 1),
-(61, 0, 0, 7, '2026-10-31', 'AGENDADA', 14, 1, '16:00:00', 'Maracanã', 1),
-(62, 0, 0, 7, '2026-10-31', 'AGENDADA', 15, 13, '16:00:00', 'Vila Belmiro', 1),
-(63, 0, 0, 7, '2026-10-31', 'AGENDADA', 12, 16, '16:00:00', 'Barradão', 1),
-(64, 0, 0, 7, '2026-10-31', 'AGENDADA', 17, 11, '18:30:00', 'Arena Fonte Nova', 1),
-(65, 0, 0, 7, '2026-10-31', 'AGENDADA', 10, 18, '18:30:00', 'Arena Condá', 1),
-(66, 0, 0, 7, '2026-10-31', 'AGENDADA', 19, 9, '18:30:00', 'Beira-Rio', 1),
-(67, 0, 0, 7, '2026-10-31', 'AGENDADA', 8, 20, '18:30:00', 'Mangueirão', 1),
-(68, 0, 0, 7, '2026-10-31', 'AGENDADA', 2, 7, '21:00:00', 'Maracanã', 1),
-(69, 0, 0, 7, '2026-10-31', 'AGENDADA', 6, 3, '21:00:00', 'MorumBIS', 1),
-(70, 0, 0, 7, '2026-10-31', 'AGENDADA', 4, 5, '21:00:00', 'Arena MRV', 1),
-(71, 0, 0, 8, '2026-11-04', 'AGENDADA', 1, 13, '16:00:00', 'Vila Belmiro', 1),
-(72, 0, 0, 8, '2026-11-04', 'AGENDADA', 12, 14, '16:00:00', 'Nabi Abi Chedid', 1),
-(73, 0, 0, 8, '2026-11-04', 'AGENDADA', 15, 11, '16:00:00', 'Arena Fonte Nova', 1),
-(74, 0, 0, 8, '2026-11-04', 'AGENDADA', 10, 16, '18:30:00', 'Barradão', 1),
-(75, 0, 0, 8, '2026-11-04', 'AGENDADA', 17, 9, '18:30:00', 'Beira-Rio', 1),
-(76, 0, 0, 8, '2026-11-04', 'AGENDADA', 8, 18, '18:30:00', 'Arena Condá', 1),
-(77, 0, 0, 8, '2026-11-04', 'AGENDADA', 19, 7, '18:30:00', 'Maracanã', 1),
-(78, 0, 0, 8, '2026-11-04', 'AGENDADA', 6, 20, '21:00:00', 'Mangueirão', 1),
-(79, 0, 0, 8, '2026-11-04', 'AGENDADA', 2, 5, '21:00:00', 'Arena MRV', 1),
-(80, 0, 0, 8, '2026-11-04', 'AGENDADA', 4, 3, '21:00:00', 'MorumBIS', 1),
-(81, 0, 0, 9, '2026-11-07', 'AGENDADA', 12, 1, '16:00:00', 'Maracanã', 1),
-(82, 0, 0, 9, '2026-11-07', 'AGENDADA', 13, 11, '16:00:00', 'Arena Fonte Nova', 1),
-(83, 0, 0, 9, '2026-11-07', 'AGENDADA', 10, 14, '16:00:00', 'Nabi Abi Chedid', 1),
-(84, 0, 0, 9, '2026-11-07', 'AGENDADA', 15, 9, '18:30:00', 'Beira-Rio', 1),
-(85, 0, 0, 9, '2026-11-07', 'AGENDADA', 8, 16, '18:30:00', 'Barradão', 1),
-(86, 0, 0, 9, '2026-11-07', 'AGENDADA', 17, 7, '18:30:00', 'Maracanã', 1),
-(87, 0, 0, 9, '2026-11-07', 'AGENDADA', 6, 18, '18:30:00', 'Arena Condá', 1),
-(88, 0, 0, 9, '2026-11-07', 'AGENDADA', 19, 5, '21:00:00', 'Arena MRV', 1),
-(89, 0, 0, 9, '2026-11-07', 'AGENDADA', 4, 20, '21:00:00', 'Mangueirão', 1),
-(90, 0, 0, 9, '2026-11-07', 'AGENDADA', 2, 3, '21:00:00', 'MorumBIS', 1),
-(91, 0, 0, 10, '2026-11-11', 'AGENDADA', 1, 11, '16:00:00', 'Arena Fonte Nova', 1),
-(92, 0, 0, 10, '2026-11-11', 'AGENDADA', 10, 12, '16:00:00', 'São Januário', 1),
-(93, 0, 0, 10, '2026-11-11', 'AGENDADA', 13, 9, '16:00:00', 'Beira-Rio', 1),
-(94, 0, 0, 10, '2026-11-11', 'AGENDADA', 8, 14, '18:30:00', 'Nabi Abi Chedid', 1),
-(95, 0, 0, 10, '2026-11-11', 'AGENDADA', 15, 7, '18:30:00', 'Maracanã', 1),
-(96, 0, 0, 10, '2026-11-11', 'AGENDADA', 6, 16, '18:30:00', 'Barradão', 1),
-(97, 0, 0, 10, '2026-11-11', 'AGENDADA', 17, 5, '18:30:00', 'Arena MRV', 1),
-(98, 0, 0, 10, '2026-11-11', 'AGENDADA', 4, 18, '21:00:00', 'Arena Condá', 1),
-(99, 0, 0, 10, '2026-11-11', 'AGENDADA', 19, 3, '21:00:00', 'MorumBIS', 1),
-(100, 0, 0, 10, '2026-11-11', 'AGENDADA', 2, 20, '21:00:00', 'Mangueirão', 1),
-(101, 0, 0, 11, '2026-11-14', 'AGENDADA', 10, 1, '16:00:00', 'Maracanã', 1),
-(102, 0, 0, 11, '2026-11-14', 'AGENDADA', 11, 9, '16:00:00', 'Beira-Rio', 1),
-(103, 0, 0, 11, '2026-11-14', 'AGENDADA', 8, 12, '16:00:00', 'São Januário', 1),
-(104, 0, 0, 11, '2026-11-14', 'AGENDADA', 13, 7, '18:30:00', 'Maracanã', 1),
-(105, 0, 0, 11, '2026-11-14', 'AGENDADA', 6, 14, '18:30:00', 'Nabi Abi Chedid', 1),
-(106, 0, 0, 11, '2026-11-14', 'AGENDADA', 15, 5, '18:30:00', 'Arena MRV', 1),
-(107, 0, 0, 11, '2026-11-14', 'AGENDADA', 4, 16, '18:30:00', 'Barradão', 1),
-(108, 0, 0, 11, '2026-11-14', 'AGENDADA', 17, 3, '21:00:00', 'MorumBIS', 1),
-(109, 0, 0, 11, '2026-11-14', 'AGENDADA', 2, 18, '21:00:00', 'Arena Condá', 1),
-(110, 0, 0, 11, '2026-11-14', 'AGENDADA', 19, 20, '21:00:00', 'Mangueirão', 1),
-(111, 0, 0, 12, '2026-11-18', 'AGENDADA', 1, 9, '16:00:00', 'Beira-Rio', 1),
-(112, 0, 0, 12, '2026-11-18', 'AGENDADA', 8, 10, '16:00:00', 'Mineirão', 1),
-(113, 0, 0, 12, '2026-11-18', 'AGENDADA', 11, 7, '16:00:00', 'Maracanã', 1),
-(114, 0, 0, 12, '2026-11-18', 'AGENDADA', 6, 12, '18:30:00', 'São Januário', 1),
-(115, 0, 0, 12, '2026-11-18', 'AGENDADA', 13, 5, '18:30:00', 'Arena MRV', 1),
-(116, 0, 0, 12, '2026-11-18', 'AGENDADA', 4, 14, '18:30:00', 'Nabi Abi Chedid', 1),
-(117, 0, 0, 12, '2026-11-18', 'AGENDADA', 15, 3, '18:30:00', 'MorumBIS', 1),
-(118, 0, 0, 12, '2026-11-18', 'AGENDADA', 2, 16, '21:00:00', 'Barradão', 1),
-(119, 0, 0, 12, '2026-11-18', 'AGENDADA', 17, 20, '21:00:00', 'Mangueirão', 1),
-(120, 0, 0, 12, '2026-11-18', 'AGENDADA', 19, 18, '21:00:00', 'Arena Condá', 1),
-(121, 0, 0, 13, '2026-11-21', 'AGENDADA', 8, 1, '16:00:00', 'Maracanã', 1),
-(122, 0, 0, 13, '2026-11-21', 'AGENDADA', 9, 7, '16:00:00', 'Maracanã', 1),
-(123, 0, 0, 13, '2026-11-21', 'AGENDADA', 6, 10, '16:00:00', 'Mineirão', 1),
-(124, 0, 0, 13, '2026-11-21', 'AGENDADA', 11, 5, '18:30:00', 'Arena MRV', 1),
-(125, 0, 0, 13, '2026-11-21', 'AGENDADA', 4, 12, '18:30:00', 'São Januário', 1),
-(126, 0, 0, 13, '2026-11-21', 'AGENDADA', 13, 3, '18:30:00', 'MorumBIS', 1),
-(127, 0, 0, 13, '2026-11-21', 'AGENDADA', 2, 14, '18:30:00', 'Nabi Abi Chedid', 1),
-(128, 0, 0, 13, '2026-11-21', 'AGENDADA', 15, 20, '21:00:00', 'Mangueirão', 1),
-(129, 0, 0, 13, '2026-11-21', 'AGENDADA', 19, 16, '21:00:00', 'Barradão', 1),
-(130, 0, 0, 13, '2026-11-21', 'AGENDADA', 17, 18, '21:00:00', 'Arena Condá', 1),
-(131, 0, 0, 14, '2026-11-25', 'AGENDADA', 1, 7, '16:00:00', 'Maracanã', 1),
-(132, 0, 0, 14, '2026-11-25', 'AGENDADA', 6, 8, '16:00:00', 'Arena do Grêmio', 1),
-(133, 0, 0, 14, '2026-11-25', 'AGENDADA', 9, 5, '16:00:00', 'Arena MRV', 1),
-(134, 0, 0, 14, '2026-11-25', 'AGENDADA', 4, 10, '18:30:00', 'Mineirão', 1),
-(135, 0, 0, 14, '2026-11-25', 'AGENDADA', 11, 3, '18:30:00', 'MorumBIS', 1),
-(136, 0, 0, 14, '2026-11-25', 'AGENDADA', 2, 12, '18:30:00', 'São Januário', 1),
-(137, 0, 0, 14, '2026-11-25', 'AGENDADA', 13, 20, '18:30:00', 'Mangueirão', 1),
-(138, 0, 0, 14, '2026-11-25', 'AGENDADA', 19, 14, '21:00:00', 'Nabi Abi Chedid', 1),
-(139, 0, 0, 14, '2026-11-25', 'AGENDADA', 15, 18, '21:00:00', 'Arena Condá', 1),
-(140, 0, 0, 14, '2026-11-25', 'AGENDADA', 17, 16, '21:00:00', 'Barradão', 1),
-(141, 0, 0, 15, '2026-11-28', 'AGENDADA', 6, 1, '16:00:00', 'Maracanã', 1),
-(142, 0, 0, 15, '2026-11-28', 'AGENDADA', 7, 5, '16:00:00', 'Arena MRV', 1),
-(143, 0, 0, 15, '2026-11-28', 'AGENDADA', 4, 8, '16:00:00', 'Arena do Grêmio', 1),
-(144, 0, 0, 15, '2026-11-28', 'AGENDADA', 9, 3, '18:30:00', 'MorumBIS', 1),
-(145, 0, 0, 15, '2026-11-28', 'AGENDADA', 2, 10, '18:30:00', 'Mineirão', 1),
-(146, 0, 0, 15, '2026-11-28', 'AGENDADA', 11, 20, '18:30:00', 'Mangueirão', 1),
-(147, 0, 0, 15, '2026-11-28', 'AGENDADA', 19, 12, '18:30:00', 'São Januário', 1),
-(148, 0, 0, 15, '2026-11-28', 'AGENDADA', 13, 18, '21:00:00', 'Arena Condá', 1),
-(149, 0, 0, 15, '2026-11-28', 'AGENDADA', 17, 14, '21:00:00', 'Nabi Abi Chedid', 1),
-(150, 0, 0, 15, '2026-11-28', 'AGENDADA', 15, 16, '21:00:00', 'Barradão', 1),
-(151, 0, 0, 16, '2026-12-02', 'AGENDADA', 1, 5, '16:00:00', 'Arena MRV', 1),
-(152, 0, 0, 16, '2026-12-02', 'AGENDADA', 4, 6, '16:00:00', 'Estádio Nilton Santos', 1),
-(153, 0, 0, 16, '2026-12-02', 'AGENDADA', 7, 3, '16:00:00', 'MorumBIS', 1),
-(154, 0, 0, 16, '2026-12-02', 'AGENDADA', 2, 8, '18:30:00', 'Arena do Grêmio', 1),
-(155, 0, 0, 16, '2026-12-02', 'AGENDADA', 9, 20, '18:30:00', 'Mangueirão', 1),
-(156, 0, 0, 16, '2026-12-02', 'AGENDADA', 19, 10, '18:30:00', 'Mineirão', 1),
-(157, 0, 0, 16, '2026-12-02', 'AGENDADA', 11, 18, '18:30:00', 'Arena Condá', 1),
-(158, 0, 0, 16, '2026-12-02', 'AGENDADA', 17, 12, '21:00:00', 'São Januário', 1),
-(159, 0, 0, 16, '2026-12-02', 'AGENDADA', 13, 16, '21:00:00', 'Barradão', 1),
-(160, 0, 0, 16, '2026-12-02', 'AGENDADA', 15, 14, '21:00:00', 'Nabi Abi Chedid', 1),
-(161, 0, 0, 17, '2026-12-05', 'AGENDADA', 4, 1, '16:00:00', 'Maracanã', 1),
-(162, 0, 0, 17, '2026-12-05', 'AGENDADA', 5, 3, '16:00:00', 'MorumBIS', 1),
-(163, 0, 0, 17, '2026-12-05', 'AGENDADA', 2, 6, '16:00:00', 'Estádio Nilton Santos', 1),
-(164, 0, 0, 17, '2026-12-05', 'AGENDADA', 7, 20, '18:30:00', 'Mangueirão', 1),
-(165, 0, 0, 17, '2026-12-05', 'AGENDADA', 19, 8, '18:30:00', 'Arena do Grêmio', 1),
-(166, 0, 0, 17, '2026-12-05', 'AGENDADA', 9, 18, '18:30:00', 'Arena Condá', 1),
-(167, 0, 0, 17, '2026-12-05', 'AGENDADA', 17, 10, '18:30:00', 'Mineirão', 1),
-(168, 0, 0, 17, '2026-12-05', 'AGENDADA', 11, 16, '21:00:00', 'Barradão', 1),
-(169, 0, 0, 17, '2026-12-05', 'AGENDADA', 15, 12, '21:00:00', 'São Januário', 1),
-(170, 0, 0, 17, '2026-12-05', 'AGENDADA', 13, 14, '21:00:00', 'Nabi Abi Chedid', 1),
-(171, 0, 0, 18, '2026-12-09', 'AGENDADA', 1, 3, '16:00:00', 'MorumBIS', 1),
-(172, 0, 0, 18, '2026-12-09', 'AGENDADA', 2, 4, '16:00:00', 'Neo Química Arena', 1),
-(173, 0, 0, 18, '2026-12-09', 'AGENDADA', 5, 20, '16:00:00', 'Mangueirão', 1),
-(174, 0, 0, 18, '2026-12-09', 'AGENDADA', 19, 6, '18:30:00', 'Estádio Nilton Santos', 1),
-(175, 0, 0, 18, '2026-12-09', 'AGENDADA', 7, 18, '18:30:00', 'Arena Condá', 1),
-(176, 0, 0, 18, '2026-12-09', 'AGENDADA', 17, 8, '18:30:00', 'Arena do Grêmio', 1),
-(177, 0, 0, 18, '2026-12-09', 'AGENDADA', 9, 16, '18:30:00', 'Barradão', 1),
-(178, 0, 0, 18, '2026-12-09', 'AGENDADA', 15, 10, '21:00:00', 'Mineirão', 1),
-(179, 0, 0, 18, '2026-12-09', 'AGENDADA', 11, 14, '21:00:00', 'Nabi Abi Chedid', 1),
-(180, 0, 0, 18, '2026-12-09', 'AGENDADA', 13, 12, '21:00:00', 'São Januário', 1),
-(181, 0, 0, 19, '2026-12-12', 'AGENDADA', 2, 1, '16:00:00', 'Maracanã', 1),
-(182, 0, 0, 19, '2026-12-12', 'AGENDADA', 3, 20, '16:00:00', 'Mangueirão', 1),
-(183, 0, 0, 19, '2026-12-12', 'AGENDADA', 19, 4, '16:00:00', 'Neo Química Arena', 1),
-(184, 0, 0, 19, '2026-12-12', 'AGENDADA', 5, 18, '18:30:00', 'Arena Condá', 1),
-(185, 0, 0, 19, '2026-12-12', 'AGENDADA', 17, 6, '18:30:00', 'Estádio Nilton Santos', 1),
-(186, 0, 0, 19, '2026-12-12', 'AGENDADA', 7, 16, '18:30:00', 'Barradão', 1),
-(187, 0, 0, 19, '2026-12-12', 'AGENDADA', 15, 8, '18:30:00', 'Arena do Grêmio', 1),
-(188, 0, 0, 19, '2026-12-12', 'AGENDADA', 9, 14, '21:00:00', 'Nabi Abi Chedid', 1),
-(189, 0, 0, 19, '2026-12-12', 'AGENDADA', 13, 10, '21:00:00', 'Mineirão', 1),
-(190, 0, 0, 19, '2026-12-12', 'AGENDADA', 11, 12, '21:00:00', 'São Januário', 1),
-(191, 0, 0, 20, '2026-12-16', 'AGENDADA', 1, 20, '16:00:00', 'Mangueirão', 1),
-(192, 0, 0, 20, '2026-12-16', 'AGENDADA', 19, 2, '16:00:00', 'Allianz Parque', 1),
-(193, 0, 0, 20, '2026-12-16', 'AGENDADA', 3, 18, '16:00:00', 'Arena Condá', 1),
-(194, 0, 0, 20, '2026-12-16', 'AGENDADA', 17, 4, '18:30:00', 'Neo Química Arena', 1),
-(195, 0, 0, 20, '2026-12-16', 'AGENDADA', 5, 16, '18:30:00', 'Barradão', 1),
-(196, 0, 0, 20, '2026-12-16', 'AGENDADA', 15, 6, '18:30:00', 'Estádio Nilton Santos', 1),
-(197, 0, 0, 20, '2026-12-16', 'AGENDADA', 7, 14, '18:30:00', 'Nabi Abi Chedid', 1),
-(198, 0, 0, 20, '2026-12-16', 'AGENDADA', 13, 8, '21:00:00', 'Arena do Grêmio', 1),
-(199, 0, 0, 20, '2026-12-16', 'AGENDADA', 9, 12, '21:00:00', 'São Januário', 1),
-(200, 0, 0, 20, '2026-12-16', 'AGENDADA', 11, 10, '21:00:00', 'Mineirão', 1),
-(201, 0, 0, 21, '2026-12-19', 'AGENDADA', 19, 1, '16:00:00', 'Maracanã', 1),
-(202, 0, 0, 21, '2026-12-19', 'AGENDADA', 20, 18, '16:00:00', 'Arena Condá', 1),
-(203, 0, 0, 21, '2026-12-19', 'AGENDADA', 17, 2, '16:00:00', 'Allianz Parque', 1),
-(204, 0, 0, 21, '2026-12-19', 'AGENDADA', 3, 16, '18:30:00', 'Barradão', 1),
-(205, 0, 0, 21, '2026-12-19', 'AGENDADA', 15, 4, '18:30:00', 'Neo Química Arena', 1),
-(206, 0, 0, 21, '2026-12-19', 'AGENDADA', 5, 14, '18:30:00', 'Nabi Abi Chedid', 1),
-(207, 0, 0, 21, '2026-12-19', 'AGENDADA', 13, 6, '18:30:00', 'Estádio Nilton Santos', 1),
-(208, 0, 0, 21, '2026-12-19', 'AGENDADA', 7, 12, '21:00:00', 'São Januário', 1),
-(209, 0, 0, 21, '2026-12-19', 'AGENDADA', 11, 8, '21:00:00', 'Arena do Grêmio', 1),
-(210, 0, 0, 21, '2026-12-19', 'AGENDADA', 9, 10, '21:00:00', 'Mineirão', 1),
-(211, 0, 0, 22, '2026-12-23', 'AGENDADA', 1, 18, '16:00:00', 'Arena Condá', 1),
-(212, 0, 0, 22, '2026-12-23', 'AGENDADA', 17, 19, '16:00:00', 'Estádio Maião', 1),
-(213, 0, 0, 22, '2026-12-23', 'AGENDADA', 20, 16, '16:00:00', 'Barradão', 1),
-(214, 0, 0, 22, '2026-12-23', 'AGENDADA', 15, 2, '18:30:00', 'Allianz Parque', 1),
-(215, 0, 0, 22, '2026-12-23', 'AGENDADA', 3, 14, '18:30:00', 'Nabi Abi Chedid', 1),
-(216, 0, 0, 22, '2026-12-23', 'AGENDADA', 13, 4, '18:30:00', 'Neo Química Arena', 1),
-(217, 0, 0, 22, '2026-12-23', 'AGENDADA', 5, 12, '18:30:00', 'São Januário', 1),
-(218, 0, 0, 22, '2026-12-23', 'AGENDADA', 11, 6, '21:00:00', 'Estádio Nilton Santos', 1),
-(219, 0, 0, 22, '2026-12-23', 'AGENDADA', 7, 10, '21:00:00', 'Mineirão', 1),
-(220, 0, 0, 22, '2026-12-23', 'AGENDADA', 9, 8, '21:00:00', 'Arena do Grêmio', 1),
-(221, 0, 0, 23, '2026-12-26', 'AGENDADA', 17, 1, '16:00:00', 'Maracanã', 1),
-(222, 0, 0, 23, '2026-12-26', 'AGENDADA', 18, 16, '16:00:00', 'Barradão', 1),
-(223, 0, 0, 23, '2026-12-26', 'AGENDADA', 15, 19, '16:00:00', 'Estádio Maião', 1),
-(224, 0, 0, 23, '2026-12-26', 'AGENDADA', 20, 14, '18:30:00', 'Nabi Abi Chedid', 1),
-(225, 0, 0, 23, '2026-12-26', 'AGENDADA', 13, 2, '18:30:00', 'Allianz Parque', 1),
-(226, 0, 0, 23, '2026-12-26', 'AGENDADA', 3, 12, '18:30:00', 'São Januário', 1),
-(227, 0, 0, 23, '2026-12-26', 'AGENDADA', 11, 4, '18:30:00', 'Neo Química Arena', 1),
-(228, 0, 0, 23, '2026-12-26', 'AGENDADA', 5, 10, '21:00:00', 'Mineirão', 1),
-(229, 0, 0, 23, '2026-12-26', 'AGENDADA', 9, 6, '21:00:00', 'Estádio Nilton Santos', 1),
-(230, 0, 0, 23, '2026-12-26', 'AGENDADA', 7, 8, '21:00:00', 'Arena do Grêmio', 1),
-(231, 0, 0, 24, '2026-12-30', 'AGENDADA', 1, 16, '16:00:00', 'Barradão', 1),
-(232, 0, 0, 24, '2026-12-30', 'AGENDADA', 15, 17, '16:00:00', 'Couto Pereira', 1),
-(233, 0, 0, 24, '2026-12-30', 'AGENDADA', 18, 14, '16:00:00', 'Nabi Abi Chedid', 1),
-(234, 0, 0, 24, '2026-12-30', 'AGENDADA', 13, 19, '18:30:00', 'Estádio Maião', 1),
-(235, 0, 0, 24, '2026-12-30', 'AGENDADA', 20, 12, '18:30:00', 'São Januário', 1),
-(236, 0, 0, 24, '2026-12-30', 'AGENDADA', 11, 2, '18:30:00', 'Allianz Parque', 1),
-(237, 0, 0, 24, '2026-12-30', 'AGENDADA', 3, 10, '18:30:00', 'Mineirão', 1),
-(238, 0, 0, 24, '2026-12-30', 'AGENDADA', 9, 4, '21:00:00', 'Neo Química Arena', 1),
-(239, 0, 0, 24, '2026-12-30', 'AGENDADA', 5, 8, '21:00:00', 'Arena do Grêmio', 1),
-(240, 0, 0, 24, '2026-12-30', 'AGENDADA', 7, 6, '21:00:00', 'Estádio Nilton Santos', 1),
-(241, 0, 0, 25, '2027-01-02', 'AGENDADA', 15, 1, '16:00:00', 'Maracanã', 1),
-(242, 0, 0, 25, '2027-01-02', 'AGENDADA', 16, 14, '16:00:00', 'Nabi Abi Chedid', 1),
-(243, 0, 0, 25, '2027-01-02', 'AGENDADA', 13, 17, '16:00:00', 'Couto Pereira', 1),
-(244, 0, 0, 25, '2027-01-02', 'AGENDADA', 18, 12, '18:30:00', 'São Januário', 1),
-(245, 0, 0, 25, '2027-01-02', 'AGENDADA', 11, 19, '18:30:00', 'Estádio Maião', 1),
-(246, 0, 0, 25, '2027-01-02', 'AGENDADA', 20, 10, '18:30:00', 'Mineirão', 1),
-(247, 0, 0, 25, '2027-01-02', 'AGENDADA', 9, 2, '18:30:00', 'Allianz Parque', 1),
-(248, 0, 0, 25, '2027-01-02', 'AGENDADA', 3, 8, '21:00:00', 'Arena do Grêmio', 1),
-(249, 0, 0, 25, '2027-01-02', 'AGENDADA', 7, 4, '21:00:00', 'Neo Química Arena', 1),
-(250, 0, 0, 25, '2027-01-02', 'AGENDADA', 5, 6, '21:00:00', 'Estádio Nilton Santos', 1),
-(251, 0, 0, 26, '2027-01-06', 'AGENDADA', 1, 14, '16:00:00', 'Nabi Abi Chedid', 1),
-(252, 0, 0, 26, '2027-01-06', 'AGENDADA', 13, 15, '16:00:00', 'Ligga Arena', 1),
-(253, 0, 0, 26, '2027-01-06', 'AGENDADA', 16, 12, '16:00:00', 'São Januário', 1),
-(254, 0, 0, 26, '2027-01-06', 'AGENDADA', 11, 17, '18:30:00', 'Couto Pereira', 1),
-(255, 0, 0, 26, '2027-01-06', 'AGENDADA', 18, 10, '18:30:00', 'Mineirão', 1),
-(256, 0, 0, 26, '2027-01-06', 'AGENDADA', 9, 19, '18:30:00', 'Estádio Maião', 1),
-(257, 0, 0, 26, '2027-01-06', 'AGENDADA', 20, 8, '18:30:00', 'Arena do Grêmio', 1),
-(258, 0, 0, 26, '2027-01-06', 'AGENDADA', 7, 2, '21:00:00', 'Allianz Parque', 1),
-(259, 0, 0, 26, '2027-01-06', 'AGENDADA', 3, 6, '21:00:00', 'Estádio Nilton Santos', 1),
-(260, 0, 0, 26, '2027-01-06', 'AGENDADA', 5, 4, '21:00:00', 'Neo Química Arena', 1),
-(261, 0, 0, 27, '2027-01-09', 'AGENDADA', 13, 1, '16:00:00', 'Maracanã', 1),
-(262, 0, 0, 27, '2027-01-09', 'AGENDADA', 14, 12, '16:00:00', 'São Januário', 1),
-(263, 0, 0, 27, '2027-01-09', 'AGENDADA', 11, 15, '16:00:00', 'Ligga Arena', 1),
-(264, 0, 0, 27, '2027-01-09', 'AGENDADA', 16, 10, '18:30:00', 'Mineirão', 1),
-(265, 0, 0, 27, '2027-01-09', 'AGENDADA', 9, 17, '18:30:00', 'Couto Pereira', 1),
-(266, 0, 0, 27, '2027-01-09', 'AGENDADA', 18, 8, '18:30:00', 'Arena do Grêmio', 1),
-(267, 0, 0, 27, '2027-01-09', 'AGENDADA', 7, 19, '18:30:00', 'Estádio Maião', 1),
-(268, 0, 0, 27, '2027-01-09', 'AGENDADA', 20, 6, '21:00:00', 'Estádio Nilton Santos', 1),
-(269, 0, 0, 27, '2027-01-09', 'AGENDADA', 5, 2, '21:00:00', 'Allianz Parque', 1),
-(270, 0, 0, 27, '2027-01-09', 'AGENDADA', 3, 4, '21:00:00', 'Neo Química Arena', 1),
-(271, 0, 0, 28, '2027-01-13', 'AGENDADA', 1, 12, '16:00:00', 'São Januário', 1),
-(272, 0, 0, 28, '2027-01-13', 'AGENDADA', 11, 13, '16:00:00', 'Vila Belmiro', 1),
-(273, 0, 0, 28, '2027-01-13', 'AGENDADA', 14, 10, '16:00:00', 'Mineirão', 1),
-(274, 0, 0, 28, '2027-01-13', 'AGENDADA', 9, 15, '18:30:00', 'Ligga Arena', 1),
-(275, 0, 0, 28, '2027-01-13', 'AGENDADA', 16, 8, '18:30:00', 'Arena do Grêmio', 1),
-(276, 0, 0, 28, '2027-01-13', 'AGENDADA', 7, 17, '18:30:00', 'Couto Pereira', 1),
-(277, 0, 0, 28, '2027-01-13', 'AGENDADA', 18, 6, '18:30:00', 'Estádio Nilton Santos', 1),
-(278, 0, 0, 28, '2027-01-13', 'AGENDADA', 5, 19, '21:00:00', 'Estádio Maião', 1),
-(279, 0, 0, 28, '2027-01-13', 'AGENDADA', 20, 4, '21:00:00', 'Neo Química Arena', 1),
-(280, 0, 0, 28, '2027-01-13', 'AGENDADA', 3, 2, '21:00:00', 'Allianz Parque', 1),
-(281, 0, 0, 29, '2027-01-16', 'AGENDADA', 11, 1, '16:00:00', 'Maracanã', 1),
-(282, 0, 0, 29, '2027-01-16', 'AGENDADA', 12, 10, '16:00:00', 'Mineirão', 1),
-(283, 0, 0, 29, '2027-01-16', 'AGENDADA', 9, 13, '16:00:00', 'Vila Belmiro', 1),
-(284, 0, 0, 29, '2027-01-16', 'AGENDADA', 14, 8, '18:30:00', 'Arena do Grêmio', 1),
-(285, 0, 0, 29, '2027-01-16', 'AGENDADA', 7, 15, '18:30:00', 'Ligga Arena', 1),
-(286, 0, 0, 29, '2027-01-16', 'AGENDADA', 16, 6, '18:30:00', 'Estádio Nilton Santos', 1),
-(287, 0, 0, 29, '2027-01-16', 'AGENDADA', 5, 17, '18:30:00', 'Couto Pereira', 1),
-(288, 0, 0, 29, '2027-01-16', 'AGENDADA', 18, 4, '21:00:00', 'Neo Química Arena', 1),
-(289, 0, 0, 29, '2027-01-16', 'AGENDADA', 3, 19, '21:00:00', 'Estádio Maião', 1),
-(290, 0, 0, 29, '2027-01-16', 'AGENDADA', 20, 2, '21:00:00', 'Allianz Parque', 1),
-(291, 0, 0, 30, '2027-01-20', 'AGENDADA', 1, 10, '16:00:00', 'Mineirão', 1),
-(292, 0, 0, 30, '2027-01-20', 'AGENDADA', 9, 11, '16:00:00', 'Arena Fonte Nova', 1),
-(293, 0, 0, 30, '2027-01-20', 'AGENDADA', 12, 8, '16:00:00', 'Arena do Grêmio', 1),
-(294, 0, 0, 30, '2027-01-20', 'AGENDADA', 7, 13, '18:30:00', 'Vila Belmiro', 1),
-(295, 0, 0, 30, '2027-01-20', 'AGENDADA', 14, 6, '18:30:00', 'Estádio Nilton Santos', 1),
-(296, 0, 0, 30, '2027-01-20', 'AGENDADA', 5, 15, '18:30:00', 'Ligga Arena', 1),
-(297, 0, 0, 30, '2027-01-20', 'AGENDADA', 16, 4, '18:30:00', 'Neo Química Arena', 1),
-(298, 0, 0, 30, '2027-01-20', 'AGENDADA', 3, 17, '21:00:00', 'Couto Pereira', 1),
-(299, 0, 0, 30, '2027-01-20', 'AGENDADA', 18, 2, '21:00:00', 'Allianz Parque', 1),
-(300, 0, 0, 30, '2027-01-20', 'AGENDADA', 20, 19, '21:00:00', 'Estádio Maião', 1),
-(301, 0, 0, 31, '2027-01-23', 'AGENDADA', 9, 1, '16:00:00', 'Maracanã', 1),
-(302, 0, 0, 31, '2027-01-23', 'AGENDADA', 10, 8, '16:00:00', 'Arena do Grêmio', 1),
-(303, 0, 0, 31, '2027-01-23', 'AGENDADA', 7, 11, '16:00:00', 'Arena Fonte Nova', 1),
-(304, 0, 0, 31, '2027-01-23', 'AGENDADA', 12, 6, '18:30:00', 'Estádio Nilton Santos', 1),
-(305, 0, 0, 31, '2027-01-23', 'AGENDADA', 5, 13, '18:30:00', 'Vila Belmiro', 1),
-(306, 0, 0, 31, '2027-01-23', 'AGENDADA', 14, 4, '18:30:00', 'Neo Química Arena', 1),
-(307, 0, 0, 31, '2027-01-23', 'AGENDADA', 3, 15, '18:30:00', 'Ligga Arena', 1),
-(308, 0, 0, 31, '2027-01-23', 'AGENDADA', 16, 2, '21:00:00', 'Allianz Parque', 1),
-(309, 0, 0, 31, '2027-01-23', 'AGENDADA', 20, 17, '21:00:00', 'Couto Pereira', 1),
-(310, 0, 0, 31, '2027-01-23', 'AGENDADA', 18, 19, '21:00:00', 'Estádio Maião', 1),
-(311, 0, 0, 32, '2027-01-27', 'AGENDADA', 1, 8, '16:00:00', 'Arena do Grêmio', 1),
-(312, 0, 0, 32, '2027-01-27', 'AGENDADA', 7, 9, '16:00:00', 'Beira-Rio', 1),
-(313, 0, 0, 32, '2027-01-27', 'AGENDADA', 10, 6, '16:00:00', 'Estádio Nilton Santos', 1),
-(314, 0, 0, 32, '2027-01-27', 'AGENDADA', 5, 11, '18:30:00', 'Arena Fonte Nova', 1),
-(315, 0, 0, 32, '2027-01-27', 'AGENDADA', 12, 4, '18:30:00', 'Neo Química Arena', 1),
-(316, 0, 0, 32, '2027-01-27', 'AGENDADA', 3, 13, '18:30:00', 'Vila Belmiro', 1),
-(317, 0, 0, 32, '2027-01-27', 'AGENDADA', 14, 2, '18:30:00', 'Allianz Parque', 1),
-(318, 0, 0, 32, '2027-01-27', 'AGENDADA', 20, 15, '21:00:00', 'Ligga Arena', 1),
-(319, 0, 0, 32, '2027-01-27', 'AGENDADA', 16, 19, '21:00:00', 'Estádio Maião', 1),
-(320, 0, 0, 32, '2027-01-27', 'AGENDADA', 18, 17, '21:00:00', 'Couto Pereira', 1),
-(321, 0, 0, 33, '2027-01-30', 'AGENDADA', 7, 1, '16:00:00', 'Maracanã', 1),
-(322, 0, 0, 33, '2027-01-30', 'AGENDADA', 8, 6, '16:00:00', 'Estádio Nilton Santos', 1),
-(323, 0, 0, 33, '2027-01-30', 'AGENDADA', 5, 9, '16:00:00', 'Beira-Rio', 1),
-(324, 0, 0, 33, '2027-01-30', 'AGENDADA', 10, 4, '18:30:00', 'Neo Química Arena', 1),
-(325, 0, 0, 33, '2027-01-30', 'AGENDADA', 3, 11, '18:30:00', 'Arena Fonte Nova', 1),
-(326, 0, 0, 33, '2027-01-30', 'AGENDADA', 12, 2, '18:30:00', 'Allianz Parque', 1),
-(327, 0, 0, 33, '2027-01-30', 'AGENDADA', 20, 13, '18:30:00', 'Vila Belmiro', 1),
-(328, 0, 0, 33, '2027-01-30', 'AGENDADA', 14, 19, '21:00:00', 'Estádio Maião', 1),
-(329, 0, 0, 33, '2027-01-30', 'AGENDADA', 18, 15, '21:00:00', 'Ligga Arena', 1),
-(330, 0, 0, 33, '2027-01-30', 'AGENDADA', 16, 17, '21:00:00', 'Couto Pereira', 1),
-(331, 0, 0, 34, '2027-02-03', 'AGENDADA', 1, 6, '16:00:00', 'Estádio Nilton Santos', 1),
-(332, 0, 0, 34, '2027-02-03', 'AGENDADA', 5, 7, '16:00:00', 'Maracanã', 1),
-(333, 0, 0, 34, '2027-02-03', 'AGENDADA', 8, 4, '16:00:00', 'Neo Química Arena', 1),
-(334, 0, 0, 34, '2027-02-03', 'AGENDADA', 3, 9, '18:30:00', 'Beira-Rio', 1),
-(335, 0, 0, 34, '2027-02-03', 'AGENDADA', 10, 2, '18:30:00', 'Allianz Parque', 1),
-(336, 0, 0, 34, '2027-02-03', 'AGENDADA', 20, 11, '18:30:00', 'Arena Fonte Nova', 1),
-(337, 0, 0, 34, '2027-02-03', 'AGENDADA', 12, 19, '18:30:00', 'Estádio Maião', 1),
-(338, 0, 0, 34, '2027-02-03', 'AGENDADA', 18, 13, '21:00:00', 'Vila Belmiro', 1),
-(339, 0, 0, 34, '2027-02-03', 'AGENDADA', 14, 17, '21:00:00', 'Couto Pereira', 1),
-(340, 0, 0, 34, '2027-02-03', 'AGENDADA', 16, 15, '21:00:00', 'Ligga Arena', 1),
-(341, 0, 0, 35, '2027-02-06', 'AGENDADA', 5, 1, '16:00:00', 'Maracanã', 1),
-(342, 0, 0, 35, '2027-02-06', 'AGENDADA', 6, 4, '16:00:00', 'Neo Química Arena', 1),
-(343, 0, 0, 35, '2027-02-06', 'AGENDADA', 3, 7, '16:00:00', 'Maracanã', 1),
-(344, 0, 0, 35, '2027-02-06', 'AGENDADA', 8, 2, '18:30:00', 'Allianz Parque', 1),
-(345, 0, 0, 35, '2027-02-06', 'AGENDADA', 20, 9, '18:30:00', 'Beira-Rio', 1),
-(346, 0, 0, 35, '2027-02-06', 'AGENDADA', 10, 19, '18:30:00', 'Estádio Maião', 1),
-(347, 0, 0, 35, '2027-02-06', 'AGENDADA', 18, 11, '18:30:00', 'Arena Fonte Nova', 1),
-(348, 0, 0, 35, '2027-02-06', 'AGENDADA', 12, 17, '21:00:00', 'Couto Pereira', 1),
-(349, 0, 0, 35, '2027-02-06', 'AGENDADA', 16, 13, '21:00:00', 'Vila Belmiro', 1),
-(350, 0, 0, 35, '2027-02-06', 'AGENDADA', 14, 15, '21:00:00', 'Ligga Arena', 1),
-(351, 0, 0, 36, '2027-02-10', 'AGENDADA', 1, 4, '16:00:00', 'Neo Química Arena', 1),
-(352, 0, 0, 36, '2027-02-10', 'AGENDADA', 3, 5, '16:00:00', 'Arena MRV', 1),
-(353, 0, 0, 36, '2027-02-10', 'AGENDADA', 6, 2, '16:00:00', 'Allianz Parque', 1),
-(354, 0, 0, 36, '2027-02-10', 'AGENDADA', 20, 7, '18:30:00', 'Maracanã', 1),
-(355, 0, 0, 36, '2027-02-10', 'AGENDADA', 8, 19, '18:30:00', 'Estádio Maião', 1),
-(356, 0, 0, 36, '2027-02-10', 'AGENDADA', 18, 9, '18:30:00', 'Beira-Rio', 1),
-(357, 0, 0, 36, '2027-02-10', 'AGENDADA', 10, 17, '18:30:00', 'Couto Pereira', 1),
-(358, 0, 0, 36, '2027-02-10', 'AGENDADA', 16, 11, '21:00:00', 'Arena Fonte Nova', 1),
-(359, 0, 0, 36, '2027-02-10', 'AGENDADA', 12, 15, '21:00:00', 'Ligga Arena', 1),
-(360, 0, 0, 36, '2027-02-10', 'AGENDADA', 14, 13, '21:00:00', 'Vila Belmiro', 1),
-(361, 0, 0, 37, '2027-02-13', 'AGENDADA', 3, 1, '16:00:00', 'Maracanã', 1),
-(362, 0, 0, 37, '2027-02-13', 'AGENDADA', 4, 2, '16:00:00', 'Allianz Parque', 1),
-(363, 0, 0, 37, '2027-02-13', 'AGENDADA', 20, 5, '16:00:00', 'Arena MRV', 1),
-(364, 0, 0, 37, '2027-02-13', 'AGENDADA', 6, 19, '18:30:00', 'Estádio Maião', 1),
-(365, 0, 0, 37, '2027-02-13', 'AGENDADA', 18, 7, '18:30:00', 'Maracanã', 1),
-(366, 0, 0, 37, '2027-02-13', 'AGENDADA', 8, 17, '18:30:00', 'Couto Pereira', 1),
-(367, 0, 0, 37, '2027-02-13', 'AGENDADA', 16, 9, '18:30:00', 'Beira-Rio', 1),
-(368, 0, 0, 37, '2027-02-13', 'AGENDADA', 10, 15, '21:00:00', 'Ligga Arena', 1),
-(369, 0, 0, 37, '2027-02-13', 'AGENDADA', 14, 11, '21:00:00', 'Arena Fonte Nova', 1),
-(370, 0, 0, 37, '2027-02-13', 'AGENDADA', 12, 13, '21:00:00', 'Vila Belmiro', 1),
-(371, 0, 0, 38, '2027-02-17', 'AGENDADA', 1, 2, '16:00:00', 'Allianz Parque', 1),
-(372, 0, 0, 38, '2027-02-17', 'AGENDADA', 20, 3, '16:00:00', 'MorumBIS', 1),
-(373, 0, 0, 38, '2027-02-17', 'AGENDADA', 4, 19, '16:00:00', 'Estádio Maião', 1),
-(374, 0, 0, 38, '2027-02-17', 'AGENDADA', 18, 5, '18:30:00', 'Arena MRV', 1),
-(375, 0, 0, 38, '2027-02-17', 'AGENDADA', 6, 17, '18:30:00', 'Couto Pereira', 1),
-(376, 0, 0, 38, '2027-02-17', 'AGENDADA', 16, 7, '18:30:00', 'Maracanã', 1),
-(377, 0, 0, 38, '2027-02-17', 'AGENDADA', 8, 15, '18:30:00', 'Ligga Arena', 1),
-(378, 0, 0, 38, '2027-02-17', 'AGENDADA', 14, 9, '21:00:00', 'Beira-Rio', 1),
-(379, 0, 0, 38, '2027-02-17', 'AGENDADA', 10, 13, '21:00:00', 'Vila Belmiro', 1),
-(380, 0, 0, 38, '2027-02-17', 'AGENDADA', 12, 11, '21:00:00', 'Arena Fonte Nova', 1);
+(761, 2, 0, 1, '2026-01-10', 'AGENDADA', 10, 8, '16:00:00', 'Arena do Grêmio', 1),
+(762, 0, 0, 20, '2026-05-23', 'AGENDADA', 8, 10, '16:00:00', 'Mineirão', 1),
+(763, 0, 0, 1, '2026-01-10', 'AGENDADA', 12, 18, '16:00:00', 'Arena Condá', 1),
+(764, 0, 0, 20, '2026-05-23', 'AGENDADA', 18, 12, '16:00:00', 'São Januário', 1),
+(765, 0, 0, 1, '2026-01-10', 'AGENDADA', 4, 3, '16:00:00', 'MorumBIS', 1),
+(766, 0, 0, 20, '2026-05-23', 'AGENDADA', 3, 4, '16:00:00', 'Neo Química Arena', 1),
+(767, 2, 0, 1, '2026-01-10', 'AGENDADA', 1, 15, '16:00:00', 'Ligga Arena', 1),
+(768, 0, 0, 20, '2026-05-23', 'AGENDADA', 15, 1, '16:00:00', 'Maracanã', 1),
+(769, 0, 0, 1, '2026-01-10', 'AGENDADA', 13, 20, '16:00:00', 'Mangueirão', 1),
+(770, 0, 0, 20, '2026-05-23', 'AGENDADA', 20, 13, '16:00:00', 'Vila Belmiro', 1),
+(771, 0, 0, 1, '2026-01-10', 'AGENDADA', 5, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(772, 0, 0, 20, '2026-05-23', 'AGENDADA', 6, 5, '16:00:00', 'Arena MRV', 1),
+(773, 4, 1, 1, '2026-01-10', 'AGENDADA', 17, 16, '16:00:00', 'Barradão', 1),
+(774, 0, 0, 20, '2026-05-23', 'AGENDADA', 16, 17, '16:00:00', 'Couto Pereira', 1),
+(775, 0, 0, 1, '2026-01-10', 'AGENDADA', 11, 2, '16:00:00', 'Allianz Parque', 1),
+(776, 0, 0, 20, '2026-05-23', 'AGENDADA', 2, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(777, 0, 0, 1, '2026-01-10', 'AGENDADA', 7, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(778, 0, 0, 20, '2026-05-23', 'AGENDADA', 14, 7, '16:00:00', 'Maracanã', 1),
+(779, 0, 0, 1, '2026-01-10', 'AGENDADA', 19, 9, '16:00:00', 'Beira-Rio', 1),
+(780, 0, 0, 20, '2026-05-23', 'AGENDADA', 9, 19, '16:00:00', 'Estádio Maião', 1),
+(781, 0, 2, 2, '2026-01-17', 'AGENDADA', 8, 18, '16:00:00', 'Arena Condá', 1),
+(782, 0, 0, 21, '2026-05-30', 'AGENDADA', 18, 8, '16:00:00', 'Arena do Grêmio', 1),
+(783, 0, 0, 2, '2026-01-17', 'AGENDADA', 4, 10, '16:00:00', 'Mineirão', 1),
+(784, 0, 0, 21, '2026-05-30', 'AGENDADA', 10, 4, '16:00:00', 'Neo Química Arena', 1),
+(785, 0, 0, 2, '2026-01-17', 'AGENDADA', 12, 15, '16:00:00', 'Ligga Arena', 1),
+(786, 0, 0, 21, '2026-05-30', 'AGENDADA', 15, 12, '16:00:00', 'São Januário', 1),
+(787, 0, 0, 2, '2026-01-17', 'AGENDADA', 13, 3, '16:00:00', 'MorumBIS', 1),
+(788, 0, 0, 21, '2026-05-30', 'AGENDADA', 3, 13, '16:00:00', 'Vila Belmiro', 1),
+(789, 0, 0, 2, '2026-01-17', 'AGENDADA', 1, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(790, 0, 0, 21, '2026-05-30', 'AGENDADA', 6, 1, '16:00:00', 'Maracanã', 1),
+(791, 0, 0, 2, '2026-01-17', 'AGENDADA', 17, 20, '16:00:00', 'Mangueirão', 1),
+(792, 0, 0, 21, '2026-05-30', 'AGENDADA', 20, 17, '16:00:00', 'Couto Pereira', 1),
+(793, 0, 0, 2, '2026-01-17', 'AGENDADA', 5, 2, '16:00:00', 'Allianz Parque', 1),
+(794, 0, 0, 21, '2026-05-30', 'AGENDADA', 2, 5, '16:00:00', 'Arena MRV', 1),
+(795, 0, 0, 2, '2026-01-17', 'AGENDADA', 7, 16, '16:00:00', 'Barradão', 1),
+(796, 0, 0, 21, '2026-05-30', 'AGENDADA', 16, 7, '16:00:00', 'Maracanã', 1),
+(797, 0, 0, 2, '2026-01-17', 'AGENDADA', 11, 9, '16:00:00', 'Beira-Rio', 1),
+(798, 0, 0, 21, '2026-05-30', 'AGENDADA', 9, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(799, 0, 0, 2, '2026-01-17', 'AGENDADA', 19, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(800, 0, 0, 21, '2026-05-30', 'AGENDADA', 14, 19, '16:00:00', 'Estádio Maião', 1),
+(801, 0, 0, 3, '2026-01-24', 'AGENDADA', 4, 8, '16:00:00', 'Arena do Grêmio', 1),
+(802, 0, 0, 22, '2026-06-06', 'AGENDADA', 8, 4, '16:00:00', 'Neo Química Arena', 1),
+(803, 0, 0, 3, '2026-01-24', 'AGENDADA', 18, 15, '16:00:00', 'Ligga Arena', 1),
+(804, 0, 0, 22, '2026-06-06', 'AGENDADA', 15, 18, '16:00:00', 'Arena Condá', 1),
+(805, 0, 0, 3, '2026-01-24', 'AGENDADA', 13, 10, '16:00:00', 'Mineirão', 1),
+(806, 0, 0, 22, '2026-06-06', 'AGENDADA', 10, 13, '16:00:00', 'Vila Belmiro', 1),
+(807, 0, 0, 3, '2026-01-24', 'AGENDADA', 12, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(808, 0, 0, 22, '2026-06-06', 'AGENDADA', 6, 12, '16:00:00', 'São Januário', 1),
+(809, 0, 0, 3, '2026-01-24', 'AGENDADA', 17, 3, '16:00:00', 'MorumBIS', 1),
+(810, 0, 0, 22, '2026-06-06', 'AGENDADA', 3, 17, '16:00:00', 'Couto Pereira', 1),
+(811, 0, 0, 3, '2026-01-24', 'AGENDADA', 1, 2, '16:00:00', 'Allianz Parque', 1),
+(812, 0, 0, 22, '2026-06-06', 'AGENDADA', 2, 1, '16:00:00', 'Maracanã', 1),
+(813, 0, 0, 3, '2026-01-24', 'AGENDADA', 7, 20, '16:00:00', 'Mangueirão', 1),
+(814, 0, 0, 22, '2026-06-06', 'AGENDADA', 20, 7, '16:00:00', 'Maracanã', 1),
+(815, 0, 0, 3, '2026-01-24', 'AGENDADA', 5, 9, '16:00:00', 'Beira-Rio', 1),
+(816, 0, 0, 22, '2026-06-06', 'AGENDADA', 9, 5, '16:00:00', 'Arena MRV', 1),
+(817, 0, 0, 3, '2026-01-24', 'AGENDADA', 19, 16, '16:00:00', 'Barradão', 1),
+(818, 0, 0, 22, '2026-06-06', 'AGENDADA', 16, 19, '16:00:00', 'Estádio Maião', 1),
+(819, 0, 0, 3, '2026-01-24', 'AGENDADA', 11, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(820, 0, 0, 22, '2026-06-06', 'AGENDADA', 14, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(821, 0, 0, 4, '2026-01-31', 'AGENDADA', 8, 15, '16:00:00', 'Ligga Arena', 1),
+(822, 0, 0, 23, '2026-06-13', 'AGENDADA', 15, 8, '16:00:00', 'Arena do Grêmio', 1),
+(823, 0, 0, 4, '2026-01-31', 'AGENDADA', 13, 4, '16:00:00', 'Neo Química Arena', 1),
+(824, 0, 0, 23, '2026-06-13', 'AGENDADA', 4, 13, '16:00:00', 'Vila Belmiro', 1),
+(825, 0, 0, 4, '2026-01-31', 'AGENDADA', 18, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(826, 0, 0, 23, '2026-06-13', 'AGENDADA', 6, 18, '16:00:00', 'Arena Condá', 1),
+(827, 0, 0, 4, '2026-01-31', 'AGENDADA', 17, 10, '16:00:00', 'Mineirão', 1),
+(828, 0, 0, 23, '2026-06-13', 'AGENDADA', 10, 17, '16:00:00', 'Couto Pereira', 1),
+(829, 0, 0, 4, '2026-01-31', 'AGENDADA', 12, 2, '16:00:00', 'Allianz Parque', 1),
+(830, 0, 0, 23, '2026-06-13', 'AGENDADA', 2, 12, '16:00:00', 'São Januário', 1),
+(831, 0, 0, 4, '2026-01-31', 'AGENDADA', 7, 3, '16:00:00', 'MorumBIS', 1),
+(832, 0, 0, 23, '2026-06-13', 'AGENDADA', 3, 7, '16:00:00', 'Maracanã', 1),
+(833, 0, 0, 4, '2026-01-31', 'AGENDADA', 1, 9, '16:00:00', 'Beira-Rio', 1),
+(834, 0, 0, 23, '2026-06-13', 'AGENDADA', 9, 1, '16:00:00', 'Maracanã', 1),
+(835, 0, 0, 4, '2026-01-31', 'AGENDADA', 19, 20, '16:00:00', 'Mangueirão', 1),
+(836, 0, 0, 23, '2026-06-13', 'AGENDADA', 20, 19, '16:00:00', 'Estádio Maião', 1),
+(837, 0, 0, 4, '2026-01-31', 'AGENDADA', 5, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(838, 0, 0, 23, '2026-06-13', 'AGENDADA', 14, 5, '16:00:00', 'Arena MRV', 1),
+(839, 0, 0, 4, '2026-01-31', 'AGENDADA', 11, 16, '16:00:00', 'Barradão', 1),
+(840, 0, 0, 23, '2026-06-13', 'AGENDADA', 16, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(841, 0, 0, 5, '2026-02-07', 'AGENDADA', 13, 8, '16:00:00', 'Arena do Grêmio', 1),
+(842, 0, 0, 24, '2026-06-20', 'AGENDADA', 8, 13, '16:00:00', 'Vila Belmiro', 1),
+(843, 0, 0, 5, '2026-02-07', 'AGENDADA', 15, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(844, 0, 0, 24, '2026-06-20', 'AGENDADA', 6, 15, '16:00:00', 'Ligga Arena', 1),
+(845, 0, 0, 5, '2026-02-07', 'AGENDADA', 17, 4, '16:00:00', 'Neo Química Arena', 1),
+(846, 0, 0, 24, '2026-06-20', 'AGENDADA', 4, 17, '16:00:00', 'Couto Pereira', 1),
+(847, 0, 0, 5, '2026-02-07', 'AGENDADA', 18, 2, '16:00:00', 'Allianz Parque', 1),
+(848, 0, 0, 24, '2026-06-20', 'AGENDADA', 2, 18, '16:00:00', 'Arena Condá', 1),
+(849, 0, 0, 5, '2026-02-07', 'AGENDADA', 7, 10, '16:00:00', 'Mineirão', 1),
+(850, 0, 0, 24, '2026-06-20', 'AGENDADA', 10, 7, '16:00:00', 'Maracanã', 1),
+(851, 0, 0, 5, '2026-02-07', 'AGENDADA', 12, 9, '16:00:00', 'Beira-Rio', 1),
+(852, 0, 0, 24, '2026-06-20', 'AGENDADA', 9, 12, '16:00:00', 'São Januário', 1),
+(853, 0, 0, 5, '2026-02-07', 'AGENDADA', 19, 3, '16:00:00', 'MorumBIS', 1),
+(854, 0, 0, 24, '2026-06-20', 'AGENDADA', 3, 19, '16:00:00', 'Estádio Maião', 1),
+(855, 0, 0, 5, '2026-02-07', 'AGENDADA', 1, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(856, 0, 0, 24, '2026-06-20', 'AGENDADA', 14, 1, '16:00:00', 'Maracanã', 1),
+(857, 0, 0, 5, '2026-02-07', 'AGENDADA', 11, 20, '16:00:00', 'Mangueirão', 1),
+(858, 0, 0, 24, '2026-06-20', 'AGENDADA', 20, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(859, 0, 0, 5, '2026-02-07', 'AGENDADA', 5, 16, '16:00:00', 'Barradão', 1),
+(860, 0, 0, 24, '2026-06-20', 'AGENDADA', 16, 5, '16:00:00', 'Arena MRV', 1),
+(861, 0, 0, 6, '2026-02-14', 'AGENDADA', 8, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(862, 0, 0, 25, '2026-06-27', 'AGENDADA', 6, 8, '16:00:00', 'Arena do Grêmio', 1),
+(863, 0, 0, 6, '2026-02-14', 'AGENDADA', 17, 13, '16:00:00', 'Vila Belmiro', 1),
+(864, 0, 0, 25, '2026-06-27', 'AGENDADA', 13, 17, '16:00:00', 'Couto Pereira', 1),
+(865, 0, 0, 6, '2026-02-14', 'AGENDADA', 15, 2, '16:00:00', 'Allianz Parque', 1),
+(866, 0, 0, 25, '2026-06-27', 'AGENDADA', 2, 15, '16:00:00', 'Ligga Arena', 1),
+(867, 0, 0, 6, '2026-02-14', 'AGENDADA', 7, 4, '16:00:00', 'Neo Química Arena', 1),
+(868, 0, 0, 25, '2026-06-27', 'AGENDADA', 4, 7, '16:00:00', 'Maracanã', 1),
+(869, 0, 0, 6, '2026-02-14', 'AGENDADA', 18, 9, '16:00:00', 'Beira-Rio', 1),
+(870, 0, 0, 25, '2026-06-27', 'AGENDADA', 9, 18, '16:00:00', 'Arena Condá', 1),
+(871, 0, 0, 6, '2026-02-14', 'AGENDADA', 19, 10, '16:00:00', 'Mineirão', 1),
+(872, 0, 0, 25, '2026-06-27', 'AGENDADA', 10, 19, '16:00:00', 'Estádio Maião', 1),
+(873, 0, 0, 6, '2026-02-14', 'AGENDADA', 12, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(874, 0, 0, 25, '2026-06-27', 'AGENDADA', 14, 12, '16:00:00', 'São Januário', 1),
+(875, 0, 0, 6, '2026-02-14', 'AGENDADA', 11, 3, '16:00:00', 'MorumBIS', 1),
+(876, 0, 0, 25, '2026-06-27', 'AGENDADA', 3, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(877, 0, 0, 6, '2026-02-14', 'AGENDADA', 1, 16, '16:00:00', 'Barradão', 1),
+(878, 0, 0, 25, '2026-06-27', 'AGENDADA', 16, 1, '16:00:00', 'Maracanã', 1),
+(879, 0, 0, 6, '2026-02-14', 'AGENDADA', 5, 20, '16:00:00', 'Mangueirão', 1),
+(880, 0, 0, 25, '2026-06-27', 'AGENDADA', 20, 5, '16:00:00', 'Arena MRV', 1),
+(881, 0, 0, 7, '2026-02-21', 'AGENDADA', 17, 8, '16:00:00', 'Arena do Grêmio', 1),
+(882, 0, 0, 26, '2026-07-04', 'AGENDADA', 8, 17, '16:00:00', 'Couto Pereira', 1),
+(883, 0, 0, 7, '2026-02-21', 'AGENDADA', 6, 2, '16:00:00', 'Allianz Parque', 1),
+(884, 0, 0, 26, '2026-07-04', 'AGENDADA', 2, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(885, 0, 0, 7, '2026-02-21', 'AGENDADA', 7, 13, '16:00:00', 'Vila Belmiro', 1),
+(886, 0, 0, 26, '2026-07-04', 'AGENDADA', 13, 7, '16:00:00', 'Maracanã', 1),
+(887, 0, 0, 7, '2026-02-21', 'AGENDADA', 15, 9, '16:00:00', 'Beira-Rio', 1),
+(888, 0, 0, 26, '2026-07-04', 'AGENDADA', 9, 15, '16:00:00', 'Ligga Arena', 1),
+(889, 0, 0, 7, '2026-02-21', 'AGENDADA', 19, 4, '16:00:00', 'Neo Química Arena', 1),
+(890, 0, 0, 26, '2026-07-04', 'AGENDADA', 4, 19, '16:00:00', 'Estádio Maião', 1),
+(891, 0, 0, 7, '2026-02-21', 'AGENDADA', 18, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(892, 0, 0, 26, '2026-07-04', 'AGENDADA', 14, 18, '16:00:00', 'Arena Condá', 1),
+(893, 0, 0, 7, '2026-02-21', 'AGENDADA', 11, 10, '16:00:00', 'Mineirão', 1),
+(894, 0, 0, 26, '2026-07-04', 'AGENDADA', 10, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(895, 0, 0, 7, '2026-02-21', 'AGENDADA', 12, 16, '16:00:00', 'Barradão', 1),
+(896, 0, 0, 26, '2026-07-04', 'AGENDADA', 16, 12, '16:00:00', 'São Januário', 1),
+(897, 0, 0, 7, '2026-02-21', 'AGENDADA', 5, 3, '16:00:00', 'MorumBIS', 1),
+(898, 0, 0, 26, '2026-07-04', 'AGENDADA', 3, 5, '16:00:00', 'Arena MRV', 1),
+(899, 0, 0, 7, '2026-02-21', 'AGENDADA', 1, 20, '16:00:00', 'Mangueirão', 1),
+(900, 0, 0, 26, '2026-07-04', 'AGENDADA', 20, 1, '16:00:00', 'Maracanã', 1),
+(901, 0, 0, 8, '2026-02-28', 'AGENDADA', 8, 2, '16:00:00', 'Allianz Parque', 1),
+(902, 0, 0, 27, '2026-07-11', 'AGENDADA', 2, 8, '16:00:00', 'Arena do Grêmio', 1),
+(903, 0, 0, 8, '2026-02-28', 'AGENDADA', 7, 17, '16:00:00', 'Couto Pereira', 1),
+(904, 0, 0, 27, '2026-07-11', 'AGENDADA', 17, 7, '16:00:00', 'Maracanã', 1),
+(905, 0, 0, 8, '2026-02-28', 'AGENDADA', 6, 9, '16:00:00', 'Beira-Rio', 1),
+(906, 0, 0, 27, '2026-07-11', 'AGENDADA', 9, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(907, 0, 0, 8, '2026-02-28', 'AGENDADA', 19, 13, '16:00:00', 'Vila Belmiro', 1),
+(908, 0, 0, 27, '2026-07-11', 'AGENDADA', 13, 19, '16:00:00', 'Estádio Maião', 1),
+(909, 0, 0, 8, '2026-02-28', 'AGENDADA', 15, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(910, 0, 0, 27, '2026-07-11', 'AGENDADA', 14, 15, '16:00:00', 'Ligga Arena', 1),
+(911, 0, 0, 8, '2026-02-28', 'AGENDADA', 11, 4, '16:00:00', 'Neo Química Arena', 1),
+(912, 0, 0, 27, '2026-07-11', 'AGENDADA', 4, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(913, 0, 0, 8, '2026-02-28', 'AGENDADA', 18, 16, '16:00:00', 'Barradão', 1),
+(914, 0, 0, 27, '2026-07-11', 'AGENDADA', 16, 18, '16:00:00', 'Arena Condá', 1),
+(915, 0, 0, 8, '2026-02-28', 'AGENDADA', 5, 10, '16:00:00', 'Mineirão', 1),
+(916, 0, 0, 27, '2026-07-11', 'AGENDADA', 10, 5, '16:00:00', 'Arena MRV', 1),
+(917, 0, 0, 8, '2026-02-28', 'AGENDADA', 12, 20, '16:00:00', 'Mangueirão', 1),
+(918, 0, 0, 27, '2026-07-11', 'AGENDADA', 20, 12, '16:00:00', 'São Januário', 1),
+(919, 0, 0, 8, '2026-02-28', 'AGENDADA', 1, 3, '16:00:00', 'MorumBIS', 1),
+(920, 0, 0, 27, '2026-07-11', 'AGENDADA', 3, 1, '16:00:00', 'Maracanã', 1),
+(921, 0, 0, 9, '2026-03-07', 'AGENDADA', 7, 8, '16:00:00', 'Arena do Grêmio', 1),
+(922, 0, 0, 28, '2026-07-18', 'AGENDADA', 8, 7, '16:00:00', 'Maracanã', 1),
+(923, 0, 0, 9, '2026-03-07', 'AGENDADA', 2, 9, '16:00:00', 'Beira-Rio', 1),
+(924, 0, 0, 28, '2026-07-18', 'AGENDADA', 9, 2, '16:00:00', 'Allianz Parque', 1),
+(925, 0, 0, 9, '2026-03-07', 'AGENDADA', 19, 17, '16:00:00', 'Couto Pereira', 1),
+(926, 0, 0, 28, '2026-07-18', 'AGENDADA', 17, 19, '16:00:00', 'Estádio Maião', 1),
+(927, 0, 0, 9, '2026-03-07', 'AGENDADA', 6, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(928, 0, 0, 28, '2026-07-18', 'AGENDADA', 14, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(929, 0, 0, 9, '2026-03-07', 'AGENDADA', 11, 13, '16:00:00', 'Vila Belmiro', 1),
+(930, 0, 0, 28, '2026-07-18', 'AGENDADA', 13, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(931, 0, 0, 9, '2026-03-07', 'AGENDADA', 15, 16, '16:00:00', 'Barradão', 1),
+(932, 0, 0, 28, '2026-07-18', 'AGENDADA', 16, 15, '16:00:00', 'Ligga Arena', 1),
+(933, 0, 0, 9, '2026-03-07', 'AGENDADA', 5, 4, '16:00:00', 'Neo Química Arena', 1),
+(934, 0, 0, 28, '2026-07-18', 'AGENDADA', 4, 5, '16:00:00', 'Arena MRV', 1),
+(935, 0, 0, 9, '2026-03-07', 'AGENDADA', 18, 20, '16:00:00', 'Mangueirão', 1),
+(936, 0, 0, 28, '2026-07-18', 'AGENDADA', 20, 18, '16:00:00', 'Arena Condá', 1),
+(937, 0, 0, 9, '2026-03-07', 'AGENDADA', 1, 10, '16:00:00', 'Mineirão', 1),
+(938, 0, 0, 28, '2026-07-18', 'AGENDADA', 10, 1, '16:00:00', 'Maracanã', 1),
+(939, 0, 0, 9, '2026-03-07', 'AGENDADA', 12, 3, '16:00:00', 'MorumBIS', 1),
+(940, 0, 0, 28, '2026-07-18', 'AGENDADA', 3, 12, '16:00:00', 'São Januário', 1),
+(941, 0, 0, 10, '2026-03-14', 'AGENDADA', 8, 9, '16:00:00', 'Beira-Rio', 1),
+(942, 0, 0, 29, '2026-07-25', 'AGENDADA', 9, 8, '16:00:00', 'Arena do Grêmio', 1),
+(943, 0, 0, 10, '2026-03-14', 'AGENDADA', 19, 7, '16:00:00', 'Maracanã', 1),
+(944, 0, 0, 29, '2026-07-25', 'AGENDADA', 7, 19, '16:00:00', 'Estádio Maião', 1),
+(945, 0, 0, 10, '2026-03-14', 'AGENDADA', 2, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(946, 0, 0, 29, '2026-07-25', 'AGENDADA', 14, 2, '16:00:00', 'Allianz Parque', 1),
+(947, 0, 0, 10, '2026-03-14', 'AGENDADA', 11, 17, '16:00:00', 'Couto Pereira', 1),
+(948, 0, 0, 29, '2026-07-25', 'AGENDADA', 17, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(949, 0, 0, 10, '2026-03-14', 'AGENDADA', 6, 16, '16:00:00', 'Barradão', 1),
+(950, 0, 0, 29, '2026-07-25', 'AGENDADA', 16, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(951, 0, 0, 10, '2026-03-14', 'AGENDADA', 5, 13, '16:00:00', 'Vila Belmiro', 1),
+(952, 0, 0, 29, '2026-07-25', 'AGENDADA', 13, 5, '16:00:00', 'Arena MRV', 1),
+(953, 0, 0, 10, '2026-03-14', 'AGENDADA', 15, 20, '16:00:00', 'Mangueirão', 1),
+(954, 0, 0, 29, '2026-07-25', 'AGENDADA', 20, 15, '16:00:00', 'Ligga Arena', 1),
+(955, 0, 0, 10, '2026-03-14', 'AGENDADA', 1, 4, '16:00:00', 'Neo Química Arena', 1),
+(956, 0, 0, 29, '2026-07-25', 'AGENDADA', 4, 1, '16:00:00', 'Maracanã', 1),
+(957, 0, 0, 10, '2026-03-14', 'AGENDADA', 18, 3, '16:00:00', 'MorumBIS', 1),
+(958, 0, 0, 29, '2026-07-25', 'AGENDADA', 3, 18, '16:00:00', 'Arena Condá', 1),
+(959, 0, 0, 10, '2026-03-14', 'AGENDADA', 12, 10, '16:00:00', 'Mineirão', 1),
+(960, 0, 0, 29, '2026-07-25', 'AGENDADA', 10, 12, '16:00:00', 'São Januário', 1),
+(961, 0, 0, 11, '2026-03-21', 'AGENDADA', 19, 8, '16:00:00', 'Arena do Grêmio', 1),
+(962, 0, 0, 30, '2026-08-01', 'AGENDADA', 8, 19, '16:00:00', 'Estádio Maião', 1),
+(963, 0, 0, 11, '2026-03-21', 'AGENDADA', 9, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(964, 0, 0, 30, '2026-08-01', 'AGENDADA', 14, 9, '16:00:00', 'Beira-Rio', 1),
+(965, 0, 0, 11, '2026-03-21', 'AGENDADA', 11, 7, '16:00:00', 'Maracanã', 1),
+(966, 0, 0, 30, '2026-08-01', 'AGENDADA', 7, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(967, 0, 0, 11, '2026-03-21', 'AGENDADA', 2, 16, '16:00:00', 'Barradão', 1),
+(968, 0, 0, 30, '2026-08-01', 'AGENDADA', 16, 2, '16:00:00', 'Allianz Parque', 1),
+(969, 0, 0, 11, '2026-03-21', 'AGENDADA', 5, 17, '16:00:00', 'Couto Pereira', 1),
+(970, 0, 0, 30, '2026-08-01', 'AGENDADA', 17, 5, '16:00:00', 'Arena MRV', 1),
+(971, 0, 0, 11, '2026-03-21', 'AGENDADA', 6, 20, '16:00:00', 'Mangueirão', 1),
+(972, 0, 0, 30, '2026-08-01', 'AGENDADA', 20, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(973, 0, 0, 11, '2026-03-21', 'AGENDADA', 1, 13, '16:00:00', 'Vila Belmiro', 1),
+(974, 0, 0, 30, '2026-08-01', 'AGENDADA', 13, 1, '16:00:00', 'Maracanã', 1),
+(975, 0, 0, 11, '2026-03-21', 'AGENDADA', 15, 3, '16:00:00', 'MorumBIS', 1),
+(976, 0, 0, 30, '2026-08-01', 'AGENDADA', 3, 15, '16:00:00', 'Ligga Arena', 1),
+(977, 0, 0, 11, '2026-03-21', 'AGENDADA', 12, 4, '16:00:00', 'Neo Química Arena', 1),
+(978, 0, 0, 30, '2026-08-01', 'AGENDADA', 4, 12, '16:00:00', 'São Januário', 1),
+(979, 0, 0, 11, '2026-03-21', 'AGENDADA', 18, 10, '16:00:00', 'Mineirão', 1),
+(980, 0, 0, 30, '2026-08-01', 'AGENDADA', 10, 18, '16:00:00', 'Arena Condá', 1),
+(981, 0, 0, 12, '2026-03-28', 'AGENDADA', 8, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(982, 0, 0, 31, '2026-08-08', 'AGENDADA', 14, 8, '16:00:00', 'Arena do Grêmio', 1),
+(983, 0, 0, 12, '2026-03-28', 'AGENDADA', 11, 19, '16:00:00', 'Estádio Maião', 1),
+(984, 0, 0, 31, '2026-08-08', 'AGENDADA', 19, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(985, 0, 0, 12, '2026-03-28', 'AGENDADA', 9, 16, '16:00:00', 'Barradão', 1),
+(986, 0, 0, 31, '2026-08-08', 'AGENDADA', 16, 9, '16:00:00', 'Beira-Rio', 1),
+(987, 0, 0, 12, '2026-03-28', 'AGENDADA', 5, 7, '16:00:00', 'Maracanã', 1),
+(988, 0, 0, 31, '2026-08-08', 'AGENDADA', 7, 5, '16:00:00', 'Arena MRV', 1),
+(989, 0, 0, 12, '2026-03-28', 'AGENDADA', 2, 20, '16:00:00', 'Mangueirão', 1),
+(990, 0, 0, 31, '2026-08-08', 'AGENDADA', 20, 2, '16:00:00', 'Allianz Parque', 1),
+(991, 0, 0, 12, '2026-03-28', 'AGENDADA', 1, 17, '16:00:00', 'Couto Pereira', 1),
+(992, 0, 0, 31, '2026-08-08', 'AGENDADA', 17, 1, '16:00:00', 'Maracanã', 1),
+(993, 0, 0, 12, '2026-03-28', 'AGENDADA', 6, 3, '16:00:00', 'MorumBIS', 1),
+(994, 0, 0, 31, '2026-08-08', 'AGENDADA', 3, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(995, 0, 0, 12, '2026-03-28', 'AGENDADA', 12, 13, '16:00:00', 'Vila Belmiro', 1),
+(996, 0, 0, 31, '2026-08-08', 'AGENDADA', 13, 12, '16:00:00', 'São Januário', 1),
+(997, 0, 0, 12, '2026-03-28', 'AGENDADA', 15, 10, '16:00:00', 'Mineirão', 1),
+(998, 0, 0, 31, '2026-08-08', 'AGENDADA', 10, 15, '16:00:00', 'Ligga Arena', 1),
+(999, 0, 0, 12, '2026-03-28', 'AGENDADA', 18, 4, '16:00:00', 'Neo Química Arena', 1),
+(1000, 0, 0, 31, '2026-08-08', 'AGENDADA', 4, 18, '16:00:00', 'Arena Condá', 1),
+(1001, 0, 0, 13, '2026-04-04', 'AGENDADA', 11, 8, '16:00:00', 'Arena do Grêmio', 1),
+(1002, 0, 0, 32, '2026-08-15', 'AGENDADA', 8, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(1003, 0, 0, 13, '2026-04-04', 'AGENDADA', 14, 16, '16:00:00', 'Barradão', 1),
+(1004, 0, 0, 32, '2026-08-15', 'AGENDADA', 16, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(1005, 0, 0, 13, '2026-04-04', 'AGENDADA', 5, 19, '16:00:00', 'Estádio Maião', 1),
+(1006, 0, 0, 32, '2026-08-15', 'AGENDADA', 19, 5, '16:00:00', 'Arena MRV', 1),
+(1007, 0, 0, 13, '2026-04-04', 'AGENDADA', 9, 20, '16:00:00', 'Mangueirão', 1),
+(1008, 0, 0, 32, '2026-08-15', 'AGENDADA', 20, 9, '16:00:00', 'Beira-Rio', 1),
+(1009, 0, 0, 13, '2026-04-04', 'AGENDADA', 1, 7, '16:00:00', 'Maracanã', 1),
+(1010, 0, 0, 32, '2026-08-15', 'AGENDADA', 7, 1, '16:00:00', 'Maracanã', 1),
+(1011, 0, 0, 13, '2026-04-04', 'AGENDADA', 2, 3, '16:00:00', 'MorumBIS', 1),
+(1012, 0, 0, 32, '2026-08-15', 'AGENDADA', 3, 2, '16:00:00', 'Allianz Parque', 1),
+(1013, 0, 0, 13, '2026-04-04', 'AGENDADA', 12, 17, '16:00:00', 'Couto Pereira', 1),
+(1014, 0, 0, 32, '2026-08-15', 'AGENDADA', 17, 12, '16:00:00', 'São Januário', 1),
+(1015, 0, 0, 13, '2026-04-04', 'AGENDADA', 6, 10, '16:00:00', 'Mineirão', 1),
+(1016, 0, 0, 32, '2026-08-15', 'AGENDADA', 10, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(1017, 0, 0, 13, '2026-04-04', 'AGENDADA', 18, 13, '16:00:00', 'Vila Belmiro', 1),
+(1018, 0, 0, 32, '2026-08-15', 'AGENDADA', 13, 18, '16:00:00', 'Arena Condá', 1),
+(1019, 0, 0, 13, '2026-04-04', 'AGENDADA', 15, 4, '16:00:00', 'Neo Química Arena', 1),
+(1020, 0, 0, 32, '2026-08-15', 'AGENDADA', 4, 15, '16:00:00', 'Ligga Arena', 1),
+(1021, 0, 0, 14, '2026-04-11', 'AGENDADA', 8, 16, '16:00:00', 'Barradão', 1),
+(1022, 0, 0, 33, '2026-08-22', 'AGENDADA', 16, 8, '16:00:00', 'Arena do Grêmio', 1),
+(1023, 0, 0, 14, '2026-04-11', 'AGENDADA', 5, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(1024, 0, 0, 33, '2026-08-22', 'AGENDADA', 11, 5, '16:00:00', 'Arena MRV', 1),
+(1025, 0, 0, 14, '2026-04-11', 'AGENDADA', 14, 20, '16:00:00', 'Mangueirão', 1),
+(1026, 0, 0, 33, '2026-08-22', 'AGENDADA', 20, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(1027, 0, 0, 14, '2026-04-11', 'AGENDADA', 1, 19, '16:00:00', 'Estádio Maião', 1),
+(1028, 0, 0, 33, '2026-08-22', 'AGENDADA', 19, 1, '16:00:00', 'Maracanã', 1),
+(1029, 0, 0, 14, '2026-04-11', 'AGENDADA', 9, 3, '16:00:00', 'MorumBIS', 1),
+(1030, 0, 0, 33, '2026-08-22', 'AGENDADA', 3, 9, '16:00:00', 'Beira-Rio', 1),
+(1031, 0, 0, 14, '2026-04-11', 'AGENDADA', 12, 7, '16:00:00', 'Maracanã', 1),
+(1032, 0, 0, 33, '2026-08-22', 'AGENDADA', 7, 12, '16:00:00', 'São Januário', 1),
+(1033, 0, 0, 14, '2026-04-11', 'AGENDADA', 2, 10, '16:00:00', 'Mineirão', 1),
+(1034, 0, 0, 33, '2026-08-22', 'AGENDADA', 10, 2, '16:00:00', 'Allianz Parque', 1),
+(1035, 0, 0, 14, '2026-04-11', 'AGENDADA', 18, 17, '16:00:00', 'Couto Pereira', 1),
+(1036, 0, 0, 33, '2026-08-22', 'AGENDADA', 17, 18, '16:00:00', 'Arena Condá', 1),
+(1037, 0, 0, 14, '2026-04-11', 'AGENDADA', 6, 4, '16:00:00', 'Neo Química Arena', 1),
+(1038, 0, 0, 33, '2026-08-22', 'AGENDADA', 4, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(1039, 0, 0, 14, '2026-04-11', 'AGENDADA', 15, 13, '16:00:00', 'Vila Belmiro', 1),
+(1040, 0, 0, 33, '2026-08-22', 'AGENDADA', 13, 15, '16:00:00', 'Ligga Arena', 1),
+(1041, 0, 0, 15, '2026-04-18', 'AGENDADA', 5, 8, '16:00:00', 'Arena do Grêmio', 1),
+(1042, 0, 0, 34, '2026-08-29', 'AGENDADA', 8, 5, '16:00:00', 'Arena MRV', 1),
+(1043, 0, 0, 15, '2026-04-18', 'AGENDADA', 16, 20, '16:00:00', 'Mangueirão', 1),
+(1044, 0, 0, 34, '2026-08-29', 'AGENDADA', 20, 16, '16:00:00', 'Barradão', 1),
+(1045, 0, 0, 15, '2026-04-18', 'AGENDADA', 1, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(1046, 0, 0, 34, '2026-08-29', 'AGENDADA', 11, 1, '16:00:00', 'Maracanã', 1),
+(1047, 0, 0, 15, '2026-04-18', 'AGENDADA', 14, 3, '16:00:00', 'MorumBIS', 1),
+(1048, 0, 0, 34, '2026-08-29', 'AGENDADA', 3, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(1049, 0, 0, 15, '2026-04-18', 'AGENDADA', 12, 19, '16:00:00', 'Estádio Maião', 1),
+(1050, 0, 0, 34, '2026-08-29', 'AGENDADA', 19, 12, '16:00:00', 'São Januário', 1),
+(1051, 0, 0, 15, '2026-04-18', 'AGENDADA', 9, 10, '16:00:00', 'Mineirão', 1),
+(1052, 0, 0, 34, '2026-08-29', 'AGENDADA', 10, 9, '16:00:00', 'Beira-Rio', 1),
+(1053, 0, 0, 15, '2026-04-18', 'AGENDADA', 18, 7, '16:00:00', 'Maracanã', 1),
+(1054, 0, 0, 34, '2026-08-29', 'AGENDADA', 7, 18, '16:00:00', 'Arena Condá', 1),
+(1055, 0, 0, 15, '2026-04-18', 'AGENDADA', 2, 4, '16:00:00', 'Neo Química Arena', 1),
+(1056, 0, 0, 34, '2026-08-29', 'AGENDADA', 4, 2, '16:00:00', 'Allianz Parque', 1),
+(1057, 0, 0, 15, '2026-04-18', 'AGENDADA', 15, 17, '16:00:00', 'Couto Pereira', 1),
+(1058, 0, 0, 34, '2026-08-29', 'AGENDADA', 17, 15, '16:00:00', 'Ligga Arena', 1),
+(1059, 0, 0, 15, '2026-04-18', 'AGENDADA', 6, 13, '16:00:00', 'Vila Belmiro', 1),
+(1060, 0, 0, 34, '2026-08-29', 'AGENDADA', 13, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(1061, 0, 0, 16, '2026-04-25', 'AGENDADA', 8, 20, '16:00:00', 'Mangueirão', 1),
+(1062, 0, 0, 35, '2026-09-05', 'AGENDADA', 20, 8, '16:00:00', 'Arena do Grêmio', 1),
+(1063, 0, 0, 16, '2026-04-25', 'AGENDADA', 1, 5, '16:00:00', 'Arena MRV', 1),
+(1064, 0, 0, 35, '2026-09-05', 'AGENDADA', 5, 1, '16:00:00', 'Maracanã', 1),
+(1065, 0, 0, 16, '2026-04-25', 'AGENDADA', 16, 3, '16:00:00', 'MorumBIS', 1),
+(1066, 0, 0, 35, '2026-09-05', 'AGENDADA', 3, 16, '16:00:00', 'Barradão', 1),
+(1067, 0, 0, 16, '2026-04-25', 'AGENDADA', 12, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(1068, 0, 0, 35, '2026-09-05', 'AGENDADA', 11, 12, '16:00:00', 'São Januário', 1),
+(1069, 0, 0, 16, '2026-04-25', 'AGENDADA', 14, 10, '16:00:00', 'Mineirão', 1),
+(1070, 0, 0, 35, '2026-09-05', 'AGENDADA', 10, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(1071, 0, 0, 16, '2026-04-25', 'AGENDADA', 18, 19, '16:00:00', 'Estádio Maião', 1),
+(1072, 0, 0, 35, '2026-09-05', 'AGENDADA', 19, 18, '16:00:00', 'Arena Condá', 1),
+(1073, 0, 0, 16, '2026-04-25', 'AGENDADA', 9, 4, '16:00:00', 'Neo Química Arena', 1),
+(1074, 0, 0, 35, '2026-09-05', 'AGENDADA', 4, 9, '16:00:00', 'Beira-Rio', 1),
+(1075, 0, 0, 16, '2026-04-25', 'AGENDADA', 15, 7, '16:00:00', 'Maracanã', 1),
+(1076, 0, 0, 35, '2026-09-05', 'AGENDADA', 7, 15, '16:00:00', 'Ligga Arena', 1),
+(1077, 0, 0, 16, '2026-04-25', 'AGENDADA', 2, 13, '16:00:00', 'Vila Belmiro', 1),
+(1078, 0, 0, 35, '2026-09-05', 'AGENDADA', 13, 2, '16:00:00', 'Allianz Parque', 1),
+(1079, 0, 0, 16, '2026-04-25', 'AGENDADA', 6, 17, '16:00:00', 'Couto Pereira', 1),
+(1080, 0, 0, 35, '2026-09-05', 'AGENDADA', 17, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(1081, 0, 0, 17, '2026-05-02', 'AGENDADA', 1, 8, '16:00:00', 'Arena do Grêmio', 1),
+(1082, 0, 0, 36, '2026-09-12', 'AGENDADA', 8, 1, '16:00:00', 'Maracanã', 1),
+(1083, 0, 0, 17, '2026-05-02', 'AGENDADA', 20, 3, '16:00:00', 'MorumBIS', 1),
+(1084, 0, 0, 36, '2026-09-12', 'AGENDADA', 3, 20, '16:00:00', 'Mangueirão', 1),
+(1085, 0, 0, 17, '2026-05-02', 'AGENDADA', 12, 5, '16:00:00', 'Arena MRV', 1),
+(1086, 0, 0, 36, '2026-09-12', 'AGENDADA', 5, 12, '16:00:00', 'São Januário', 1),
+(1087, 0, 0, 17, '2026-05-02', 'AGENDADA', 16, 10, '16:00:00', 'Mineirão', 1),
+(1088, 0, 0, 36, '2026-09-12', 'AGENDADA', 10, 16, '16:00:00', 'Barradão', 1),
+(1089, 0, 0, 17, '2026-05-02', 'AGENDADA', 18, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(1090, 0, 0, 36, '2026-09-12', 'AGENDADA', 11, 18, '16:00:00', 'Arena Condá', 1),
+(1091, 0, 0, 17, '2026-05-02', 'AGENDADA', 14, 4, '16:00:00', 'Neo Química Arena', 1),
+(1092, 0, 0, 36, '2026-09-12', 'AGENDADA', 4, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(1093, 0, 0, 17, '2026-05-02', 'AGENDADA', 15, 19, '16:00:00', 'Estádio Maião', 1),
+(1094, 0, 0, 36, '2026-09-12', 'AGENDADA', 19, 15, '16:00:00', 'Ligga Arena', 1),
+(1095, 0, 0, 17, '2026-05-02', 'AGENDADA', 9, 13, '16:00:00', 'Vila Belmiro', 1),
+(1096, 0, 0, 36, '2026-09-12', 'AGENDADA', 13, 9, '16:00:00', 'Beira-Rio', 1),
+(1097, 0, 0, 17, '2026-05-02', 'AGENDADA', 6, 7, '16:00:00', 'Maracanã', 1),
+(1098, 0, 0, 36, '2026-09-12', 'AGENDADA', 7, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(1099, 0, 0, 17, '2026-05-02', 'AGENDADA', 2, 17, '16:00:00', 'Couto Pereira', 1),
+(1100, 0, 0, 36, '2026-09-12', 'AGENDADA', 17, 2, '16:00:00', 'Allianz Parque', 1),
+(1101, 0, 0, 18, '2026-05-09', 'AGENDADA', 8, 3, '16:00:00', 'MorumBIS', 1),
+(1102, 0, 0, 37, '2026-09-19', 'AGENDADA', 3, 8, '16:00:00', 'Arena do Grêmio', 1),
+(1103, 0, 0, 18, '2026-05-09', 'AGENDADA', 12, 1, '16:00:00', 'Maracanã', 1),
+(1104, 0, 0, 37, '2026-09-19', 'AGENDADA', 1, 12, '16:00:00', 'São Januário', 1),
+(1105, 0, 0, 18, '2026-05-09', 'AGENDADA', 20, 10, '16:00:00', 'Mineirão', 1),
+(1106, 0, 0, 37, '2026-09-19', 'AGENDADA', 10, 20, '16:00:00', 'Mangueirão', 1),
+(1107, 0, 0, 18, '2026-05-09', 'AGENDADA', 18, 5, '16:00:00', 'Arena MRV', 1),
+(1108, 0, 0, 37, '2026-09-19', 'AGENDADA', 5, 18, '16:00:00', 'Arena Condá', 1),
+(1109, 0, 0, 18, '2026-05-09', 'AGENDADA', 16, 4, '16:00:00', 'Neo Química Arena', 1),
+(1110, 0, 0, 37, '2026-09-19', 'AGENDADA', 4, 16, '16:00:00', 'Barradão', 1),
+(1111, 0, 0, 18, '2026-05-09', 'AGENDADA', 15, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(1112, 0, 0, 37, '2026-09-19', 'AGENDADA', 11, 15, '16:00:00', 'Ligga Arena', 1),
+(1113, 0, 0, 18, '2026-05-09', 'AGENDADA', 14, 13, '16:00:00', 'Vila Belmiro', 1),
+(1114, 0, 0, 37, '2026-09-19', 'AGENDADA', 13, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(1115, 0, 0, 18, '2026-05-09', 'AGENDADA', 6, 19, '16:00:00', 'Estádio Maião', 1),
+(1116, 0, 0, 37, '2026-09-19', 'AGENDADA', 19, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(1117, 0, 0, 18, '2026-05-09', 'AGENDADA', 9, 17, '16:00:00', 'Couto Pereira', 1),
+(1118, 0, 0, 37, '2026-09-19', 'AGENDADA', 17, 9, '16:00:00', 'Beira-Rio', 1),
+(1119, 0, 0, 18, '2026-05-09', 'AGENDADA', 2, 7, '16:00:00', 'Maracanã', 1),
+(1120, 0, 0, 37, '2026-09-19', 'AGENDADA', 7, 2, '16:00:00', 'Allianz Parque', 1),
+(1121, 0, 0, 19, '2026-05-16', 'AGENDADA', 12, 8, '16:00:00', 'Arena do Grêmio', 1),
+(1122, 0, 0, 38, '2026-09-26', 'AGENDADA', 8, 12, '16:00:00', 'São Januário', 1),
+(1123, 0, 0, 19, '2026-05-16', 'AGENDADA', 3, 10, '16:00:00', 'Mineirão', 1),
+(1124, 0, 0, 38, '2026-09-26', 'AGENDADA', 10, 3, '16:00:00', 'MorumBIS', 1),
+(1125, 0, 0, 19, '2026-05-16', 'AGENDADA', 18, 1, '16:00:00', 'Maracanã', 1),
+(1126, 0, 0, 38, '2026-09-26', 'AGENDADA', 1, 18, '16:00:00', 'Arena Condá', 1),
+(1127, 0, 0, 19, '2026-05-16', 'AGENDADA', 20, 4, '16:00:00', 'Neo Química Arena', 1),
+(1128, 0, 0, 38, '2026-09-26', 'AGENDADA', 4, 20, '16:00:00', 'Mangueirão', 1),
+(1129, 0, 0, 19, '2026-05-16', 'AGENDADA', 15, 5, '16:00:00', 'Arena MRV', 1),
+(1130, 0, 0, 38, '2026-09-26', 'AGENDADA', 5, 15, '16:00:00', 'Ligga Arena', 1),
+(1131, 0, 0, 19, '2026-05-16', 'AGENDADA', 16, 13, '16:00:00', 'Vila Belmiro', 1),
+(1132, 0, 0, 38, '2026-09-26', 'AGENDADA', 13, 16, '16:00:00', 'Barradão', 1),
+(1133, 0, 0, 19, '2026-05-16', 'AGENDADA', 6, 11, '16:00:00', 'Arena Fonte Nova', 1),
+(1134, 0, 0, 38, '2026-09-26', 'AGENDADA', 11, 6, '16:00:00', 'Estádio Nilton Santos', 1),
+(1135, 0, 0, 19, '2026-05-16', 'AGENDADA', 14, 17, '16:00:00', 'Couto Pereira', 1),
+(1136, 0, 0, 38, '2026-09-26', 'AGENDADA', 17, 14, '16:00:00', 'Nabi Abi Chedid', 1),
+(1137, 0, 0, 19, '2026-05-16', 'AGENDADA', 2, 19, '16:00:00', 'Estádio Maião', 1),
+(1138, 0, 0, 38, '2026-09-26', 'AGENDADA', 19, 2, '16:00:00', 'Allianz Parque', 1),
+(1139, 0, 0, 19, '2026-05-16', 'AGENDADA', 9, 7, '16:00:00', 'Maracanã', 1),
+(1140, 0, 0, 38, '2026-09-26', 'AGENDADA', 7, 9, '16:00:00', 'Beira-Rio', 1);
 
 -- --------------------------------------------------------
 
@@ -1944,7 +1905,6 @@ CREATE TABLE `patrocinador` (
 INSERT INTO `patrocinador` (`idPatrocinador`, `nomePatrocinador`, `descricao`, `duracao`, `valorMensal`, `multaRescisao`, `foto`) VALUES
 (1, 'Betano', 'Uma das maiores casas de apostas esportivas do país, referência em odds competitivas e experiência premium para quem vive o esporte. Presença forte nas principais competições, camisas e transmissões, com uma marca que combina ousadia, tecnologia e paixão pelo jogo.', 12, 800000, 15000000, 'img/patrocinadores/Betano.png'),
 (2, 'Caixa Econômica', 'Instituição financeira pública com tradição de décadas e confiança construída em todo o território nacional. Parceira histórica do futebol brasileiro, entrega estabilidade, credibilidade e uma imagem sólida que valoriza qualquer clube que estampe sua marca.', 36, 1200000, 25000000, 'img/patrocinadores/caixa-economico.png'),
-(3, 'Nike', 'Ícone mundial do esporte, sinônimo de inovação, performance e estilo dentro e fora de campo. Seus uniformes viram objeto de desejo da torcida e sua marca eleva o prestígio internacional de qualquer clube, com tecnologia de ponta em cada detalhe do material esportivo.', 24, 950000, 20000000, 'img/patrocinadores/nike.png'),
 (4, 'Brahma', 'Cervejaria das mais tradicionais do Brasil, que respira o clima de arquibancada, torcida apaixonada e resenha pós-jogo. Marca onipresente na cultura popular, com campanhas marcantes e um alcance gigantesco que conecta o clube a milhões de torcedores.', 12, 600000, 10000000, 'img/patrocinadores/brahma.png'),
 (5, 'Havan', 'Rede varejista com lojas espalhadas pelo país e uma marca queridinha do consumidor brasileiro. Investe pesado em marketing, promoções e presença no esporte, levando o nome do clube para dentro de milhões de lares em todas as regiões.', 18, 500000, 8000000, 'img/patrocinadores/havan.png'),
 (6, 'Superbet', 'Casa de apostas moderna e agressiva, que cresce em ritmo acelerado e aposta alto em visibilidade. Contratos generosos, campanhas ousadas e uma marca jovem e dinâmica que injeta dinheiro e energia nova nos clubes parceiros.', 12, 700000, 12000000, 'img/patrocinadores/superbet.png'),
@@ -1975,7 +1935,6 @@ INSERT INTO `patrocinador_exigencia` (`exigencia_idExigencia`, `patrocinador_idP
 (1, 10),
 (2, 2),
 (2, 8),
-(3, 3),
 (3, 7),
 (4, 2),
 (4, 8),
@@ -1989,8 +1948,50 @@ INSERT INTO `patrocinador_exigencia` (`exigencia_idExigencia`, `patrocinador_idP
 (8, 8),
 (9, 2),
 (9, 5),
-(9, 7),
-(10, 3);
+(9, 7);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `perguntas_reporter`
+--
+
+CREATE TABLE `perguntas_reporter` (
+  `IdPergunta` int(11) NOT NULL,
+  `tituloPergunta` varchar(255) NOT NULL,
+  `resposta1` varchar(255) NOT NULL,
+  `resposta2` varchar(255) NOT NULL,
+  `resposta3` varchar(255) NOT NULL,
+  `tipoResultado` enum('VITORIA','DERROTA','EMPATE','QUALQUER') NOT NULL DEFAULT 'QUALQUER'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `perguntas_reporter`
+--
+
+INSERT INTO `perguntas_reporter` (`IdPergunta`, `tituloPergunta`, `resposta1`, `resposta2`, `resposta3`, `tipoResultado`) VALUES
+(1, 'Vocês saíram com os três pontos. O que foi decisivo para a vitória?', 'O grupo todo se entregou, e o mérito é dos jogadores que seguiram o plano.', 'Fomos eficientes nos momentos certos e soubemos aproveitar as chances.', 'Nossa superioridade apareceu, o adversário não teve o que fazer.', 'VITORIA'),
+(2, 'A vitória embala o time. Dá para sonhar mais alto nesta temporada?', 'Um jogo de cada vez, a humildade é o que nos trouxe até aqui.', 'É um bom resultado, mas o campeonato é longo e precisa de regularidade.', 'Dá para sonhar sim, e quem duvidar vai ter que nos engolir.', 'VITORIA'),
+(3, 'Alguns críticos duvidavam do seu trabalho. Esse resultado é uma resposta?', 'Não respondo a ninguém, só trabalho para ajudar o clube.', 'Crítica faz parte, o que importa é o resultado dentro de campo.', 'Esse resultado fala por mim, quem criticava agora fica quieto.', 'VITORIA'),
+(4, 'A torcida fez festa no estádio. Qual a mensagem para ela depois da vitória?', 'Obrigado de coração, sem ela essa vitória não aconteceria.', 'A torcida merece essa alegria, vamos tentar repetir na próxima.', 'Podem se acostumar, vamos dar muitas alegrias assim.', 'VITORIA'),
+(5, 'Depois da vitória, a diretoria deve estar satisfeita. Você espera reforços?', 'Estou satisfeito com o elenco e confio no trabalho da diretoria.', 'Conversamos sobre isso internamente, sem pressa e com planejamento.', 'Time que ganha merece reforço, vou pedir contratações de peso.', 'VITORIA'),
+(6, 'O adversário reclamou da arbitragem após a derrota. O que você acha?', 'Respeito a opinião deles, mas prefiro falar do nosso time.', 'Todo jogo tem lances duvidosos, isso faz parte do futebol.', 'Quem perde sempre arruma desculpa, a vitória foi justa.', 'VITORIA'),
+(7, 'A derrota foi dura. O que deu errado em campo?', 'Assumo a responsabilidade, falhamos e precisamos melhorar muito.', 'Cometemos erros que custaram caro, vamos analisar o jogo com calma.', 'Foi um dia ruim, mas o time é bom e vai dar a volta por cima.', 'DERROTA'),
+(8, 'A torcida demonstrou insatisfação. Você entende a cobrança?', 'Entendo totalmente, o torcedor tem razão de estar chateado.', 'A cobrança faz parte, o que podemos fazer é trabalhar para reagir.', 'Torcida boa apoia nos momentos difíceis, e confio que vai apoiar.', 'DERROTA'),
+(9, 'Há rumores de que seu cargo está em risco. Como você lida com isso?', 'Faço o meu melhor todos os dias e entendo que o cargo depende dos resultados.', 'Não pensei nisso, estou focado no trabalho e na recuperação do time.', 'Meu trabalho é sólido e a diretoria sabe disso, não tenho preocupação.', 'DERROTA'),
+(10, 'O time mostrou fragilidade defensiva. Pretende mudar o esquema tático?', 'Vamos estudar o que for preciso e corrigir o que estiver errado.', 'Faremos ajustes pontuais sem perder a nossa identidade de jogo.', 'Não vou mudar o que funciona por causa de um tropeço.', 'DERROTA'),
+(11, 'Os jogadores pareceram desanimados. Como recuperar o grupo para o próximo jogo?', 'Vou conversar individualmente com cada um e ajudar a levantar a moral.', 'Vamos trabalhar a parte mental durante a semana e virar a chave.', 'Quem não aguenta a pressão vai ficar de fora, aqui só joga quem tem raça.', 'DERROTA'),
+(12, 'A arbitragem influenciou o resultado?', 'Não vou culpar a arbitragem, o erro maior foi nosso.', 'Teve lances duvidosos, mas não foi isso que decidiu o jogo.', 'Fomos prejudicados e vou cobrar explicações das autoridades.', 'DERROTA'),
+(13, 'O jogo terminou empatado. Você considera um bom ou um mau resultado?', 'Um ponto fora de casa sempre tem valor, mas queríamos mais.', 'Foi um resultado justo para o que os dois times apresentaram.', 'Dois pontos que ficaram pelo caminho, merecíamos a vitória.', 'EMPATE'),
+(14, 'O time teve a chance de vencer, mas não conseguiu. O que faltou?', 'Faltou um pouco de sorte e capricho na hora de finalizar.', 'Criamos chances mas não fomos eficientes, vamos trabalhar isso.', 'Faltou só a bola entrar, o time jogou para ganhar.', 'EMPATE'),
+(15, 'A torcida esperava a vitória. Como avalia a reação dela ao final do jogo?', 'Entendo a frustração e vamos trabalhar para dar mais alegrias.', 'A torcida cobra e tem razão, mas o ponto pode ser importante no final.', 'A torcida pode ficar tranquila, o time está evoluindo e a vitória vem.', 'EMPATE'),
+(16, 'Dá para dizer que o empate foi melhor para o adversário?', 'O adversário foi competente e saiu satisfeito, faz parte.', 'Foi um jogo equilibrado, com méritos dos dois lados.', 'Não, eles que sobreviveram, o domínio foi nosso.', 'EMPATE'),
+(17, 'Com esse empate, a briga pelo título fica mais complicada?', 'Ainda não penso nisso, vou me concentrar no próximo jogo.', 'É cedo para falar de título, o campeonato é muito longo.', 'Seguimos na briga e todo mundo vai ter que nos respeitar até o fim.', 'EMPATE'),
+(18, 'Como a diretoria está avaliando o seu trabalho?', 'Tenho uma ótima relação com a diretoria e sou grato pela confiança.', 'Cada um faz o seu papel, e o foco é o resultado do clube.', 'Quem entrega resultado não precisa se preocupar com cobrança.', 'QUALQUER'),
+(19, 'Existe muita pressão por resultados neste clube. Como lida com isso?', 'Pressão faz parte e procuro trabalhar com humildade e dedicação.', 'Mantenho o foco no trabalho e deixo a pressão do lado de fora.', 'Pressão é para quem tem medo, eu e meu time estamos tranquilos.', 'QUALQUER'),
+(20, 'Algum jogador se destacou hoje?', 'O grupo todo está de parabéns, foi um trabalho coletivo.', 'Alguns foram bem, mas vamos avaliar o desempenho de todos.', 'Tenho craques no elenco e hoje eles mostraram por quê.', 'QUALQUER'),
+(21, 'Como vê o mercado de transferências para reforçar o elenco?', 'Conversamos com a diretoria e vamos buscar o que for possível dentro da realidade do clube.', 'Estamos atentos ao mercado, mas sem fazer loucuras.', 'Quero jogadores de alto nível, o clube precisa pensar grande.', 'QUALQUER'),
+(22, 'O que você espera do restante da temporada?', 'Espero muito trabalho e evolução a cada partida.', 'Queremos fazer uma boa campanha e ver onde isso nos leva.', 'Esperem um time forte, que vai brigar por tudo até o fim.', 'QUALQUER');
 
 -- --------------------------------------------------------
 
@@ -2015,7 +2016,7 @@ CREATE TABLE `proposta_emprego` (
 CREATE TABLE `proposta_transferencia` (
   `idPropostaTransferencia` int(11) NOT NULL,
   `valorOferecido` float NOT NULL,
-  `statusProposta` enum('PENDENTE','ACEITA','RECUSADA','CANCELADA') NOT NULL,
+  `statusProposta` enum('PENDENTE','ACEITA_1','RECUSADA','CANCELADA','ACEITA_2','FEITO') NOT NULL,
   `revelado` tinyint(1) NOT NULL,
   `jogador_idJogador` int(11) NOT NULL,
   `clube_idClube_exterior` int(11) NOT NULL,
@@ -2118,6 +2119,12 @@ ALTER TABLE `acao_diretoria`
   ADD PRIMARY KEY (`idAcaoDiretoria`);
 
 --
+-- Indexes for table `cartao`
+--
+ALTER TABLE `cartao`
+  ADD PRIMARY KEY (`idCartao`);
+
+--
 -- Indexes for table `clube`
 --
 ALTER TABLE `clube`
@@ -2206,6 +2213,14 @@ ALTER TABLE `jogador`
   ADD KEY `fk_jogador_clube1_idx` (`clube_idClube`);
 
 --
+-- Indexes for table `jogador_has_cartoes`
+--
+ALTER TABLE `jogador_has_cartoes`
+  ADD PRIMARY KEY (`idJogadorHasCartoes`),
+  ADD KEY `idJogador` (`idJogador`),
+  ADD KEY `idCartoes` (`idCartoes`);
+
+--
 -- Indexes for table `jogador_lesao`
 --
 ALTER TABLE `jogador_lesao`
@@ -2270,6 +2285,12 @@ ALTER TABLE `patrocinador_exigencia`
   ADD KEY `fk_exigencia_has_patrocinador_exigencia_idx` (`exigencia_idExigencia`);
 
 --
+-- Indexes for table `perguntas_reporter`
+--
+ALTER TABLE `perguntas_reporter`
+  ADD PRIMARY KEY (`IdPergunta`);
+
+--
 -- Indexes for table `proposta_emprego`
 --
 ALTER TABLE `proposta_emprego`
@@ -2325,6 +2346,12 @@ ALTER TABLE `acao_diretoria`
   MODIFY `idAcaoDiretoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT for table `cartao`
+--
+ALTER TABLE `cartao`
+  MODIFY `idCartao` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `clube`
 --
 ALTER TABLE `clube`
@@ -2361,16 +2388,22 @@ ALTER TABLE `jogador`
   MODIFY `idJogador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=679;
 
 --
+-- AUTO_INCREMENT for table `jogador_has_cartoes`
+--
+ALTER TABLE `jogador_has_cartoes`
+  MODIFY `idJogadorHasCartoes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
 -- AUTO_INCREMENT for table `lesao`
 --
 ALTER TABLE `lesao`
-  MODIFY `idLesao` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idLesao` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `manager`
 --
 ALTER TABLE `manager`
-  MODIFY `idManager` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `idManager` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `meta_temporada`
@@ -2394,13 +2427,19 @@ ALTER TABLE `noticia_diretoria`
 -- AUTO_INCREMENT for table `partida`
 --
 ALTER TABLE `partida`
-  MODIFY `idPartida` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=381;
+  MODIFY `idPartida` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1141;
 
 --
 -- AUTO_INCREMENT for table `patrocinador`
 --
 ALTER TABLE `patrocinador`
   MODIFY `idPatrocinador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `perguntas_reporter`
+--
+ALTER TABLE `perguntas_reporter`
+  MODIFY `IdPergunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `proposta_emprego`
@@ -2412,7 +2451,7 @@ ALTER TABLE `proposta_emprego`
 -- AUTO_INCREMENT for table `proposta_transferencia`
 --
 ALTER TABLE `proposta_transferencia`
-  MODIFY `idPropostaTransferencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `idPropostaTransferencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `treino`
@@ -2496,6 +2535,13 @@ ALTER TABLE `historico_tecnico`
 --
 ALTER TABLE `jogador`
   ADD CONSTRAINT `fk_jogador_clube1` FOREIGN KEY (`clube_idClube`) REFERENCES `clube` (`idClube`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `jogador_has_cartoes`
+--
+ALTER TABLE `jogador_has_cartoes`
+  ADD CONSTRAINT `jogador_has_cartoes_ibfk_1` FOREIGN KEY (`idJogador`) REFERENCES `jogador` (`idJogador`),
+  ADD CONSTRAINT `jogador_has_cartoes_ibfk_2` FOREIGN KEY (`idCartoes`) REFERENCES `cartao` (`idCartao`);
 
 --
 -- Constraints for table `jogador_lesao`
